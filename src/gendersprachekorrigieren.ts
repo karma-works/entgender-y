@@ -153,7 +153,7 @@ export class BeGone {
                 s = s.replace(/\b(d)(en[\/\*_\(-]+die|ie[\/\*_\(-]+den)\b/ig, (match, p1) => {
                     this.log("11102");
                     this.replacementsb++;
-                    return p1 + "en";
+                    return p1 + "as";
                 });
                 s = s.replace(/\b(d)(es[\/\*_\(-]+der|er[\/\*_\(-]+des)\b/ig, (match, p1) => {
                     this.log("11103");
@@ -441,6 +441,13 @@ export class BeGone {
                     this.replacementsb++;
                     return p1 + "y";
                 }); //ExpertIn, BritIn, KundIn, WachIn
+
+                s = s.replace(/(e[nrtmdbplhfcNRTMDBPLHFC])In(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)/g, (match, p1) => {
+                    this.log("12312");
+                    this.replacementsb++;
+                    return "y";
+                });
+
                 s = s.replace(/([nrtmdbplhfcNRTMDBPLHFC])In(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)/g, (match, p1) => {
                     this.log("12312");
                     this.replacementsb++;
