@@ -148,7 +148,7 @@ export class BeGone {
                 s = s.replace(/\b(d)(ie[\/\*_\(-]+der|er[\/\*_\(-]+die)\b/ig, (match, p1) => {
                     this.log("11101");
                     this.replacementsb++;
-                    return p1 + "er";
+                    return p1 + "as";
                 });
                 s = s.replace(/\b(d)(en[\/\*_\(-]+die|ie[\/\*_\(-]+den)\b/ig, (match, p1) => {
                     this.log("11102");
