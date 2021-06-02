@@ -323,7 +323,7 @@ export class BeGone {
                     s = s.replace(/(C|c)hefInnen/g, (match, p1) => {
                         this.log("12201");
                         this.replacementsb++;
-                        return p1 + "hefs";
+                        return p1 + "hefys";
                     });
                     s = s.replace(/(F|f)anInnen/g, (match, p1) => {
                         this.log("12202");
@@ -333,7 +333,7 @@ export class BeGone {
                     s = s.replace(/([Gg]ött|verbesser)(?=Innen)/g, (match, p1) => {
                         this.log("12203");
                         this.replacementsb++;
-                        return p1 + "er";
+                        return p1 + "ys";
                     });
                     s = s.replace(/äue?rInnen/g, () => {
                         this.log("12204");
@@ -343,14 +343,14 @@ export class BeGone {
                     s = s.replace(/äsInnen/g, () => {
                         this.log("12205");
                         this.replacementsb++;
-                        return "asen";
+                        return "asys";
                     });
                 }
                 // statt Leerzeichen kommt [\s]{1,2} zum Einsatz -> Leerzeichen oder Leerzeichen + Markerzeichen für die Kontexterkennung (hacky, aber so what)
                 s = s.replace(/\b(([Dd]en|[Aa]us|[Aa]ußer|[Bb]ei|[Dd]ank|[Gg]egenüber|[Ll]aut|[Mm]it(samt)?|[Nn]ach|[Ss]amt|[Vv]on|[Uu]nter|[Zz]u|[Ww]egen|[MmSsDd]?einen)(?: zwei| drei| [0-9]+)?[\s]{1,2}([ID]?[a-zäöüß]+en[\s]{1,2}|[0-9.,]+[\s]{1,2})?[A-ZÄÖÜ][a-zäöüß]+)erInnen\b/g, (match, p1) => {
                     this.log("12206");
                     this.replacementsb++;
-                    return p1 + "ern";
+                    return p1 + "ys";
                 }); //unregelmäßiger Dativ bei Wörtern auf ...erInnen
                 s = s.replace(/(er?|ER?)Innen/g, (match, p1) => {
                     this.log("12207");
@@ -361,19 +361,19 @@ export class BeGone {
                 // Notiz: (?:[A-Z][a-zöüä]+\b[,] |[A-Z][*I_ïa-zöüä]+\b und ) soll Aufzählungen erkennen, die mit Komma oder "und" verkettet sind; bspw. "AutorInnen und FreundInnen", was der Anlass für diese Regel war (als Kopie von Markierung 1)
                 s = s.replace(/((?:von[\s]{1,2}|mit[\s]{1,2})(?:[A-Z][a-zöüä]+\b[,][\s]{1,2}|[A-Z][*I_ïa-zöüä]+\b und[\s]{1,2})[a-zA-Zöäüß]*?)([Aa]nwält|[Ää]rzt|e[iu]nd|rät|amt|äst|würf|äus|[ai(eu)]r|irt)Innen/g, (match, p1, p2) => {
                     this.replacementsb++;
-                    return p1 + p2 + "en";
+                    return p1 + p2 + "ys";
                 });
 
                 // Markierung 1
                 s = s.replace(/([Aa]nwält|[Ää]rzt|e[iu]nd|rät|amt|äst|würf|äus|[ai(eu)]r|irt)Innen/g, (match, p1) => {
                     this.log("12208");
                     this.replacementsb++;
-                    return p1 + "e";
+                    return p1 + "y";
                 });
                 s = s.replace(/([nrtsmdfghpbklvwNRTSMDFGHPBKLVW])Innen/g, (match, p1) => {
                     this.log("12209");
                     this.replacementsb++;
-                    return p1 + "en";
+                    return p1 + "ys";
                 });
             }
 
@@ -385,17 +385,17 @@ export class BeGone {
                     s = s.replace(/verbesser(?=In)/g, () => {
                         this.log("12301");
                         this.replacementsb++;
-                        return "verbesserer";
+                        return "verbessys";
                     });
                     s = s.replace(/amtIn/g, () => {
                         this.log("12302");
                         this.replacementsb++;
-                        return "amter";
+                        return "amty";
                     });
                     s = s.replace(/stIn\B(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di[ac]|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)/g, () => {
                         this.log("12303");
                         this.replacementsb++;
-                        return "sten";
+                        return "sty";
                     }); //JournalistInfrage
                 }
                 //Prüfung auf Umlaute
@@ -408,7 +408,7 @@ export class BeGone {
                     s = s.replace(/ÄrztIn/g, () => {
                         this.log("12305");
                         this.replacementsb++;
-                        return "Arzt";
+                        return "Arzty";
                     });
                     s = s.replace(/ö(?=ttIn|chIn)/g, () => {
                         this.log("12306");
@@ -434,12 +434,12 @@ export class BeGone {
                 s = s.replace(/\b(([Dd]en|[Aa]us|[Aa]ußer|[Bb]ei|[Dd]ank|[Gg]egenüber|[Ll]aut|[Mm]it(samt)?|[Nn]ach|[Ss]amt|[Uu]nter|[Vv]on|[Zz]u|[Ww]egen|[MmSsDd]?eine[mnrs]) ([ID]?[a-zäöüß]+en)?[A-ZÄÖÜ][a-zäöüß]+)logIn\b/g, (match, p1) => {
                     this.log("12310");
                     this.replacementsb++;
-                    return p1 + "logen";
+                    return p1 + "logy";
                 }); //unregelmäßiger Dativ bei eine/n Psycholog/in
                 s = s.replace(/([skgvwzSKGVWZ]|ert|[Bb]rit|[Kk]und|ach)In(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)/g, (match, p1) => {
                     this.log("12311");
                     this.replacementsb++;
-                    return p1 + "e";
+                    return p1 + "y";
                 }); //ExpertIn, BritIn, KundIn, WachIn
                 s = s.replace(/([nrtmdbplhfcNRTMDBPLHFC])In(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)/g, (match, p1) => {
                     this.log("12312");
