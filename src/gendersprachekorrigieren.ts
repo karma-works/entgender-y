@@ -213,7 +213,7 @@ export class BeGone {
                 s = s.replace(/\b([DMSdms]?[Ee])ine([\/\*_\(-]+n |\(n\) |N )/g, (match, p1) => {
                     this.log("11114");
                     this.replacementsb++;
-                    return p1 + "inen ";
+                    return p1 + "in ";
                 });
                 s = s.replace(/\bsie[\/\*_\(-]er|er[\/\*_\(-]sie\b/g, () => {
                     this.log("11115");
@@ -368,7 +368,7 @@ export class BeGone {
                 s = s.replace(/([Aa]nwält|[Ää]rzt|e[iu]nd|rät|amt|äst|würf|äus|[ai(eu)]r|irt)Innen/g, (match, p1) => {
                     this.log("12208");
                     this.replacementsb++;
-                    return p1 + "y";
+                    return p1 + "ys";
                 });
                 s = s.replace(/([nrtsmdfghpbklvwNRTSMDFGHPBKLVW])Innen/g, (match, p1) => {
                     this.log("12209");
@@ -385,7 +385,7 @@ export class BeGone {
                     s = s.replace(/verbesser(?=In)/g, () => {
                         this.log("12301");
                         this.replacementsb++;
-                        return "verbessys";
+                        return "verbessy";
                     });
                     s = s.replace(/amtIn/g, () => {
                         this.log("12302");

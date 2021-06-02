@@ -79,9 +79,9 @@ describe('entferne Binnen-I', () => {
         expect(result).to.be.equal("Anwältys");
     });
 
-    it('WeltverbesserIn -> Weltverbessery', () => {
+    it('WeltverbesserIn -> Weltverbessy', () => {
         const result = beGone.entferneInitialForTesting("WeltverbesserIn");
-        expect(result).to.be.equal("Weltverbessery");
+        expect(result).to.be.equal("Weltverbessy");
     });
 
     it('JournalistInfrage -> Journalistyfrage', () => {
