@@ -355,7 +355,7 @@ export class BeGone {
                 s = s.replace(/(er?|ER?)Innen/g, (match, p1) => {
                     this.log("12207");
                     this.replacementsb++;
-                    return p1;
+                    return "ys";
                 });
 
                 // Notiz: (?:[A-Z][a-zöüä]+\b[,] |[A-Z][*I_ïa-zöüä]+\b und ) soll Aufzählungen erkennen, die mit Komma oder "und" verkettet sind; bspw. "AutorInnen und FreundInnen", was der Anlass für diese Regel war (als Kopie von Markierung 1)
