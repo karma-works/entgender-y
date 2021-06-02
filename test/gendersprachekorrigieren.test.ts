@@ -4,99 +4,99 @@ import { BeGone } from '../src/gendersprachekorrigieren';
 describe('entferne Binnen-I', () => {
     let beGone = new BeGone();
 
-    it('Journalist*innen -> Journalisten', () => {
+    it('Journalist*innen -> Journalistys', () => {
         const result = beGone.entferneInitialForTesting("Journalist*innen");
-        expect(result).to.be.equal("Journalisten");
+        expect(result).to.be.equal("Journalistys");
     });
 
-    it('Medienmacher*innen -> Medienmacher', () => {
+    it('Medienmacher*innen -> Medienmachys', () => {
         const result = beGone.entferneInitialForTesting("Medienmacher*innen");
-        expect(result).to.be.equal("Medienmacher");
+        expect(result).to.be.equal("Medienmachys");
     });
 
-    it('Lehrer/innen -> Lehrer', () => {
+    it('Lehrer/innen -> Lehrys', () => {
         const result = beGone.entferneInitialForTesting("Lehrer/innen");
-        expect(result).to.be.equal("Lehrer");
+        expect(result).to.be.equal("Lehrys");
     });
 
-    it('Lehrer(innen) -> Lehrer', () => {
+    it('Lehrer(innen) -> Lehrys', () => {
         const result = beGone.entferneInitialForTesting("Lehrer(innen)");
-        expect(result).to.be.equal("Lehrer");
+        expect(result).to.be.equal("Lehrys");
     });
 
-    it('Lehrer*innen* -> Lehrer', () => {
+    it('Lehrer*innen* -> Lehrys', () => {
         const result = beGone.entferneInitialForTesting("Lehrer*innen");
-        expect(result).to.be.equal("Lehrer");
+        expect(result).to.be.equal("Lehrys");
     });
 
-    it('LehrerInnen -> Lehrer', () => {
+    it('LehrerInnen -> Lehrys', () => {
         const result = beGone.entferneInitialForTesting("LehrerInnen");
-        expect(result).to.be.equal("Lehrer");
+        expect(result).to.be.equal("Lehrys");
     });
 
-    it('LehrerINNen -> Lehrer', () => {
+    it('LehrerINNen -> Lehrys', () => {
         const result = beGone.entferneInitialForTesting("LehrerINNen");
-        expect(result).to.be.equal("Lehrer");
+        expect(result).to.be.equal("Lehrys");
     });
 
-    it('die ganzen Lehrer*innen* -> die ganzen Lehrer', () => {
+    it('die ganzen Lehrer*innen* -> die ganzen Lehrys', () => {
         const result = beGone.entferneInitialForTesting("die ganzen Lehrer*innen");
-        expect(result).to.be.equal("die ganzen Lehrer");
+        expect(result).to.be.equal("die ganzen Lehrys");
     });
 
-    it('der ganzen Lehrer*innen* -> der ganzen Lehrer', () => {
+    it('der ganzen Lehrer*innen* -> der ganzen Lehrys', () => {
         const result = beGone.entferneInitialForTesting("der ganzen Lehrer*innen");
-        expect(result).to.be.equal("der ganzen Lehrer");
+        expect(result).to.be.equal("der ganzen Lehrys");
     });
 
-    it('den ganzen Lehrer*innen* -> den ganzen Lehrern', () => {
+    it('den ganzen Lehrer*innen* -> den ganzen Lehrys', () => {
         const result = beGone.entferneInitialForTesting("den ganzen Lehrer*innen");
-        expect(result).to.be.equal("den ganzen Lehrern");
+        expect(result).to.be.equal("den ganzen Lehrys");
     });
 
-    it('deren ganzen Lehrer*innen* -> deren ganzen Lehrer', () => {
+    it('deren ganzen Lehrer*innen* -> deren ganzen Lehrys', () => {
         const result = beGone.entferneInitialForTesting("deren ganzen Lehrer*innen");
-        expect(result).to.be.equal("deren ganzen Lehrer");
+        expect(result).to.be.equal("deren ganzen Lehrys");
     });
 
-    it('eine/n Psycholog/in -> einen Psychologen', () => {
+    it('eine/n Psycholog/in -> ein Psychology', () => {
         const result = beGone.entferneInitialForTesting("eine/n Psycholog/in");
-        expect(result).to.be.equal("einen Psychologen");
+        expect(result).to.be.equal("ein Psychology");
     });
 
-    it('ExpertIn -> Experte', () => {
+    it('ExpertIn -> Experty', () => {
         const result = beGone.entferneInitialForTesting("ExpertIn");
-        expect(result).to.be.equal("Experte");
+        expect(result).to.be.equal("Experty");
     });
 
-    it('BeamtIn -> Beamter', () => {
+    it('BeamtIn -> Beamty', () => {
         const result = beGone.entferneInitialForTesting("BeamtIn");
-        expect(result).to.be.equal("Beamter");
+        expect(result).to.be.equal("Beamty");
     });
 
-    it('AnwältInnen -> Anwälte', () => {
+    it('AnwältInnen -> Anwältys', () => {
         const result = beGone.entferneInitialForTesting("AnwältInnen");
-        expect(result).to.be.equal("Anwälte");
+        expect(result).to.be.equal("Anwältys");
     });
 
-    it('WeltverbesserIn -> Weltverbesserer', () => {
+    it('WeltverbesserIn -> Weltverbessery', () => {
         const result = beGone.entferneInitialForTesting("WeltverbesserIn");
-        expect(result).to.be.equal("Weltverbesserer");
+        expect(result).to.be.equal("Weltverbessery");
     });
 
-    it('JournalistInfrage -> Journalistenfrage', () => {
+    it('JournalistInfrage -> Journalistyfrage', () => {
         const result = beGone.entferneInitialForTesting("JournalistInfrage");
-        expect(result).to.be.equal("Journalistenfrage");
+        expect(result).to.be.equal("Journalistyfrage");
     });
 
-    it('der/die LehrerIn -> der Lehrer', () => {
+    it('der/die LehrerIn -> das Lehry', () => {
         const result = beGone.entferneInitialForTesting("der/die LehrerIn");
-        expect(result).to.be.equal("der Lehrer");
+        expect(result).to.be.equal("das Lehry");
     });
 
-    it('den/die LehrerIn -> den Lehrer', () => {
+    it('den/die LehrerIn -> das Lehry', () => {
         const result = beGone.entferneInitialForTesting("den/die LehrerIn");
-        expect(result).to.be.equal("den Lehrer");
+        expect(result).to.be.equal("das Lehry");
     });
 
     it('des/der -> des', () => {
@@ -109,34 +109,34 @@ describe('entferne Binnen-I', () => {
         expect(result).to.be.equal("dem");
     });
 
-    it('den LehrerInnen -> den Lehrern', () => {
+    it('den LehrerInnen -> den Lehrys', () => {
         const result = beGone.entferneInitialForTesting("den LehrerInnen");
-        expect(result).to.be.equal("den Lehrern");
+        expect(result).to.be.equal("den Lehrys");
     });
     
-    it('einem*r Schüler*In -> einem Schüler', () => {
+    it('einem*r Schüler*In -> einem Schüly', () => {
         const result = beGone.entferneInitialForTesting("einem*r Schüler*In");
-        expect(result).to.be.equal("einem Schüler");
+        expect(result).to.be.equal("einem Schüly");
     });
 
     it('deren Musiker:innen sangen -> deren Musiker sangen', () => {
         const result = beGone.entferneInitialForTesting("deren Musiker:innen sangen");
-        expect(result).to.be.equal("deren Musiker sangen");
+        expect(result).to.be.equal("deren Musikys sangen");
     });
 
-    it('MusikerInnen -> Musikern', () => {
+    it('MusikerInnen -> Musikys', () => {
         const result = beGone.entferneInitialForTesting("Auch wenn man sich schätzt und freundlich grüßt: Prinzipiell hat man es in der freien Bremer Szene, bei den MusikerInnen wie den VeranstalterInnen, eher mit EinzelkämpferInnen zu tun.");
-        expect(result).to.be.equal("Auch wenn man sich schätzt und freundlich grüßt: Prinzipiell hat man es in der freien Bremer Szene, bei den Musikern wie den Veranstaltern, eher mit Einzelkämpfern zu tun.");
+        expect(result).to.be.equal("Auch wenn man sich schätzt und freundlich grüßt: Prinzipiell hat man es in der freien Bremer Szene, bei den Musikys wie den Veranstaltys, eher mit Einzelkämpfys zu tun.");
     });
 
-    it('MusikerInnen -> Musikern', () => {
+    it('MusikerInnen -> Musikys', () => {
         const result = beGone.entferneInitialForTesting("Kaum ausgezogen, hat sie die Straßen mit Bildern von zwei MusikerInnen dekoriert.");
-        expect(result).to.be.equal("Kaum ausgezogen, hat sie die Straßen mit Bildern von zwei Musikern dekoriert.");
+        expect(result).to.be.equal("Kaum ausgezogen, hat sie die Straßen mit Bildern von zwei Musikys dekoriert.");
     });
 
-    it('von Autor*innen und Freund*innen -> von Autoren und Freunden', () => {
+    it('von Autor*innen und Freund*innen -> von Autorys und Freundys', () => {
         const result = beGone.entferneInitialForTesting("Abseitiges, Tiefsinniges & Schönes von Autor*innen und Freund*innen der taz.");
-        expect(result).to.be.equal("Abseitiges, Tiefsinniges & Schönes von Autoren und Freunden der taz.");
+        expect(result).to.be.equal("Abseitiges, Tiefsinniges & Schönes von Autorys und Freundys der taz.");
     });
 
     it('von Autor*innen und Freund*innen -> von Autoren und Freunden', () => {
@@ -147,122 +147,122 @@ describe('entferne Binnen-I', () => {
 
     it('Mehrzahl', () => {
         const result = beGone.entferneInitialForTesting("mehr als 50 Sprecher*innen nahmen teil");
-        expect(result).to.be.equal("mehr als 50 Sprecher nahmen teil");
+        expect(result).to.be.equal("mehr als 50 Sprechys nahmen teil");
     });
  });
 
  describe('entferne Doppelformen', () => {
      let beGone = new BeGone();
-    it('Lehrer und Lehrerinnen -> Lehrer', () => {
+    it('Lehrer und Lehrerinnen -> Lehrys', () => {
         const result = beGone.entferneInitialForTesting("Lehrer und Lehrerinnen");
-        expect(result).to.be.equal("Lehrer");
+        expect(result).to.be.equal("Lehrys");
     });
 
-    it('Bürgerinnen und Bürger -> Bürger', () => {
+    it('Bürgerinnen und Bürger -> Bürgys', () => {
         const result = beGone.entferneInitialForTesting("Bürgerinnen und Bürger");
-        expect(result).to.be.equal("Bürger");
+        expect(result).to.be.equal("Bürgys");
     });
 
-    it('Bürger und Bürgerinnen -> Bürger', () => {
+    it('Bürger und Bürgerinnen -> Bürgys', () => {
         const result = beGone.entferneInitialForTesting("Bürger und Bürgerinnen");
-        expect(result).to.be.equal("Bürger");
+        expect(result).to.be.equal("Bürgys");
     });
 
-    it('Bürger und Bürgerin -> Bürger', () => {
+    it('Bürger und Bürgerin -> Bürgys', () => {
         const result = beGone.entferneInitialForTesting("Bürger und Bürgerin");
-        expect(result).to.be.equal("Bürger");
+        expect(result).to.be.equal("Bürgys");
     });
 
-    it('die Bürgerin und der Bürger -> der Bürger', () => {
+    it('die Bürgerin und der Bürger -> die Bürgys', () => {
         const result = beGone.entferneInitialForTesting("die Bürgerin und der Bürger");
-        expect(result).to.be.equal("der Bürger");
+        expect(result).to.be.equal("die Bürgys");
     });
     
     it('die Ärztin und der Arzt -> der Arzt', () => {
         const result = beGone.entferneInitialForTesting("die Ärztin und der Arzt");
-        expect(result).to.be.equal("der Arzt");
+        expect(result).to.be.equal("das Arzy");
     });
 
-    it('der Arzt und die Ärztin -> der Arzt', () => {
+    it('der Arzt und die Ärztin -> das Arzty', () => {
         const result = beGone.entferneInitialForTesting("der Arzt und die Ärztin");
-        expect(result).to.be.equal("der Arzt");
+        expect(result).to.be.equal("das Arzty");
     });
 
     it('Bäuerinnen und Bauern -> Bauern', () => {
         const result = beGone.entferneInitialForTesting("Bäuerinnen und Bauern");
-        expect(result).to.be.equal("Bauern");
+        expect(result).to.be.equal("Bauerys");
     });
 
     it('Bürgervertreterinnen und -vertreter -> Bürgervertreter', () => {
         const result = beGone.entferneInitialForTesting("Bürgervertreterinnen und -vertreter");
-        expect(result).to.be.equal("Bürgervertreter");
+        expect(result).to.be.equal("Bürgervertretys");
     });
 
-    it('Könige und Königinnen -> Könige', () => {
+    it('Könige und Königinnen -> Königy', () => {
         const result = beGone.entferneInitialForTesting("Könige und Königinnen");
-        expect(result).to.be.equal("Könige");
+        expect(result).to.be.equal("Königy");
     });
 
-    it('Musikerinnen und Musiker -> Musiker', () => {
+    it('Musikerinnen und Musiker -> Musikys', () => {
         const result = beGone.entferneInitialForTesting("Dazwischen kulturelle Projekte wie die ABC“, ebenfalls in Bremen, ein Treffpunkt für Musikerinnen und Musiker verschiedener Länder und Kulturen.");
-        expect(result).to.be.equal("Dazwischen kulturelle Projekte wie die ABC“, ebenfalls in Bremen, ein Treffpunkt für Musiker verschiedener Länder und Kulturen.");
+        expect(result).to.be.equal("Dazwischen kulturelle Projekte wie die ABC“, ebenfalls in Bremen, ein Treffpunkt für Musikys verschiedener Länder und Kulturen.");
     });
 
-    it('Heldinnen und Helden -> Helden', () => {
+    it('Heldinnen und Helden -> Heldys', () => {
         const result = beGone.entferneInitialForTesting("Fast jeder von uns kennt die wahren Heldinnen und Helden der Krise.");
-        expect(result).to.be.equal("Fast jeder von uns kennt die wahren Helden der Krise.");
+        expect(result).to.be.equal("Fast jeder von uns kennt die wahren Heldys der Krise.");
     });
 
-    it('Verkäuferinnen und Verkäufern -> Verkäufern', () => {
+    it('Verkäuferinnen und Verkäufern -> Verkäufys', () => {
         const result = beGone.entferneInitialForTesting("den Verkäuferinnen und Verkäufern im Supermarkt, die hinter");
-        expect(result).to.be.equal("den Verkäufern im Supermarkt, die hinter");
+        expect(result).to.be.equal("den Verkäufys im Supermarkt, die hinter");
     });
 
-    it('die Bürgerin und der Bürger -> der Bürger', () => {
+    it('die Bürgerin und der Bürger -> das Bürgy', () => {
         const result = beGone.entferneInitialForTesting("Dem Polizisten, der auf den Straßen für Sicherheit sorgt, der Bürgerin und dem Bürger, der hinter");
-        expect(result).to.be.equal("Dem Polizisten, der auf den Straßen für Sicherheit sorgt, dem Bürger, der hinter");
+        expect(result).to.be.equal("Dem Polizisten, der auf den Straßen für Sicherheit sorgt, das Bürgy, der hinter");
     });
 
-    it('Ärztinnen und Ärzte -> Ärzte', () => {
+    it('Ärztinnen und Ärzte -> Ärztys', () => {
         const result = beGone.entferneInitialForTesting("Ärztinnen und Ärzte genießen in der Regel ein hohes Ansehen.");
-        expect(result).to.be.equal("Ärzte genießen in der Regel ein hohes Ansehen.");
+        expect(result).to.be.equal("Ärztys genießen in der Regel ein hohes Ansehen.");
     });
 
-    it('Den Ärztinnen und Ärzte -> Den Ärzten', () => {
+    it('Den Ärztinnen und Ärzte -> Den Ärztys', () => {
         const result = beGone.entferneInitialForTesting("Den Ärztinnen und Ärzten, die Tag und Nacht bereitstehen, um Leben zu retten.");
-        expect(result).to.be.equal("Den Ärzten, die Tag und Nacht bereitstehen, um Leben zu retten.");
+        expect(result).to.be.equal("Den Ärztys, die Tag und Nacht bereitstehen, um Leben zu retten.");
     });
 });
 
 describe('entfernt Partizipien', () => {
     let beGone = new BeGone();
-    it('Besserverdienenden -> Besserverdiener', () => {
+    it('Besserverdienenden -> Besserverdienys', () => {
         const result = beGone.entferneInitialForTesting("Gemeint waren dabei meist die Besserverdienenden.");
-        expect(result).to.be.equal("Gemeint waren dabei meist die Besserverdiener.");
+        expect(result).to.be.equal("Gemeint waren dabei meist die Besserverdienys.");
     });
 
-    it('Lesenden -> Leser', () => {
+    it('Lesenden -> Lesys', () => {
         const result = beGone.entferneInitialForTesting("ist zwar nett für die Lesenden");
         // besser als nichts
-        expect(result).to.be.equal("ist zwar nett für die Leser");
+        expect(result).to.be.equal("ist zwar nett für die Lesys");
     });
 });
 
 describe('behandelt viele Whitespaces', () => {
     let beGone = new BeGone();
-    it('Musikerinnen und Musiker -> Musiker', () => {
+    it('Musikerinnen und Musiker -> Musikys', () => {
         const result = beGone.entferneInitialForTesting("Dazwischen kulturelle Projekte wie die ABC“, ebenfalls in Bremen, ein Treffpunkt für \fMusikerinnen und Musiker\f verschiedener Länder und Kulturen.");
-        expect(result).to.be.equal("Dazwischen kulturelle Projekte wie die ABC“, ebenfalls in Bremen, ein Treffpunkt für \fMusiker\f verschiedener Länder und Kulturen.");
+        expect(result).to.be.equal("Dazwischen kulturelle Projekte wie die ABC“, ebenfalls in Bremen, ein Treffpunkt für \fMusikys\f verschiedener Länder und Kulturen.");
     });
 
-    it('MusikerInnen -> Musikern', () => {
+    it('MusikerInnen -> Musikys', () => {
         const result = beGone.entferneInitialForTesting("Auch wenn man sich schätzt und freundlich grüßt: Prinzipiell hat man es in der freien Bremer Szene, bei den\fMusikerInnen\fwie den VeranstalterInnen, eher mit EinzelkämpferInnen zu tun.");
-        expect(result).to.be.equal("Auch wenn man sich schätzt und freundlich grüßt: Prinzipiell hat man es in der freien Bremer Szene, bei den\fMusikern\fwie den Veranstaltern, eher mit Einzelkämpfern zu tun.");
+        expect(result).to.be.equal("Auch wenn man sich schätzt und freundlich grüßt: Prinzipiell hat man es in der freien Bremer Szene, bei den\fMusikys\fwie den Veranstaltern, eher mit Einzelkämpfern zu tun.");
     });
 
-    it('Verkäuferinnen und Verkäufern -> Verkäufern', () => {
+    it('Verkäuferinnen und Verkäufern -> Verkäufys', () => {
         const result = beGone.entferneInitialForTesting("Den Polizisten, die auf den Straßen für Sicherheit sorgen, den \fVerkäuferinnen und Verkäufern im Supermarkt\f, die hinter");
-        expect(result).to.be.equal("Den Polizisten, die auf den Straßen für Sicherheit sorgen, den \fVerkäufern im Supermarkt\f, die hinter");
+        expect(result).to.be.equal("Den Polizisten, die auf den Straßen für Sicherheit sorgen, den \fVerkäufys im Supermarkt\f, die hinter");
     });
 
     it('Geflüchtete', () => {
