@@ -554,49 +554,91 @@ export class BeGone {
 
     private entfernePartizip(s: string): string {
         if (/(ier|arbeit|orsch|fahr|verdien|nehm|es)ende|Interessierte/.test(s)) {
-            s = s.replace(/der Studierende\b/g, () => {
+            s = s.replace(/der Studierende\b/g, (match) => {
                 this.replacementsp++;
-                return "der Student";
+                let suffix = "das Studenty";
+                if(match.endsWith("n")){
+                    suffix = suffix + "s"
+                }
+                return suffix;
             });
-            s = s.replace(/Studierende(r|n?)?/g, () => {
+            s = s.replace(/Studierende(r|n?)?/g, (match) => {
                 this.replacementsp++;
-                return "Studenten";
+                let suffix = "Studenty";
+                if(match.endsWith("n")){
+                    suffix = suffix + "s"
+                }
+                return suffix;
             });
-            s = s.replace(/Teilnehmende(r|n?)?/g, () => {
+            s = s.replace(/Teilnehmende(r|n?)?/g, (match) => {
                 this.replacementsp++;
-                return "Teilnehmer";
+                let suffix = "Teilnehmy";
+                if(match.endsWith("n")){
+                    suffix = suffix + "s"
+                }
+                return suffix;
             });
-            s = s.replace(/Dozierende(r|n?)?/g, () => {
+            s = s.replace(/Dozierende(r|n?)?/g, (match) => {
                 this.replacementsp++;
-                return "Dozenten";
+                let suffix = "Dozenty";
+                if(match.endsWith("n")){
+                    suffix = suffix + "s"
+                }
+                return suffix;
             });
-            s = s.replace(/Lesende(r|n?)?/g, () => {
+            s = s.replace(/Lesende(r|n?)?/g, (match) => {
                 this.replacementsp++;
-                return "Leser";
+                let suffix = "Lesy";
+                if(match.endsWith("n")){
+                    suffix = suffix + "s"
+                }
+                return suffix;
             });
-            s = s.replace(/Assistierende(r|n?)?/g, () => {
+            s = s.replace(/Assistierende(r|n?)?/g, (match) => {
                 this.replacementsp++;
-                return "Assistenten";
+                let suffix = "Assistenty";
+                if(match.endsWith("n")){
+                    suffix = suffix + "s"
+                }
+                return suffix;
             });
-            s = s.replace(/Mitarbeitende(r|n?)?/g, () => {
+            s = s.replace(/Mitarbeitende(r|n?)?/g, (match) => {
                 this.replacementsp++;
-                return "Mitarbeiter";
+                let suffix = "Mitarbeity";
+                if(match.endsWith("n")){
+                    suffix = suffix + "s"
+                }
+                return suffix;
             });
-            s = s.replace(/Forschende(r|n?)?/g, () => {
+            s = s.replace(/Forschende(r|n?)?/g, (match) => {
                 this.replacementsp++;
-                return "Forscher";
+                let suffix =  "Forschy";
+                if(match.endsWith("n")){
+                    suffix = suffix + "s"
+                }
+                return suffix;
             });
-            s = s.replace(/Interessierte(r|n?)?/g, () => {
+            s = s.replace(/Interessierte(r|n?)?/g, (match) => {
                 this.replacementsp++;
-                return "Interessenten";
+                let suffix = "Interessenty";
+                if(match.endsWith("n")){
+                    suffix = suffix + "s"
+                }
+                return suffix;
             });
             s = s.replace(/([A-Z]+[a-zäöü]+)fahrende(r|n?)?/g, (match, p1) => {
                 this.replacementsp++;
-                return p1 + "fahrer";
+                let suffix = "fahry";
+                return p1 + suffix;
             });
             s = s.replace(/([A-Z]+[a-zäöü]+)verdienende(r|n?)?/g, (match, p1) => {
                 this.replacementsp++;
-                return p1 + "verdiener";
+
+                let suffix = "verdieny"
+                if(match.endsWith("n")){
+                    suffix = suffix + "s"
+                }
+                return p1 + suffix;
             });
         }
 

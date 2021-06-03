@@ -303,12 +303,12 @@ describe('ersetzt den Begriff Geflüchtete zu Flüchtlinge', () => {
 
     it('Geflüchtete, in Aufzählung mit "und"', () => {
         const result = beGone.entferneInitialForTesting("Der Senat soll sein Handeln gegenüber AutorInnen und Geflüchteten überdenken.");
-        expect(result).to.be.equal("Der Senat soll sein Handeln gegenüber Autoren und Flüchtlingen überdenken.");
+        expect(result).to.be.equal("Der Senat soll sein Handeln gegenüber Autorys und Flüchtlingen überdenken.");
     });
 
     it('Geflüchtete, in Aufzählung, mit Binnen-I-Wort', () => {
         const result = beGone.entferneInitialForTesting("Der Senat soll sein Handeln gegenüber AutorInnen, Geflüchteten und Menschen ohne Papiere überdenken.");
-        expect(result).to.be.equal("Der Senat soll sein Handeln gegenüber Autoren, Flüchtlingen und Menschen ohne Papiere überdenken.");
+        expect(result).to.be.equal("Der Senat soll sein Handeln gegenüber Autorys, Flüchtlingen und Menschen ohne Papiere überdenken.");
     });
 
     it('Geflüchtete', () => {
@@ -378,29 +378,29 @@ describe('Empfehlungen Uni Hamburg werden korrigiert', () => {
 
     // Quelle: https://www.uni-hamburg.de/gleichstellung/download/empfehlungen-zu-inklusiven-anredeformen-2019-05.pdf
 
-    it('Interessierte -> Interessenten', () => {
+    it('Interessierte -> Interessentys', () => {
         const result = beGone.entferneInitialForTesting("Sehr geehrte Interessierte");
-        expect(result).to.be.equal("Sehr geehrte Interessenten");
+        expect(result).to.be.equal("Sehr geehrte Interessentys");
     });
 
-    it('Studierende -> Studenden', () => {
+    it('Studierende -> Studendys', () => {
         const result = beGone.entferneInitialForTesting("Sehr geehrte Studierende");
-        expect(result).to.be.equal("Sehr geehrte Studenten");
+        expect(result).to.be.equal("Sehr geehrte Studentys");
     });
 
-    it('Empfänger*innen -> Empfänger', () => {
+    it('Empfänger*innen -> Empfängys', () => {
         const result = beGone.entferneInitialForTesting("Sehr geehrte Empfänger*innen des Newsletters XY");
-        expect(result).to.be.equal("Sehr geehrte Empfänger des Newsletters XY");
+        expect(result).to.be.equal("Sehr geehrte Empfängys des Newsletters XY");
     });
 
-    it('Mitarbeitende -> Mitarbeiter', () => {
+    it('Mitarbeitende -> Mitarbeitys', () => {
         const result = beGone.entferneInitialForTesting("Liebe Mitarbeitende");
-        expect(result).to.be.equal("Liebe Mitarbeiter");
+        expect(result).to.be.equal("Liebe Mitarbeitys");
     });
 
-    it('Teilnehmende -> Teilnehmer', () => {
+    it('Teilnehmende -> Teilnehmys', () => {
         const result = beGone.entferneInitialForTesting("Sehr geehrte Teilnehmende");
-        expect(result).to.be.equal("Sehr geehrte Teilnehmer");
+        expect(result).to.be.equal("Sehr geehrte Teilnehmys");
     });
 
 });
