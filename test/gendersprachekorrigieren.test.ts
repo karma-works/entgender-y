@@ -175,7 +175,7 @@ describe('entferne Binnen-I', () => {
 
     it('die Bürgerin und der Bürger -> die Bürgys', () => {
         const result = beGone.entferneInitialForTesting("die Bürgerin und der Bürger");
-        expect(result).to.be.equal("die Bürgys");
+        expect(result).to.be.equal("das Bürgy");
     });
     
     it('die Ärztin und der Arzt -> das Arzty', () => {
@@ -218,9 +218,9 @@ describe('entferne Binnen-I', () => {
         expect(result).to.be.equal("den Verkäufys im Supermarkt, die hinter");
     });
 
-    it('die Bürgerin und der Bürger -> das Bürgy', () => {
+    it('die Bürgerin und der Bürger -> dem Bürgy', () => {
         const result = beGone.entferneInitialForTesting("Dem Polizisten, der auf den Straßen für Sicherheit sorgt, der Bürgerin und dem Bürger, der hinter");
-        expect(result).to.be.equal("Dem Polizisten, der auf den Straßen für Sicherheit sorgt, das Bürgy, der hinter");
+        expect(result).to.be.equal("Dem Polizisten, der auf den Straßen für Sicherheit sorgt, dem Bürgy, der hinter");
     });
 
     it('Ärztinnen und Ärzte -> Ärztys', () => {

@@ -462,7 +462,7 @@ export class BeGone {
 
     private pluraly(s: string): string {
         s = s.replace(/(der|das)/, "die");
-        s = s.replace(/(ern|er|e)$/,"");
+        s = s.replace(/(ern|er|en|e)$/,"");
         s = s + "ys";
         return s;
     }
@@ -484,7 +484,7 @@ export class BeGone {
                 // Hinweis: p14 ist das /f-Zeichen, das u.U. verwendet wird, die zu ersetzende Wortgruppe zu umschließen
                 if (p1) {
                     this.log("21001");
-                    return p1 + p12 + (p14 ? p14 : "");
+                    return p1 + this.pluraly(p12) + (p14 ? this.pluraly(p14) : "");
                 } else {
                     this.log("21002");
                     return this.pluraly(p12) + (p14 ? p14 : "");
@@ -505,7 +505,7 @@ export class BeGone {
                     return p13 + p6 + this.pluraly(p18);
                 } else {
                     this.log("21006");
-                    return this.pluraly(p12);
+                    return this.singulary(p12);
                 }
             }); //die Bürgerin und der Bürger
             s = s.replace(/\b(von |für |mit |als )?(((zu )?d|jed|ein|ihr|sein)(e|er|ie) |zur )?(([a-zäöüß]{4,20}[enr]) )?([a-zäöüß]{4,20})?(ärztin|anwältin|bäue?rin|rätin|fränkin|schwäbin|schwägerin)( und | oder | & | bzw\.? |[\/\*_\(-])(\1|vom )?((((zu )?d|jed|ein|ihr|zum|sein)(e[nrms])? )?(\7[nrms]? )?(\8(e?(s|n|r)?))(arzt|anwalt|bauer|rat|frank|schwab|schwager)(e(n|s)?)?)\b/ig, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12) => {
