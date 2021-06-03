@@ -1,33 +1,25 @@
-# Gendersprache korrigieren
+# Entgendy - Entgendern nach Phettberg
 
-Ein Firefox-Add-on, welches Binnen-Is und Ähnliches von Webseiten entfernt. Es basiert auf dem Add-on *Binnen-I be gone*, welches ich seit langer Zeit selber einsetze und schätzen gelernt habe.
+Entgenderung nach Phettberg https://blog.lplusl.de/nebenbei/gendern-nach-phettberg/
 
-## Sinn und Zweck des Add-ons
+Diese Extension entgendert die Texte einer aufgerufenen Webseite nach der Methode von Hermes Phettberg, die von Thomas Kronschläger «Entgendern nach Phetberg!» genannt wurde.
 
-Das Firefox-Add-on korrigiert viele durch die Gendersprache verursachten Rechtschreib- und Grammatikfehler. Typische Beispiele sind Binnen-I, Gendersterne, Unterstriche und ähnliche Konstrukte:
+Wenn ein Author gendern möchte er damit sagen «Es sind Menschen jeglichen Geschlechts gleichermassen gemeint».
+Die Erweiterung ist bestrebt nur die Form von Texten zu ändern, nicht den Inhalt. Maskulin bleibt Maksulin, Feminin bleibt Feminin, genderneutral bleibt genderneutral.
+Korrekt entgendert die Erweiterung dort, wo sie Genderschreibweise wie Binnen-I, Gendersterne, Unterstriche und ähnliche Konstrukte erkennt.
 
-Beispiele für die Korrektur (vorher -> nachher):
+Die Erweiterung basiert auf dem Add-on *Gender korrigieren* und *Binnen-I be gone*.
 
-* StudentInnen -> Studenten
-* Lehrer_innen -> Lehrer
-* Bürgerinnen und Bürger -> Bürger
-* Studierende -> Studenten
+
+## Beispiele
+(vorher -> nachher):
+
+* StudentInnen -> Studentys
+* Lehrer_innen -> Lehrys
+* Bürgerinnen und Bürger -> Bürgys
+* Studierende -> Studentys
 
 Mehr Beispiele finden sich im Verzeichnis `/test`, in dem sich einige Unit-Tests für Korrekturen befinden.
-
-## Warum reicht das Add-on *Binnen-I be gone* nicht aus?
-
-Momentan reicht es wahrschenlich aus. Perspektivisch lässt sich das Add-on auf GitHub besser weiterentwickeln.
-
-## Bisher erfolgte Anpassungen im Vergleich zu *Binnen-i be gone*
-
-* Fix: Doppelformen, die durch einen Zeilenumbruch unterbrochen werden, wurden nicht ersetzt
-* Fix: bessere Behandlung einzelner Wortgruppen, die Teil von Hyperlinks (`a`-Tag) sind oder mittels `strong`, `mark` etc. hervorgehoben werden (hier wurde der falsche Fall abgeleitet)
-* kleinere Verbesserungen
-  * Berücksichtigung von Zahlwörtern und Zahlen: *von **zwei** DesignerInnen*
-  * *Ärztinnen und Ärzte* am Anfang eines Satzes wurde nicht erkannt (der Umlaut war Schuld)
-  * Berücksichtigung von Aufzählungen wie bei *von AutorInnen **und** FreundInnen*
-* Neu: ersetzt die Formulierung "Geflüchtete" durch "Flüchtlinge" (Hinweis: die Behandlung von Verlaufsformen muss in den Optionen aktiviert werden)
 
 ## Das Add-on selber bauen / Build the add-on
 
