@@ -257,7 +257,7 @@ describe('behandelt viele Whitespaces', () => {
 
     it('MusikerInnen -> Musikys', () => {
         const result = beGone.entferneInitialForTesting("Auch wenn man sich schätzt und freundlich grüßt: Prinzipiell hat man es in der freien Bremer Szene, bei den\fMusikerInnen\fwie den VeranstalterInnen, eher mit EinzelkämpferInnen zu tun.");
-        expect(result).to.be.equal("Auch wenn man sich schätzt und freundlich grüßt: Prinzipiell hat man es in der freien Bremer Szene, bei den\fMusikys\fwie den Veranstaltern, eher mit Einzelkämpfern zu tun.");
+        expect(result).to.be.equal("Auch wenn man sich schätzt und freundlich grüßt: Prinzipiell hat man es in der freien Bremer Szene, bei den\fMusikys\fwie den Veranstaltys, eher mit Einzelkämpfys zu tun.");
     });
 
     it('Verkäuferinnen und Verkäufern -> Verkäufys', () => {

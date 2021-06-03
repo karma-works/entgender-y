@@ -557,7 +557,7 @@ export class BeGone {
             s = s.replace(/der Studierende\b/g, (match) => {
                 this.replacementsp++;
                 let suffix = "das Studenty";
-                if(match.endsWith("n")){
+                if(match.endsWith("n") || match.endsWith("e")){
                     suffix = suffix + "s"
                 }
                 return suffix;
@@ -565,7 +565,7 @@ export class BeGone {
             s = s.replace(/Studierende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Studenty";
-                if(match.endsWith("n")){
+                if(match.endsWith("n") || match.endsWith("e")){
                     suffix = suffix + "s"
                 }
                 return suffix;
@@ -573,7 +573,7 @@ export class BeGone {
             s = s.replace(/Teilnehmende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Teilnehmy";
-                if(match.endsWith("n")){
+                if(match.endsWith("n") || match.endsWith("e")){
                     suffix = suffix + "s"
                 }
                 return suffix;
@@ -581,7 +581,7 @@ export class BeGone {
             s = s.replace(/Dozierende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Dozenty";
-                if(match.endsWith("n")){
+                if(match.endsWith("n") || match.endsWith("e")){
                     suffix = suffix + "s"
                 }
                 return suffix;
@@ -589,7 +589,7 @@ export class BeGone {
             s = s.replace(/Lesende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Lesy";
-                if(match.endsWith("n")){
+                if(match.endsWith("n") || match.endsWith("e")){
                     suffix = suffix + "s"
                 }
                 return suffix;
@@ -597,7 +597,7 @@ export class BeGone {
             s = s.replace(/Assistierende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Assistenty";
-                if(match.endsWith("n")){
+                if(match.endsWith("n") || match.endsWith("e")){
                     suffix = suffix + "s"
                 }
                 return suffix;
@@ -605,7 +605,7 @@ export class BeGone {
             s = s.replace(/Mitarbeitende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Mitarbeity";
-                if(match.endsWith("n")){
+                if(match.endsWith("n") || match.endsWith("e")){
                     suffix = suffix + "s"
                 }
                 return suffix;
@@ -613,7 +613,7 @@ export class BeGone {
             s = s.replace(/Forschende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix =  "Forschy";
-                if(match.endsWith("n")){
+                if(match.endsWith("n") || match.endsWith("e")){
                     suffix = suffix + "s"
                 }
                 return suffix;
@@ -621,7 +621,7 @@ export class BeGone {
             s = s.replace(/Interessierte(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Interessenty";
-                if(match.endsWith("n")){
+                if(match.endsWith("n") || match.endsWith("e")){
                     suffix = suffix + "s"
                 }
                 return suffix;
@@ -629,13 +629,16 @@ export class BeGone {
             s = s.replace(/([A-Z]+[a-zäöü]+)fahrende(r|n?)?/g, (match, p1) => {
                 this.replacementsp++;
                 let suffix = "fahry";
+                if(match.endsWith("n") || match.endsWith("e")){
+                    suffix = suffix + "s"
+                }
                 return p1 + suffix;
             });
             s = s.replace(/([A-Z]+[a-zäöü]+)verdienende(r|n?)?/g, (match, p1) => {
                 this.replacementsp++;
 
                 let suffix = "verdieny"
-                if(match.endsWith("n")){
+                if(match.endsWith("n") || match.endsWith("e")){
                     suffix = suffix + "s"
                 }
                 return p1 + suffix;
