@@ -200,7 +200,7 @@ describe('entferne Binnen-I', () => {
 
     it('Könige und Königinnen -> Königy', () => {
         const result = beGone.entferneInitialForTesting("Könige und Königinnen");
-        expect(result).to.be.equal("Königy");
+        expect(result).to.be.equal("Königys");
     });
 
     it('Musikerinnen und Musiker -> Musikys', () => {
