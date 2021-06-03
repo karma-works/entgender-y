@@ -460,6 +460,14 @@ export class BeGone {
         return s;
     }
 
+    private pluraly(s: string): string {
+        return s.replace(/er/,"ys");
+    }
+
+    private singulary(s: string): string {
+        return s.replace(/er/,"y");
+    }
+
     private entferneDoppelformen(s: string): string {
         this.log("20000");
         if (/\b(und|oder|bzw)|[a-zA-ZäöüßÄÖÜ][\/\*&_\(][a-zA-ZäöüßÄÖÜ]/.test(s)) {
@@ -517,7 +525,7 @@ export class BeGone {
             s = s.replace(/\b((von |für |mit |als )?((d|jed|ein|ihr|zum|sein)(e[rnms]?|ie) )?([a-zäöüß]{4,20}[enr] )?([a-zäöüß]{2,})(e?(n|s|r)?))( und | oder | & | bzw\.? |[\/\*_\(-])(\2|von der )?(((von |zu )?d|jed|ein|ihr|zur|sein)(e[rn]?|ie) )?\6?\7(in(nen)?|en?)\b/ig, (match, p1) => {
                 this.log("21011");
                 this.replacementsd++;
-                return p1;
+                return this.pluraly(p1);
             }); //Bürger und Bürgerinnen, Bürger und Bürgerin
             s = s.replace(/\b((von |für |mit |als )?((d|jed|ein|ihr|sein)(e[rnms]?|ie) |zum )?([a-zäöüß]{4,20}[enr] )?([a-zäöüß]{4,20})?(arzt|anwalt|bauer|rat|frank|schwab|schwager)(e?(s)?))( und | oder | & | bzw\.? |[\/\*_\(-])(\2|von der )?(((von |zu )?d|jed|ein|ihr|sein)(e[rn]?|ie) |zur )?\6?\7(ärzt|anwält|bäue?rin|rät|fränk|schwäb|schwäger)(in(nen)?)\b/ig, (match, p1) => {
                 this.log("21012");
