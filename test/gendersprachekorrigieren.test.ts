@@ -149,6 +149,10 @@ describe('entferne Binnen-I', () => {
         const result = beGone.entferneInitialForTesting("mehr als 50 Sprecher*innen nahmen teil");
         expect(result).to.be.equal("mehr als 50 Sprechys nahmen teil");
     });
+    it("Judinnen*Juden", () => {
+        const result = beGone.entferneInitialForTesting("Ich habe oft das Gefühl, Solidarität mit Palästinenser*innen und Jüdinnen*Juden schließe sich aus.");
+        expect(result).to.be.equal("Ich habe oft das Gefühl, Solidarität mit Palästinensys und Judys schließe sich aus.");
+    });
  });
 
  describe('entferne Doppelformen', () => {
@@ -190,7 +194,7 @@ describe('entferne Binnen-I', () => {
 
     it('Bäuerinnen und Bauern -> Bauern', () => {
         const result = beGone.entferneInitialForTesting("Bäuerinnen und Bauern");
-        expect(result).to.be.equal("Bauy");
+        expect(result).to.be.equal("Bauys");
     });
 
     it('Bürgervertreterinnen und -vertreter -> Bürgervertreter', () => {
