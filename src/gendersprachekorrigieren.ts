@@ -382,7 +382,7 @@ export class BeGone {
                 this.log("12300");
                 //Prüfung auf Sonderfälle
                 if (/amtIn|stIn\B|verbesser(?=In)/.test(s)) {
-                    s = s.replace(/verbesser(?=In)/g, () => {
+                    s = s.replace(/verbesserIn/g, () => {
                         this.log("12301");
                         this.replacementsb++;
                         return "verbessy";
