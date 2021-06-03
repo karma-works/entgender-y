@@ -33,3 +33,6 @@ Schritte / Steps:
 * `npm run build`
 
 Fertig. Im Verzeichnis `/dist` befinden sich jetzt die Assets des Plugins. / Done. The directory `/dist` now contains all plugin assets.
+
+## Links
+[https://github.com/brilliance-richter-huh/gendersprache-korrigieren][Gendersprache korrigieren]
