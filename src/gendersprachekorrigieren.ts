@@ -546,7 +546,7 @@ export class BeGone {
             s = s.replace(/\b([A-Z][a-zäöüß]{2,})([a-zäöüß]{2,})innen( und | oder | & | bzw\.? )-(\2(e*n)*)\b/g, (match, p1, p2, p3, p4) => {
                 this.log("21014");
                 this.replacementsd++;
-                return p1 + p4;
+                return p1 + this.pluraly(p4);
             }); //Bürgervertreterinnen und -vertreter
         }
         return s;
