@@ -178,14 +178,14 @@ describe('entferne Binnen-I', () => {
         expect(result).to.be.equal("die Bürgys");
     });
     
-    it('die Ärztin und der Arzt -> der Arzt', () => {
+    it('die Ärztin und der Arzt -> das Arzty', () => {
         const result = beGone.entferneInitialForTesting("die Ärztin und der Arzt");
-        expect(result).to.be.equal("das Arzy");
+        expect(result).to.be.equal("das Arzty");
     });
 
     it('der Arzt und die Ärztin -> das Arzty', () => {
         const result = beGone.entferneInitialForTesting("der Arzt und die Ärztin");
-        expect(result).to.be.equal("das Arzty");
+        expect(result).to.be.equal("die Arztys");
     });
 
     it('Bäuerinnen und Bauern -> Bauern', () => {
