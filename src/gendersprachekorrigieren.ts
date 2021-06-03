@@ -462,14 +462,14 @@ export class BeGone {
 
     private pluraly(s: string): string {
         s = s.replace(/(der|das)/, "die");
-        s = s.replace(/er/,"");
+        s = s.replace(/(ern|er)/,"");
         s = s + "ys";
         return s;
     }
 
     private singulary(s: string): string {
         s = s.replace(/(der|die)/, "das");
-        s = s.replace(/er/,"");
+        s = s.replace(/(ern|er)/,"");
         s = s + "y";
         return s;
     }
@@ -522,10 +522,10 @@ export class BeGone {
                 this.replacementsd++;
                 if (p1) {
                     this.log("21009");
-                    return p1 + p14;
+                    return this.singulary(p1 + p14);
                 } else {
                     this.log("21010");
-                    return p14;
+                    return this.singulary(p14);
                 }
             }); //unregelmäßiger Plural: Bäuerinnen und Bauern
             s = s.replace(/\b((von |für |mit |als )?((d|jed|ein|ihr|zum|sein)(e[rnms]?|ie) )?([a-zäöüß]{4,20}[enr] )?([a-zäöüß]{2,})(e?(n|s|r)?))( und | oder | & | bzw\.? |[\/\*_\(-])(\2|von der )?(((von |zu )?d|jed|ein|ihr|zur|sein)(e[rn]?|ie) )?\6?\7(in(nen)?|en?)\b/ig, (match, p1) => {

@@ -190,7 +190,7 @@ describe('entferne Binnen-I', () => {
 
     it('Bäuerinnen und Bauern -> Bauern', () => {
         const result = beGone.entferneInitialForTesting("Bäuerinnen und Bauern");
-        expect(result).to.be.equal("Bauerys");
+        expect(result).to.be.equal("Bauy");
     });
 
     it('Bürgervertreterinnen und -vertreter -> Bürgervertreter', () => {
