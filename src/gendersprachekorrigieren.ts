@@ -461,6 +461,9 @@ export class BeGone {
     }
 
     private pluraly(s: string): string {
+        if(s.trim().length == 0){
+            return s;
+        }
         s = s.replace(/(der|das)/, "die");
         s = s.replace(/(ern|er|en|e)$/,"");
         s = s + "ys";
@@ -468,6 +471,9 @@ export class BeGone {
     }
 
     private singulary(s: string): string {
+        if(s.trim().length == 0){
+            return s;
+        }
         s = s.replace(/(der|die)/, "das");
         s = s.replace(/(ern|er)$/,"");
         s = s + "y";
