@@ -110,7 +110,7 @@ function updateIcon() {
     chrome.storage.sync.get(function(res) {
         if (res.filterliste == "Bei Bedarf") {
             chrome.browserAction.setTitle({
-                title: 'Klick filtert Binnen-Is auf dieser Seite'
+                title: 'Klick entgendert Binnen-Is auf dieser Seite'
             });
             if (res.invertiert !== true) {
                 chrome.browserAction.setIcon({
@@ -136,7 +136,7 @@ function updateIcon() {
             }
         } else {
             chrome.browserAction.setTitle({
-                title: 'Filterung deaktiviert'
+                title: 'Entgenderung deaktiviert'
             });
             if (res.invertiert !== true) {
                 chrome.browserAction.setIcon({
