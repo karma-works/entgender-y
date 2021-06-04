@@ -1,6 +1,6 @@
 # Entgendy - Entgendern nach Phettberg
 
-Für einen freundlichen, respektvollen, inkluierenden Umgang miteinander!  &#127752; &#9829; &#9872; &#9873;
+Für einen freundlichen, respektvollen, inkludierenden Umgang miteinander!  &#127752; &#9829; &#9872; &#9873;
 
 
 [Entgenderung nach Phettberg](https://blog.lplusl.de/nebenbei/gendern-nach-phettberg/) ( [Erklärvideo](https://youtu.be/xVmGb7qACfA) ) hat viele Vorteile! Wahrscheinlich kennen Sie die Meisten schon, wenn Sie diese Erweiterung gefunden haben!
