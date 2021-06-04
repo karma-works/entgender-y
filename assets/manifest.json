@@ -20,6 +20,8 @@
    },
    "manifest_version": 2,
    "name": "entgendy: Entgendern nach Phettberg",
+   "author": "Christian Haegele",
+   "homepage_url": "https://github.com/karma-works/entgender-y",
    "options_ui": {
       "page": "options.html",
       "browser_style": true
