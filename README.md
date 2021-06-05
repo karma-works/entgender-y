@@ -1,9 +1,9 @@
 # Entgendy - Entgendern nach Phettberg
 
-Für einen freundlichen, respektvollen, inkluierenden Umgang miteinander!  &#127752; &#9829; &#9872; &#9873;
 
 
-[Entgenderung nach Phettberg](https://blog.lplusl.de/nebenbei/gendern-nach-phettberg/) ( [Erklärvideo](https://youtu.be/xVmGb7qACfA) ) hat viele Vorteile! Wahrscheinlich kennen Sie die Meisten schon, wenn Sie diese Erweiterung gefunden haben!
+
+[Entgenderung nach Phettberg](https://blog.lplusl.de/nebenbei/gendern-nach-phettberg/) ( [Erklärvideo](https://youtu.be/xVmGb7qACfA) ) hat viele Vorteile! 
 
 * Barrierefreiheit
 * leicht lesbar und erlernbar
@@ -11,13 +11,13 @@ Für einen freundlichen, respektvollen, inkluierenden Umgang miteinander!  &#127
 * Niemand ist nur «mit gemeint». Da es sich um eine neue Form handelt, werden Personen jeden Geschlechts gleichermassen und gleichberechtigt angesprochen.
 * Ermöglicht eine präzisere Sprache: Beispielsweise ist es möglich nur eine Gruppe von ausschliesslich Männern zu bezeichnen.
 
-Diese Extension entgendert Texte nach der Methode von Hermes Phettberg, die von Thomas Kronschläger «Entgendern nach Phetberg!» genannt wurde. 
-Die Erweiterung ist dabei bestrebt die Form von Texten zu ändern, nicht den Inhalt. Maskulin bleibt Maksulin, Feminin bleibt Feminin, nur gegenderte Sprache wird entgendert und damit leicht lesbar und vorlesbar.
+Diese Erweiterung entgendert Texte nach der Methode von Hermes Phettberg, die von Thomas Kronschläger «Entgendern nach Phetberg!» genannt wurde. 
+Die Erweiterung ändert die Form von Texten, nicht den Inhalt. Maskulin bleibt Maskulin, Feminin bleibt Feminin, nur gegenderte Sprache wird entgendert und damit leicht lesbar und vorlesbar.
 
-Wenn ein Author Gendersprache verwendet, möchte er besonders betonen «Es sind Menschen jeglichen Geschlechts gleichermassen gemeint».
+Wenn das Authory Gendersprache verwendet, möchte er besonders betonen «Es sind Menschen jeglichen Geschlechts gleichermassen gemeint».
 Die Erweiterung entgendert deshalb nur dort, wo sie Genderschreibweise wie Binnen-I, Gendersterne, Unterstriche und ähnliche Konstrukte erkennt.
 
-Technisch basiert die Erweiterung auf dem Add-on *Gender korrigieren* und *Binnen-I be gone*.
+Für einen freundlichen, respektvollen, inkludierenden Umgang miteinander!  &#127752; &#9829; &#9872; &#9873;
 
 
 ## Beispiele
@@ -46,3 +46,6 @@ Fertig. Im Verzeichnis `/dist` befinden sich jetzt die Assets des Plugins. / Don
 
 ## Links
 [Gendersprache korrigieren](https://github.com/brilliance-richter-huh/gendersprache-korrigieren) ersetzt gegenderte Texte durch das generische Maskulinum
+
+## Credits
+Technisch basiert die Erweiterung auf dem Add-on *Gender korrigieren* und *Binnen-I be gone*. Vielen Dank dafür!
