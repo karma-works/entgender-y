@@ -39,8 +39,8 @@ Voraussetzungen (mit denen das Add-on gebaut wurde) / Prerequisites:
 Schritte / Steps:
 * Repository klonen
 * `npm install`
+* `npm run build`
 * `npm run bundle`
-* `dist/web-ext build`
 
 Fertig. Im Verzeichnis `/dist` befinden sich jetzt die Assets des Plugins. / Done. The directory `/dist` now contains all plugin assets.
 
