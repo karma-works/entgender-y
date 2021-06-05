@@ -7,7 +7,8 @@
     "start:firefox": "web-ext run --source-dir ./dist/",
     "test": "cross-env TS_NODE_FILES=true mocha --exit --require ts-node/register --colors test/**/*.ts",
     "coverage": "nyc --reporter=lcov --reporter=text-summary ./node_modules/.bin/npm test",
-    "bundle": "./node_modules/.bin/parcel ./src/gendersprachekorrigieren.ts"
+    "build": "./node_modules/.bin/parcel build ./src/gendersprachekorrigieren.ts",
+    "bundle": "web-ext build --source-dir ./dist/ --overwrite-dest"
   },
   "author": "",
   "license": "ISC",
@@ -27,5 +28,6 @@
     "web-ext": "^6.1.0"
   },
   "the-following-property-is-for-package": "parcel-plugin-asset-copier",
-  "assetsPath": "assets"
+  "assetsPath": "assets",
+  "dependencies": {}
 }
