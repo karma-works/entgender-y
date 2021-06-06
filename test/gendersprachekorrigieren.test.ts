@@ -236,6 +236,16 @@ describe('entferne Binnen-I', () => {
         const result = beGone.entferneInitialForTesting("Den Ärztinnen und Ärzten, die Tag und Nacht bereitstehen, um Leben zu retten.");
         expect(result).to.be.equal("Den Ärztys, die Tag und Nacht bereitstehen, um Leben zu retten.");
     });
+
+     it('Die Leserin oder der Leser -> Das Lesy', () => {
+         const result = beGone.entferneInitialForTesting("Die Leserin oder der Leser");
+         expect(result).to.be.equal("das Lesy");
+     });
+
+     it('Sehr geehrte/r Leserin oder Leser -> Sehr geehrtes Lesy', () => {
+         const result = beGone.entferneInitialForTesting("Sehr geehrte/r Leserin oder Leser");
+         expect(result).to.be.equal("Sehr geehrtes Lesy");
+     });
 });
 
 describe('entfernt Partizipien', () => {
