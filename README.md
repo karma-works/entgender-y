@@ -1,4 +1,4 @@
-# Entgendy - Entgendern nach Phettberg
+# Entgendery - Entgendern nach Phettberg
 
 
 
