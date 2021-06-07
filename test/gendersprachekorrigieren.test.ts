@@ -236,6 +236,12 @@ describe('entferne Binnen-I', () => {
         const result = beGone.entferneInitialForTesting("Den Ärztinnen und Ärzten, die Tag und Nacht bereitstehen, um Leben zu retten.");
         expect(result).to.be.equal("Den Ärztys, die Tag und Nacht bereitstehen, um Leben zu retten.");
     });
+
+     it('Landesverfassung Schleswig-Holstein', () => {
+         const result = beGone.entferneInitialForTesting("Der Landtag wählt die Präsidentin oder den Präsidenten");
+         expect(result).to.be.equal("Der Landtag wählt das Präsidenteny");
+     });
+    //
 });
 
 describe('entfernt Partizipien', () => {
