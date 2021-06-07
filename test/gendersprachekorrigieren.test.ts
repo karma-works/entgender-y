@@ -237,6 +237,11 @@ describe('entferne Binnen-I', () => {
         expect(result).to.be.equal("Den Ärztys, die Tag und Nacht bereitstehen, um Leben zu retten.");
     });
 
+     it('Landesverfassung Schleswig-Holstein', () => {
+         const result = beGone.entferneInitialForTesting("Der Landtag wählt die Präsidentin oder den Präsidenten");
+         expect(result).to.be.equal("Der Landtag wählt das Präsidenteny");
+     });
+
      it('Die Leserin oder der Leser -> Das Lesy', () => {
          const result = beGone.entferneInitialForTesting("Die Leserin oder der Leser");
          expect(result).to.be.equal("das Lesy");

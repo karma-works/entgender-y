@@ -474,7 +474,7 @@ export class BeGone {
         if(s.trim().length == 0){
             return s;
         }
-        s = s.replace(/(der|die)/, "das");
+        s = s.replace(/(den|der|die)/, "das");
         s = s.replace(/(ern|er)$/,"");
         s = s + "y";
         return s;
