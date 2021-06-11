@@ -27,5 +27,5 @@
       "browser_style": true
    },
    "permissions": [ "storage" ],
-   "version": "0.9"
+   "version": "0.91"
 }

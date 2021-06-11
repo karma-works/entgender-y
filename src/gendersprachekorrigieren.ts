@@ -273,7 +273,7 @@ export class BeGone {
 
                 s = s.replace(/e[\/\*_\(-]+r|e\(r\)|eR\b/g, () => {
                     this.replacementsb++;
-                    return "er";
+                    return "es";
                 }); //jede/r,jede(r),jedeR,
                 s = s.replace(/em\(e?r\)|em[\/\*_\(-]+r\b/g, () => {
                     this.replacementsb++;

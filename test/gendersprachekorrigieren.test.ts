@@ -241,7 +241,16 @@ describe('entferne Binnen-I', () => {
          const result = beGone.entferneInitialForTesting("Der Landtag wählt die Präsidentin oder den Präsidenten");
          expect(result).to.be.equal("Der Landtag wählt das Präsidenteny");
      });
-    //
+
+     it('Die Leserin oder der Leser -> Das Lesy', () => {
+         const result = beGone.entferneInitialForTesting("Die Leserin oder der Leser");
+         expect(result).to.be.equal("das Lesy");
+     });
+
+     it('Sehr geehrte/r Leserin oder Leser -> Sehr geehrtes Lesy', () => {
+         const result = beGone.entferneInitialForTesting("Sehr geehrte/r Leserin oder Leser");
+         expect(result).to.be.equal("Sehr geehrtes Lesy");
+     });
 });
 
 describe('entfernt Partizipien', () => {

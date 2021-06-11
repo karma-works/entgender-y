@@ -1,0 +1,39 @@
+Vereinheitlicht die gängigsten Sorten von Binnen-Is, Sternen etc. auf Webseiten und entgendert sie nach der Methode von Phettberg.
+
+✓ Berechtigungen: Um die Webseiten-Ersetzung vornehmen zu können muss die Erweiterung auf die «Daten für alle Websites» zugreifen. Nach der Installation kann das Plugin auch nach Bedarf aktiviert werden. In den Einstellung des Plugins können Ausnahmen definiert werden, auf denen das Plugin nicht nach Phettberg entgendert.
+
+ⓘ Entgendery - Entgendern nach Phettberg
+
+Diese Extension entgendert Texte nach der Methode von Hermes Phettberg, die von Thomas Kronschläger «Entgendern nach Phettberg!» genannt wurde.
+Die Erweiterung ist dabei bestrebt die Form von Texten zu ändern, nicht den Inhalt. Maskulin bleibt Maksulin, Feminin bleibt Feminin, nur gegenderte Sprache wird entgendert und damit leicht lesbar und vorlesbar.
+
+Wenn ein Author Gendersprache verwendet, möchte er besonders betonen «Es sind Menschen jeglichen Geschlechts gleichermassen gemeint».
+Die Erweiterung entgendert deshalb nur dort, wo sie Genderschreibweise wie Binnen-I, Gendersterne, Unterstriche und ähnliche Konstrukte erkennt.
+
+Beispiele:
+vorher -> nachher
+
+ * StudentInnen -> Studentys
+ * Lehrer_innen -> Lehrys
+ * Bürgerinnen und Bürger -> Bürgys
+ * Bundestkanzler*Innen hatte die BRD schon viele. Der erste Bundeskanzler war Konrad Adenauer, die erste Bundeskanzlerin Angela Merkel. -> Bundeskanzlys hatte die BRD schon viele. Der erste Bundeskanzler war Konrad Adenauer, die erste Bundeskanzlerin Angela Merkel.
+
+Features:
+ + Ersetzt Doppelformen, Gender-Sternchen, Binnen-I, Unterstrich und Querstrich-Formen
+ + Umwandlung berücksichtigt Artikel, Dativ, Akkusativ, Genitiv, Singular, Plural, Zeilenumbrüche, Gross/Kleinschreibung
+ + Optional: Umwandlung von Partizipien
+ + Optional: zählt die Anzahl der Umwandlungen und zeigt diese im Icon an.
+
+Für einen freundlichen, respektvollen, inkludierenden Umgang miteinander! 🌈 ♥ ⚐ ⚑
+
+---------
+Entgenderung nach Phettberg
+Mehr Informationen finden sich auf der Seite https://blog.lplusl.de/nebenbei/gendern-nach-phettberg/
+Erklärvideo: https://youtu.be/xVmGb7qACfA
+Entgendern nach Phettberg hat viele Vorteile!
+
+* Barrierefreiheit
+* leicht lesbar und erlernbar
+* Keine Sonderzeichen innerhalb von Wörtern
+* Niemand ist nur «mit gemeint». Da es sich um eine neue Form handelt, werden Personen jeden Geschlechts gleichermassen und gleichberechtigt angesprochen.
+* Ermöglicht eine präzisere Sprache: Beispielsweise ist es möglich nur eine Gruppe von ausschliesslich Männern zu bezeichnen.
