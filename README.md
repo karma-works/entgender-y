@@ -20,6 +20,7 @@ Viel Spass mit der Erweiterung! Für einen freundlichen, respektvollen, inkludie
 
 
 ## Addon installieren
+[Chrome Addon installieren](https://chrome.google.com/webstore/detail/entgendy-entgendern-nach/flodloojofholiiicnonnjfmeljjfpeh)
 [Firefox Addon installieren](https://addons.mozilla.org/de/firefox/addon/entgendy-entgendern-phettberg/?utm_source=addons.mozilla.org&utm_medium=referral&utm_content=search)
 
 ## Beispiele
