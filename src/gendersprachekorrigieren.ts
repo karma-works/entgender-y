@@ -464,7 +464,7 @@ export class BeGone {
         if(s.trim().length == 0){
             return s;
         }
-        s = s.replace(/([dD])(er|as)/, (match, p1) => {
+        s = s.replace(/(^[dD]+)(er|as)/, (match, p1) => {
             this.log("11101");
             this.replacementsb++;
             return p1 + "ie";
@@ -478,12 +478,12 @@ export class BeGone {
         if(s.trim().length == 0){
             return s;
         }
-        s = s.replace(/([dD])(en|er|ie)/, (match, p1) => {
+        s = s.replace(/(^[dD]+)(en|er|ie)/, (match, p1) => {
             this.log("11101");
             this.replacementsb++;
             return p1 + "as";
         });
-        s = s.replace(/(ern|er)$/,"");
+        s = s.replace(/(en|ern|er)$/,"");
         s = s + "y";
         return s;
     }

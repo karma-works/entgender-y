@@ -247,7 +247,7 @@ describe('entferne Binnen-I', () => {
 
      it('Landesverfassung Schleswig-Holstein', () => {
          const result = beGone.entferneInitialForTesting("Der Landtag wählt die Präsidentin oder den Präsidenten");
-         expect(result).to.be.equal("Der Landtag wählt das Präsidenteny");
+         expect(result).to.be.equal("Der Landtag wählt das Präsidenty");
      });
 
      it('Die Leserin oder der Leser -> Das Lesy', () => {
@@ -258,6 +258,11 @@ describe('entferne Binnen-I', () => {
      it('Sehr geehrte/r Leserin oder Leser -> Sehr geehrtes Lesy', () => {
          const result = beGone.entferneInitialForTesting("Sehr geehrte/r Leserin oder Leser");
          expect(result).to.be.equal("Sehr geehrtes Lesy");
+     });
+
+     it('Präsident -> Präsidenty', ()=> {
+         const result = beGone.entferneInitialForTesting("auf Vorschlag der Präsidentin oder des Präsidenten");
+         expect(result).to.be.equal("auf Vorschlag des Präsidenty");
      });
 });
 
