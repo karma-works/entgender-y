@@ -46,7 +46,7 @@ function updateSettings() {
             }
             if (res.blacklist === undefined || res.blacklist == "undefined") {
                 chrome.storage.sync.set({
-                    blacklist: "stackoverflow.com\ngithub.com\nhttps://developer"
+                    blacklist: "stackoverflow.com\ngithub.com\nhttps://developer\nhttps://de.wikipedia.org/wiki/Gendersternchen"
                 });
             }
 
