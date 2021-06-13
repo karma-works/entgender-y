@@ -41,7 +41,7 @@ function updateSettings() {
             }
             if (res.whitelist === undefined || res.whitelist == "undefined") {
                 chrome.storage.sync.set({
-                    whitelist: ".gv.at\n.ac.at\nderstandard.at\ndiestandard.at"
+                    whitelist: ".gv.at\n.ac.at\nderstandard.at\ndiestandard.at\nhttps://ze.tt/"
                 });
             }
             if (res.blacklist === undefined || res.blacklist == "undefined") {
