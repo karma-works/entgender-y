@@ -264,6 +264,12 @@ describe('entferne Binnen-I', () => {
          const result = beGone.entferneInitialForTesting("auf Vorschlag der Präsidentin oder des Präsidenten");
          expect(result).to.be.equal("auf Vorschlag des Präsidenty");
      });
+
+     // noch keine Lösung vorhanden
+     // it('zweier Fraktionen oder einer Fraktion -> nicht ersetzen', ()=> {
+     //     const result = beGone.entferneInitialForTesting("Mitglieder des Landtages, zweier Fraktionen oder einer Fraktion gemeinsam mit den Abgeordneten");
+     //     expect(result).to.be.equal("Mitglieder des Landtages, zweier Fraktionen oder einer Fraktion gemeinsam mit den Abgeordneten");
+     // });
 });
 
 describe('entfernt Partizipien', () => {
