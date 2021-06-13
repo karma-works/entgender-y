@@ -685,7 +685,7 @@ export class BeGone {
             }
 
             s = s.replace(/\b[Dd]er Geflüchtete\b/g, (match, praeposition, zahlwort, aufzaehlung, gefluechtete, endung, zufolge) => {
-                return "Der Flüchtling";                
+                return "Das Flüchtly";
             });
 
             // Annahme: Gefluechtete wird fast ausschließlich in der Mehrzahl verwendet, was die Ersetzung einfacher macht
@@ -699,9 +699,9 @@ export class BeGone {
                 if (!den) den = "";
 
                 if (praeposition || den) {
-                    return  praeposition + den + zahlwort + aufzaehlung + "Flüchtlingen" + zufolge;
+                    return  praeposition + den + zahlwort + aufzaehlung + "Flüchtlys" + zufolge;
                 } else {
-                    return  praeposition + den + zahlwort + aufzaehlung + "Flüchtlinge" + zufolge;
+                    return  praeposition + den + zahlwort + aufzaehlung + "Flüchtlys" + zufolge;
                 }
             });
 
@@ -712,7 +712,7 @@ export class BeGone {
 
             // "Geflüchtetenxxx" -> "Flüchtlingsxxx"
             s = s.replace(/\b(Geflüchteten)([\w]{3,})\b/g, (match, gefluechteten, rest) => {
-                return "Flüchtlings" + rest;
+                return "Flüchtlys" + rest;
             });
         }
         return s;
