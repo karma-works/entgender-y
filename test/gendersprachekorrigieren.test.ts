@@ -1,6 +1,14 @@
 import { expect } from 'chai';
 import { BeGone } from '../src/gendersprachekorrigieren';
 
+describe('setzte ins Neutrum', ()=> {
+    let beGone = new BeGone();
+    it('(Gross) Die Präsidentin -> Das Präsidenty', () => {
+        const result = beGone.entferneInitialForTesting("Die Präsidentin oder der Präsident");
+        expect(result).to.be.equal("Das Präsidenty");
+    });
+});
+
 describe('entferne Binnen-I', () => {
     let beGone = new BeGone();
 
@@ -244,7 +252,7 @@ describe('entferne Binnen-I', () => {
 
      it('Die Leserin oder der Leser -> Das Lesy', () => {
          const result = beGone.entferneInitialForTesting("Die Leserin oder der Leser");
-         expect(result).to.be.equal("das Lesy");
+         expect(result).to.be.equal("Das Lesy");
      });
 
      it('Sehr geehrte/r Leserin oder Leser -> Sehr geehrtes Lesy', () => {

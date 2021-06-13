@@ -464,7 +464,11 @@ export class BeGone {
         if(s.trim().length == 0){
             return s;
         }
-        s = s.replace(/(der|das)/, "die");
+        s = s.replace(/([dD])(er|as)/, (match, p1) => {
+            this.log("11101");
+            this.replacementsb++;
+            return p1 + "ie";
+        });
         s = s.replace(/(ern|er|en|e)$/,"");
         s = s + "ys";
         return s;
@@ -474,10 +478,24 @@ export class BeGone {
         if(s.trim().length == 0){
             return s;
         }
-        s = s.replace(/(den|der|die)/, "das");
+        s = s.replace(/([dD])(en|er|ie)/, (match, p1) => {
+            this.log("11101");
+            this.replacementsb++;
+            return p1 + "as";
+        });
         s = s.replace(/(ern|er)$/,"");
         s = s + "y";
         return s;
+    }
+
+    private startsWithCapitalLetter(s: string): boolean {
+        return s != null && s.length > 0 && /[A-Z]/.test(s[0]);
+    }
+    private capitalize(s: string): string {
+        if(s == null || s.length < 1) {
+            return "";
+        }
+        return s.charAt(0).toUpperCase() + s.slice(1);
     }
 
     private entferneDoppelformen(s: string): string {
@@ -511,6 +529,9 @@ export class BeGone {
                     return p13 + p6 + this.pluraly(p18);
                 } else {
                     this.log("21006");
+                    if(this.startsWithCapitalLetter(p2)){
+                        return this.capitalize(this.singulary(p12));
+                    }
                     return this.singulary(p12);
                 }
             }); //die Bürgerin und der Bürger
