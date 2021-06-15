@@ -284,6 +284,37 @@ describe('entfernt Partizipien', () => {
         // besser als nichts
         expect(result).to.be.equal("ist zwar nett für die Lesys");
     });
+
+    // voraus. Interessierte Nutzer können
+    it('Interessierte Nutzer -> Interessierte Nutzer', () => {
+        const result = beGone.entferneInitialForTesting("voraus. Interessierte Nutzer können");
+        // besser als nichts
+        expect(result).to.be.equal("voraus. Interessierte Nutzer können");
+    });
+
+    it('Studierende -> Studentys', () => {
+        const result = beGone.entferneInitialForTesting("für Studierende");
+        // besser als nichts
+        expect(result).to.be.equal("für Studentys");
+    });
+
+    it('Teilnehmende -> Teilnehmys', () => {
+        const result = beGone.entferneInitialForTesting("für Teilnehmende");
+        // besser als nichts
+        expect(result).to.be.equal("für Teilnehmys");
+    });
+
+    it('. Teilnehmende Frauen -> . Teilnehmende Frauen', () => {
+        const result = beGone.entferneInitialForTesting(". Teilnehmende Frauen");
+        // besser als nichts
+        expect(result).to.be.equal(". Teilnehmende Frauen");
+    });
+
+    it('teilnehmende Kinder -> teilnehmende Kinder', () => {
+        const result = beGone.entferneInitialForTesting("teilnehmende Kinder");
+        // besser als nichts
+        expect(result).to.be.equal("teilnehmende Kinder");
+    });
 });
 
 describe('behandelt viele Whitespaces', () => {
