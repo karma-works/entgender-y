@@ -12,6 +12,16 @@ describe('setzte ins Neutrum', ()=> {
         const result = beGone.entferneInitialForTesting("...muss man kein_e Nahost-Expert_in sein.");
         expect(result).to.be.equal("...muss man kein Nahost-Experty sein.");
     });
+
+    it('Mehrzahl', () => {
+        const result = beGone.entferneInitialForTesting("mit mehr als 50 Sprecher*innen");
+        expect(result).to.be.equal("mit mehr als 50 Sprechys");
+    });
+
+    it('bekannten Musiker:innen -> bekannten Musikern', () => {
+        const result = beGone.entferneInitialForTesting("von einigen Dutzend mehr oder eher weniger bekannten Musiker:innen unterzeichneten Aufruf");
+        expect(result).to.be.equal("von einigen Dutzend mehr oder eher weniger bekannten Musikys unterzeichneten Aufruf");
+    });
 });
 
 describe('entferne Binnen-I', () => {
@@ -483,20 +493,9 @@ describe('Empfehlungen Uni Hamburg werden korrigiert', () => {
 describe('TODO oder nicht ohne weiteres lösbar', () => {
     let beGone = new BeGone();
 
-
-    // it('Mehrzahl', () => {
-    //     const result = beGone.entferneInitialForTesting("mit mehr als 50 Sprecher*innen");
-    //     expect(result).to.be.equal("mit mehr als 50 Sprechern");
-    // });
-
-    // it('bekannten Musiker:innen -> bekannten Musikern', () => {
-    //     const result = beGone.entferneInitialForTesting("von einigen Dutzend mehr oder eher weniger bekannten Musiker:innen unterzeichneten Aufruf");
-    //     expect(result).to.be.equal("von einigen Dutzend mehr oder eher weniger bekannten Musikern unterzeichneten Aufruf");
-    // });
-
-    // it('des/der LehrerIn -> des Lehrers', () => {
+    // it('des/der LehrerIn -> des Lehrys', () => {
     //     const result = beGone.entferneInitialForTesting("des/der LehrerIn");
-    //     expect(result).to.be.equal("des Lehrers");
+    //     expect(result).to.be.equal("des Lehrys");
     // });
 });
 
