@@ -11,7 +11,7 @@ function updateSettings() {
             }
             if (res.counter === undefined) {
                 chrome.storage.sync.set({
-                    counter: false
+                    counter: true
                 });
             }
             if (res.invertiert === undefined) {
