@@ -7,6 +7,11 @@ describe('setzte ins Neutrum', ()=> {
         const result = beGone.entferneInitialForTesting("Die Präsidentin oder der Präsident");
         expect(result).to.be.equal("Das Präsidenty");
     });
+
+    it('kein_e', () => {
+        const result = beGone.entferneInitialForTesting("...muss man kein_e Nahost-Expert_in sein.");
+        expect(result).to.be.equal("...muss man kein Nahost-Experty sein.");
+    });
 });
 
 describe('entferne Binnen-I', () => {
@@ -477,6 +482,7 @@ describe('Empfehlungen Uni Hamburg werden korrigiert', () => {
 
 describe('TODO oder nicht ohne weiteres lösbar', () => {
     let beGone = new BeGone();
+
 
     // it('Mehrzahl', () => {
     //     const result = beGone.entferneInitialForTesting("mit mehr als 50 Sprecher*innen");

@@ -180,37 +180,37 @@ export class BeGone {
                         return p2;
                     }
                 });
-                s = s.replace(/\b([DMSdms]?[Ee])in([\/\*_\(-]+e |\(e\) |E )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])in([\/\*_\(-]+e |\(e\) |E )/g, (match, p1) => {
                     this.log("11108");
                     this.replacementsb++;
                     return p1 + "in ";
                 });
-                s = s.replace(/\b([DMSdms]?[Ee])ine([\/\*_\(-]+r |\(r\) |R )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])ine([\/\*_\(-]+r |\(r\) |R )/g, (match, p1) => {
                     this.log("11109");
                     this.replacementsb++;
                     return p1 + "iner ";
                 });
-                s = s.replace(/\b([DMSdms]?[Ee])iner([\/\*_\(-]+s |\(S\) |S )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])iner([\/\*_\(-]+s |\(S\) |S )/g, (match, p1) => {
                     this.log("11110");
                     this.replacementsb++;
                     return p1 + "ines ";
                 });
-                s = s.replace(/\b([DMSdms]?[Ee])ines([\/\*_\(-]+r |\(R\) |R )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])ines([\/\*_\(-]+r |\(R\) |R )/g, (match, p1) => {
                     this.log("11111");
                     this.replacementsb++;
                     return p1 + "ines ";
                 });
-                s = s.replace(/\b([DMSdms]?[Ee])iner([\/\*_\(-]+m |\(m\) |M )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])iner([\/\*_\(-]+m |\(m\) |M )/g, (match, p1) => {
                     this.log("11112");
                     this.replacementsb++;
                     return p1 + "inem ";
                 });
-                s = s.replace(/\b([DMSdms]?[Ee])inem([\/\*_\(-]+r |\(r\) |R )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])inem([\/\*_\(-]+r |\(r\) |R )/g, (match, p1) => {
                     this.log("11113");
                     this.replacementsb++;
                     return p1 + "inem ";
                 });
-                s = s.replace(/\b([DMSdms]?[Ee])ine([\/\*_\(-]+n |\(n\) |N )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])ine([\/\*_\(-]+n |\(n\) |N )/g, (match, p1) => {
                     this.log("11114");
                     this.replacementsb++;
                     return p1 + "in ";
