@@ -18,7 +18,7 @@ describe('setzte ins Neutrum', ()=> {
         expect(result).to.be.equal("mit mehr als 50 Sprechys");
     });
 
-    it('bekannten Musiker:innen -> bekannten Musikern', () => {
+    it('bekannten Musiker:innen -> bekannten Musikys', () => {
         const result = beGone.entferneInitialForTesting("von einigen Dutzend mehr oder eher weniger bekannten Musiker:innen unterzeichneten Aufruf");
         expect(result).to.be.equal("von einigen Dutzend mehr oder eher weniger bekannten Musikys unterzeichneten Aufruf");
     });
