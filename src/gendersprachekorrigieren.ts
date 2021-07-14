@@ -180,37 +180,37 @@ export class BeGone {
                         return p2;
                     }
                 });
-                s = s.replace(/\b([DMSdms]?[Ee])in([\/\*_\(-]+e |\(e\) |E )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])in([\/\*_\(-]+e |\(e\) |E )/g, (match, p1) => {
                     this.log("11108");
                     this.replacementsb++;
                     return p1 + "in ";
                 });
-                s = s.replace(/\b([DMSdms]?[Ee])ine([\/\*_\(-]+r |\(r\) |R )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])ine([\/\*_\(-]+r |\(r\) |R )/g, (match, p1) => {
                     this.log("11109");
                     this.replacementsb++;
                     return p1 + "iner ";
                 });
-                s = s.replace(/\b([DMSdms]?[Ee])iner([\/\*_\(-]+s |\(S\) |S )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])iner([\/\*_\(-]+s |\(S\) |S )/g, (match, p1) => {
                     this.log("11110");
                     this.replacementsb++;
                     return p1 + "ines ";
                 });
-                s = s.replace(/\b([DMSdms]?[Ee])ines([\/\*_\(-]+r |\(R\) |R )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])ines([\/\*_\(-]+r |\(R\) |R )/g, (match, p1) => {
                     this.log("11111");
                     this.replacementsb++;
                     return p1 + "ines ";
                 });
-                s = s.replace(/\b([DMSdms]?[Ee])iner([\/\*_\(-]+m |\(m\) |M )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])iner([\/\*_\(-]+m |\(m\) |M )/g, (match, p1) => {
                     this.log("11112");
                     this.replacementsb++;
                     return p1 + "inem ";
                 });
-                s = s.replace(/\b([DMSdms]?[Ee])inem([\/\*_\(-]+r |\(r\) |R )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])inem([\/\*_\(-]+r |\(r\) |R )/g, (match, p1) => {
                     this.log("11113");
                     this.replacementsb++;
                     return p1 + "inem ";
                 });
-                s = s.replace(/\b([DMSdms]?[Ee])ine([\/\*_\(-]+n |\(n\) |N )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])ine([\/\*_\(-]+n |\(n\) |N )/g, (match, p1) => {
                     this.log("11114");
                     this.replacementsb++;
                     return p1 + "in ";
@@ -295,14 +295,14 @@ export class BeGone {
             }
         }
 
-        if (/[a-zäöüß\u00AD\u200B]{2}((\/-?|_|\*|:|\.| und -)?In|(\/-?|_|\*|:|\.| und -)in(n[\*|\.]en)?|INNen|\([Ii]n+(en\)|\)en)?|\/inne?)(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)|[A-ZÄÖÜß\u00AD\u200B]{3}(\/-?|_|\*|:|\.)IN\b/.test(s)) {
+        if (/[a-zäöüß\u00AD\u200B]{2}((\/-?|_|\*|:|\.|\u00b7| und -)?In|(\/-?|_|\*|:|\.|\u00b7| und -)in(n[\*|\.]en)?|INNen|\([Ii]n+(en\)|\)en)?|\/inne?)(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)|[A-ZÄÖÜß\u00AD\u200B]{3}(\/-?|_|\*|:|\.)IN\b/.test(s)) {
             this.log("12000");
             s = s.replace(/[\u00AD\u200B]/g, ""); //entfernt soft hyphens
 
             //Prüfung auf Ersetzung
-            if (/[a-zäöüß](\/-?|_|\*|:|\.| und -)in\b/i.test(s) || /[a-zäöüß](\/-?|_|\*|:|\.| und -)inn(\*|\.|\))?en/i.test(s) || /[a-zäöüß](\(|\/)in/i.test(s) || /[a-zäöüß]INNen/.test(s)) {
+            if (/[a-zäöüß](\/-?|_|\*|:|\.|\u00b7| und -)in\b/i.test(s) || /[a-zäöüß](\/-?|_|\*|:|\.|\u00b7| und -)inn(\*|\.|\))?en/i.test(s) || /[a-zäöüß](\(|\/)in/i.test(s) || /[a-zäöüß]INNen/.test(s)) {
                 this.log("12100");
-                s = s.replace(/(\/-?|_|\*|:|\.)inn(\*|\.|\/)?e(\*|\.|\/)?n/ig, "Innen"); //Schüler/innen
+                s = s.replace(/(\/-?|_|\*|:|\u00b7|\.)inn(\*|\.|\/)?e(\*|\.|\/)?n/ig, "Innen"); //Schüler/innen
                 s = s.replace(/([a-zäöüß])\(inn(en\)|\)en)/ig, "$1Innen"); //Schüler(innen)
                 s = s.replace(/([a-zäöüß])INNen/g, "$1Innen"); //SchülerINNen
                 s = s.replace(/ und -innen\b/ig, () => {
@@ -464,7 +464,11 @@ export class BeGone {
         if(s.trim().length == 0){
             return s;
         }
-        s = s.replace(/(der|das)/, "die");
+        s = s.replace(/(^[dD]+)(er|as)/, (match, p1) => {
+            this.log("11101");
+            this.replacementsb++;
+            return p1 + "ie";
+        });
         s = s.replace(/(ern|er|en|e)$/,"");
         s = s + "ys";
         return s;
@@ -474,10 +478,24 @@ export class BeGone {
         if(s.trim().length == 0){
             return s;
         }
-        s = s.replace(/(den|der|die)/, "das");
-        s = s.replace(/(ern|er)$/,"");
+        s = s.replace(/(^[dD]+)(en|er|ie)/, (match, p1) => {
+            this.log("11101");
+            this.replacementsb++;
+            return p1 + "as";
+        });
+        s = s.replace(/(en|ern|er)$/,"");
         s = s + "y";
         return s;
+    }
+
+    private startsWithCapitalLetter(s: string): boolean {
+        return s != null && s.length > 0 && /[A-Z]/.test(s[0]);
+    }
+    private capitalize(s: string): string {
+        if(s == null || s.length < 1) {
+            return "";
+        }
+        return s.charAt(0).toUpperCase() + s.slice(1);
     }
 
     private entferneDoppelformen(s: string): string {
@@ -511,6 +529,9 @@ export class BeGone {
                     return p13 + p6 + this.pluraly(p18);
                 } else {
                     this.log("21006");
+                    if(this.startsWithCapitalLetter(p2)){
+                        return this.capitalize(this.singulary(p12));
+                    }
                     return this.singulary(p12);
                 }
             }); //die Bürgerin und der Bürger
@@ -559,16 +580,13 @@ export class BeGone {
     }
 
     private entfernePartizip(s: string): string {
-        if (/(ier|arbeit|orsch|fahr|verdien|nehm|es)ende|Interessierte/.test(s)) {
+        if (/(ier|arbeit|orsch|fahr|verdien|nehm|es)ende|(?<!^)(?<!\. )Interessierte/.test(s)) {
             s = s.replace(/der Studierende\b/g, (match) => {
                 this.replacementsp++;
                 let suffix = "das Studenty";
-                if(match.endsWith("n") || match.endsWith("e")){
-                    suffix = suffix + "s"
-                }
                 return suffix;
             });
-            s = s.replace(/Studierende(r|n?)?/g, (match) => {
+            s = s.replace(/(?<!^)(?<!\. )Studierende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Studenty";
                 if(match.endsWith("n") || match.endsWith("e")){
@@ -576,7 +594,7 @@ export class BeGone {
                 }
                 return suffix;
             });
-            s = s.replace(/Teilnehmende(r|n?)?/g, (match) => {
+            s = s.replace(/(?<!^)(?<!\. )Teilnehmende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Teilnehmy";
                 if(match.endsWith("n") || match.endsWith("e")){
@@ -584,7 +602,7 @@ export class BeGone {
                 }
                 return suffix;
             });
-            s = s.replace(/Dozierende(r|n?)?/g, (match) => {
+            s = s.replace(/(?<!^)(?<!\. )Dozierende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Dozenty";
                 if(match.endsWith("n") || match.endsWith("e")){
@@ -592,7 +610,7 @@ export class BeGone {
                 }
                 return suffix;
             });
-            s = s.replace(/Lesende(r|n?)?/g, (match) => {
+            s = s.replace(/(?<!^)(?<!\. )Lesende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Lesy";
                 if(match.endsWith("n") || match.endsWith("e")){
@@ -600,7 +618,7 @@ export class BeGone {
                 }
                 return suffix;
             });
-            s = s.replace(/Assistierende(r|n?)?/g, (match) => {
+            s = s.replace(/(?<!^)(?<!\. )Assistierende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Assistenty";
                 if(match.endsWith("n") || match.endsWith("e")){
@@ -608,7 +626,7 @@ export class BeGone {
                 }
                 return suffix;
             });
-            s = s.replace(/Mitarbeitende(r|n?)?/g, (match) => {
+            s = s.replace(/(?<!^)(?<!\. )Mitarbeitende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Mitarbeity";
                 if(match.endsWith("n") || match.endsWith("e")){
@@ -616,7 +634,7 @@ export class BeGone {
                 }
                 return suffix;
             });
-            s = s.replace(/Forschende(r|n?)?/g, (match) => {
+            s = s.replace(/(?<!^)(?<!\. )Forschende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix =  "Forschy";
                 if(match.endsWith("n") || match.endsWith("e")){
@@ -624,7 +642,7 @@ export class BeGone {
                 }
                 return suffix;
             });
-            s = s.replace(/Interessierte(r|n?)?/g, (match) => {
+            s = s.replace(/(?<!^)(?<!\. )Interessierte(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Interessenty";
                 if(match.endsWith("n") || match.endsWith("e")){
@@ -632,7 +650,7 @@ export class BeGone {
                 }
                 return suffix;
             });
-            s = s.replace(/([A-Z]+[a-zäöü]+)fahrende(r|n?)?/g, (match, p1) => {
+            s = s.replace(/(?<!^)(?<!\. )([A-Z]+[a-zäöü]+)fahrende(r|n?)?/g, (match, p1) => {
                 this.replacementsp++;
                 let suffix = "fahry";
                 if(match.endsWith("n") || match.endsWith("e")){
@@ -640,7 +658,7 @@ export class BeGone {
                 }
                 return p1 + suffix;
             });
-            s = s.replace(/([A-Z]+[a-zäöü]+)verdienende(r|n?)?/g, (match, p1) => {
+            s = s.replace(/(?<!^)(?<!\. )([A-Z]+[a-zäöü]+)verdienende(r|n?)?/g, (match, p1) => {
                 this.replacementsp++;
 
                 let suffix = "verdieny"
@@ -664,7 +682,7 @@ export class BeGone {
             }
 
             s = s.replace(/\b[Dd]er Geflüchtete\b/g, (match, praeposition, zahlwort, aufzaehlung, gefluechtete, endung, zufolge) => {
-                return "Der Flüchtling";                
+                return "Das Flüchtly";
             });
 
             // Annahme: Gefluechtete wird fast ausschließlich in der Mehrzahl verwendet, was die Ersetzung einfacher macht
@@ -678,9 +696,9 @@ export class BeGone {
                 if (!den) den = "";
 
                 if (praeposition || den) {
-                    return  praeposition + den + zahlwort + aufzaehlung + "Flüchtlingen" + zufolge;
+                    return  praeposition + den + zahlwort + aufzaehlung + "Flüchtlys" + zufolge;
                 } else {
-                    return  praeposition + den + zahlwort + aufzaehlung + "Flüchtlinge" + zufolge;
+                    return  praeposition + den + zahlwort + aufzaehlung + "Flüchtlys" + zufolge;
                 }
             });
 
@@ -691,7 +709,7 @@ export class BeGone {
 
             // "Geflüchtetenxxx" -> "Flüchtlingsxxx"
             s = s.replace(/\b(Geflüchteten)([\w]{3,})\b/g, (match, gefluechteten, rest) => {
-                return "Flüchtlings" + rest;
+                return "Flüchtlys" + rest;
             });
         }
         return s;
@@ -710,7 +728,7 @@ export class BeGone {
         let probePartizip = false;
         let probeGefluechtete = false;
         if (!this.settings.skip_topic || this.settings.skip_topic && this.mtype || this.settings.skip_topic && !/Binnen-I|Geflüchtete/.test(bodyTextContent)) {
-            probeBinnenI = /[a-zäöüß]{2}((\/-?|_|\*|:|\.| und -)?In|(\/-?|_|\*|:|\.| und -)in(n[\*|\.]en)?|INNen|\([Ii]n+(en\)|\)en)?|\/inne?)(?!(\w{1,2}\b)|[A-Z]|[cf]o|t|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)|[A-ZÄÖÜß]{3}(\/-?|_|\*|:|\.)IN\b|(der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(])/.test(bodyTextContent);
+            probeBinnenI = /[a-zäöüß]{2}((\/-?|_|\*|:|\.|\u00b7| und -)?In|(\/-?|_|\*|:|\.|\u00b7| und -)in(n[\*|\.]en)?|INNen|\([Ii]n+(en\)|\)en)?|\/inne?)(?!(\w{1,2}\b)|[A-Z]|[cf]o|t|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)|[A-ZÄÖÜß]{3}(\/-?|_|\*|:|\.)IN\b|(der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(])/.test(bodyTextContent);
 
             if (this.settings.doppelformen) {
                 probeRedundancy = /\b(und|oder|bzw)\b/.test(bodyTextContent);

@@ -11,7 +11,7 @@ function updateSettings() {
             }
             if (res.counter === undefined) {
                 chrome.storage.sync.set({
-                    counter: false
+                    counter: true
                 });
             }
             if (res.invertiert === undefined) {
@@ -41,12 +41,12 @@ function updateSettings() {
             }
             if (res.whitelist === undefined || res.whitelist == "undefined") {
                 chrome.storage.sync.set({
-                    whitelist: ".gv.at\n.ac.at\nderstandard.at\ndiestandard.at"
+                    whitelist: ".gv.at\n.ac.at\nderstandard.at\ndiestandard.at\nhttps://ze.tt/"
                 });
             }
             if (res.blacklist === undefined || res.blacklist == "undefined") {
                 chrome.storage.sync.set({
-                    blacklist: "stackoverflow.com\ngithub.com\nhttps://developer"
+                    blacklist: "stackoverflow.com\ngithub.com\nhttps://developer\nhttps://de.wikipedia.org/wiki/Gendersternchen"
                 });
             }
 

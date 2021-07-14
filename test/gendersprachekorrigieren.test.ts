@@ -1,6 +1,29 @@
 import { expect } from 'chai';
 import { BeGone } from '../src/gendersprachekorrigieren';
 
+describe('setzte ins Neutrum', ()=> {
+    let beGone = new BeGone();
+    it('(Gross) Die Präsidentin -> Das Präsidenty', () => {
+        const result = beGone.entferneInitialForTesting("Die Präsidentin oder der Präsident");
+        expect(result).to.be.equal("Das Präsidenty");
+    });
+
+    it('kein_e', () => {
+        const result = beGone.entferneInitialForTesting("...muss man kein_e Nahost-Expert_in sein.");
+        expect(result).to.be.equal("...muss man kein Nahost-Experty sein.");
+    });
+
+    it('Mehrzahl', () => {
+        const result = beGone.entferneInitialForTesting("mit mehr als 50 Sprecher*innen");
+        expect(result).to.be.equal("mit mehr als 50 Sprechys");
+    });
+
+    it('bekannten Musiker:innen -> bekannten Musikys', () => {
+        const result = beGone.entferneInitialForTesting("von einigen Dutzend mehr oder eher weniger bekannten Musiker:innen unterzeichneten Aufruf");
+        expect(result).to.be.equal("von einigen Dutzend mehr oder eher weniger bekannten Musikys unterzeichneten Aufruf");
+    });
+});
+
 describe('entferne Binnen-I', () => {
     let beGone = new BeGone();
 
@@ -153,6 +176,11 @@ describe('entferne Binnen-I', () => {
         const result = beGone.entferneInitialForTesting("Ich habe oft das Gefühl, Solidarität mit Palästinenser*innen und Jüdinnen*Juden schließe sich aus.");
         expect(result).to.be.equal("Ich habe oft das Gefühl, Solidarität mit Palästinensys und Judys schließe sich aus.");
     });
+
+    it("Corona-Leugner·innen", () => {
+        const result = beGone.entferneInitialForTesting("Corona-Leugner·innen");
+        expect(result).to.be.equal("Corona-Leugnys");
+    });
  });
 
  describe('entferne Doppelformen', () => {
@@ -239,18 +267,29 @@ describe('entferne Binnen-I', () => {
 
      it('Landesverfassung Schleswig-Holstein', () => {
          const result = beGone.entferneInitialForTesting("Der Landtag wählt die Präsidentin oder den Präsidenten");
-         expect(result).to.be.equal("Der Landtag wählt das Präsidenteny");
+         expect(result).to.be.equal("Der Landtag wählt das Präsidenty");
      });
 
      it('Die Leserin oder der Leser -> Das Lesy', () => {
          const result = beGone.entferneInitialForTesting("Die Leserin oder der Leser");
-         expect(result).to.be.equal("das Lesy");
+         expect(result).to.be.equal("Das Lesy");
      });
 
      it('Sehr geehrte/r Leserin oder Leser -> Sehr geehrtes Lesy', () => {
          const result = beGone.entferneInitialForTesting("Sehr geehrte/r Leserin oder Leser");
          expect(result).to.be.equal("Sehr geehrtes Lesy");
      });
+
+     it('Präsident -> Präsidenty', ()=> {
+         const result = beGone.entferneInitialForTesting("auf Vorschlag der Präsidentin oder des Präsidenten");
+         expect(result).to.be.equal("auf Vorschlag des Präsidenty");
+     });
+
+     // noch keine Lösung vorhanden
+     // it('zweier Fraktionen oder einer Fraktion -> nicht ersetzen', ()=> {
+     //     const result = beGone.entferneInitialForTesting("Mitglieder des Landtages, zweier Fraktionen oder einer Fraktion gemeinsam mit den Abgeordneten");
+     //     expect(result).to.be.equal("Mitglieder des Landtages, zweier Fraktionen oder einer Fraktion gemeinsam mit den Abgeordneten");
+     // });
 });
 
 describe('entfernt Partizipien', () => {
@@ -264,6 +303,37 @@ describe('entfernt Partizipien', () => {
         const result = beGone.entferneInitialForTesting("ist zwar nett für die Lesenden");
         // besser als nichts
         expect(result).to.be.equal("ist zwar nett für die Lesys");
+    });
+
+    // voraus. Interessierte Nutzer können
+    it('Interessierte Nutzer -> Interessierte Nutzer', () => {
+        const result = beGone.entferneInitialForTesting("voraus. Interessierte Nutzer können");
+        // besser als nichts
+        expect(result).to.be.equal("voraus. Interessierte Nutzer können");
+    });
+
+    it('Studierende -> Studentys', () => {
+        const result = beGone.entferneInitialForTesting("für Studierende");
+        // besser als nichts
+        expect(result).to.be.equal("für Studentys");
+    });
+
+    it('Teilnehmende -> Teilnehmys', () => {
+        const result = beGone.entferneInitialForTesting("für Teilnehmende");
+        // besser als nichts
+        expect(result).to.be.equal("für Teilnehmys");
+    });
+
+    it('. Teilnehmende Frauen -> . Teilnehmende Frauen', () => {
+        const result = beGone.entferneInitialForTesting(". Teilnehmende Frauen");
+        // besser als nichts
+        expect(result).to.be.equal(". Teilnehmende Frauen");
+    });
+
+    it('teilnehmende Kinder -> teilnehmende Kinder', () => {
+        const result = beGone.entferneInitialForTesting("teilnehmende Kinder");
+        // besser als nichts
+        expect(result).to.be.equal("teilnehmende Kinder");
     });
 });
 
@@ -286,7 +356,7 @@ describe('behandelt viele Whitespaces', () => {
 
     it('Geflüchtete', () => {
         const result = beGone.entferneInitialForTesting("Protest am Aktionstag für die \fGeflüchteten\f aus den griechischen Lagern ");
-        expect(result).to.be.equal("Protest am Aktionstag für die \fFlüchtlinge\f aus den griechischen Lagern ");
+        expect(result).to.be.equal("Protest am Aktionstag für die \fFlüchtlys\f aus den griechischen Lagern ");
     });
 
     it('behält Zeilenumbrüche', () => {
@@ -305,69 +375,69 @@ describe('behandelt viele Whitespaces', () => {
 
 });
 
-describe('ersetzt den Begriff Geflüchtete zu Flüchtlinge', () => {
+describe('ersetzt den Begriff Geflüchtete zu Flüchtly', () => {
     let beGone = new BeGone();
 
     // verschiedene Formulierungen angelehnt an aktuelle Medienberichte
 
     it('Geflüchtete', () => {
         const result = beGone.entferneInitialForTesting("Dem folgte am Mittwoch vor Weihnachten ein Beschluss, dass Hamburg Geflüchtete aufnehmen wolle dem Vernehmen nach 60 Kinder, außerdem sei das Land bereit, fünf Kinder aus dem nun gestarteten Bundesprogramm aufzunehmen.");
-        expect(result).to.be.equal("Dem folgte am Mittwoch vor Weihnachten ein Beschluss, dass Hamburg Flüchtlinge aufnehmen wolle dem Vernehmen nach 60 Kinder, außerdem sei das Land bereit, fünf Kinder aus dem nun gestarteten Bundesprogramm aufzunehmen.");
+        expect(result).to.be.equal("Dem folgte am Mittwoch vor Weihnachten ein Beschluss, dass Hamburg Flüchtlys aufnehmen wolle dem Vernehmen nach 60 Kinder, außerdem sei das Land bereit, fünf Kinder aus dem nun gestarteten Bundesprogramm aufzunehmen.");
     });
 
     it('Geflüchtete, in Aufzählung', () => {
         const result = beGone.entferneInitialForTesting("Der Senat soll sein Handeln gegenüber Obdachlosen, Geflüchteten und Menschen ohne Papiere überdenken.");
-        expect(result).to.be.equal("Der Senat soll sein Handeln gegenüber Obdachlosen, Flüchtlingen und Menschen ohne Papiere überdenken.");
+        expect(result).to.be.equal("Der Senat soll sein Handeln gegenüber Obdachlosen, Flüchtlys und Menschen ohne Papiere überdenken.");
     });
 
     it('Geflüchtete, in Aufzählung mit "und"', () => {
         const result = beGone.entferneInitialForTesting("Der Senat soll sein Handeln gegenüber AutorInnen und Geflüchteten überdenken.");
-        expect(result).to.be.equal("Der Senat soll sein Handeln gegenüber Autorys und Flüchtlingen überdenken.");
+        expect(result).to.be.equal("Der Senat soll sein Handeln gegenüber Autorys und Flüchtlys überdenken.");
     });
 
     it('Geflüchtete, in Aufzählung, mit Binnen-I-Wort', () => {
         const result = beGone.entferneInitialForTesting("Der Senat soll sein Handeln gegenüber AutorInnen, Geflüchteten und Menschen ohne Papiere überdenken.");
-        expect(result).to.be.equal("Der Senat soll sein Handeln gegenüber Autorys, Flüchtlingen und Menschen ohne Papiere überdenken.");
+        expect(result).to.be.equal("Der Senat soll sein Handeln gegenüber Autorys, Flüchtlys und Menschen ohne Papiere überdenken.");
     });
 
-    it('Geflüchtete', () => {
-        const result = beGone.entferneInitialForTesting("Es müsse der Aufenthalt von Flüchtlingen und Leuten ohne Papiere legalisiert werden.");
-        expect(result).to.be.equal("Es müsse der Aufenthalt von Flüchtlingen und Leuten ohne Papiere legalisiert werden.");
-    });
+    // it('Geflüchtete', () => {
+    //     const result = beGone.entferneInitialForTesting("Es müsse der Aufenthalt von Flüchtlingen und Leuten ohne Papiere legalisiert werden.");
+    //     expect(result).to.be.equal("Es müsse der Aufenthalt von Flüchtlys und Leuten ohne Papiere legalisiert werden.");
+    // });
 
     it('Geflüchtete', () => {
         const result = beGone.entferneInitialForTesting("Das Bündnis hatte dazu aufgerufen, mit Plakaten auf Rädern durch die Straßen zu fahren, um gegen das Elend der Geflüchteten in Lagern zu demonstrieren.");
-        expect(result).to.be.equal("Das Bündnis hatte dazu aufgerufen, mit Plakaten auf Rädern durch die Straßen zu fahren, um gegen das Elend der Flüchtlinge in Lagern zu demonstrieren.");
+        expect(result).to.be.equal("Das Bündnis hatte dazu aufgerufen, mit Plakaten auf Rädern durch die Straßen zu fahren, um gegen das Elend der Flüchtlys in Lagern zu demonstrieren.");
     });
 
     it('Geflüchtete', () => {
         const result = beGone.entferneInitialForTesting("Protest am Aktionstag für die Geflüchteten aus den griechischen Lagern");
-        expect(result).to.be.equal("Protest am Aktionstag für die Flüchtlinge aus den griechischen Lagern");
+        expect(result).to.be.equal("Protest am Aktionstag für die Flüchtlys aus den griechischen Lagern");
     });
 
     it('Geflüchtete', () => {
         const result = beGone.entferneInitialForTesting("Bei der Räumung sollen mehrere Geflüchtete versucht haben");
-        expect(result).to.be.equal("Bei der Räumung sollen mehrere Flüchtlinge versucht haben");
+        expect(result).to.be.equal("Bei der Räumung sollen mehrere Flüchtlys versucht haben");
     });
 
     it('Geflüchtete (Nominativ Singular)', () => {
         const result = beGone.entferneInitialForTesting("Der Geflüchtete muss in diesem Fall selbst die Verantwortung übernehmen.");
-        expect(result).to.be.equal("Der Flüchtling muss in diesem Fall selbst die Verantwortung übernehmen.");
+        expect(result).to.be.equal("Das Flüchtly muss in diesem Fall selbst die Verantwortung übernehmen.");
     });
 
     it('Geflüchtete (Dativ Plural)', () => {
         const result = beGone.entferneInitialForTesting("Das derzeitige Mühen um das Wohl Anderer endet bei den Geflüchteten in Sammelunterkünften.");
-        expect(result).to.be.equal("Das derzeitige Mühen um das Wohl Anderer endet bei den Flüchtlingen in Sammelunterkünften.");
+        expect(result).to.be.equal("Das derzeitige Mühen um das Wohl Anderer endet bei den Flüchtlys in Sammelunterkünften.");
     });
 
     it('Geflüchtete (Dativ Plural II)', () => {
         const result = beGone.entferneInitialForTesting("Inwiefern beeinflusst die Sprache, wie wir den Geflüchteten begegnen?");
-        expect(result).to.be.equal("Inwiefern beeinflusst die Sprache, wie wir den Flüchtlingen begegnen?");
+        expect(result).to.be.equal("Inwiefern beeinflusst die Sprache, wie wir den Flüchtlys begegnen?");
     });
 
     it('„Geflüchtete“ mit soft hyphen und Anführungszeichen', () => {
         const result = beGone.entferneInitialForTesting("Mehr und mehr Engagierte verwenden den Begriff „Geflüch­te­te“.");
-        expect(result).to.be.equal("Mehr und mehr Engagierte verwenden den Begriff „Flüchtlinge“.");
+        expect(result).to.be.equal("Mehr und mehr Engagierte verwenden den Begriff „Flüchtlys“.");
     });
 
     it('Geflüchtete als Adjektiv', () => {
@@ -387,7 +457,7 @@ describe('ersetzt den Begriff Geflüchtete zu Flüchtlinge', () => {
 
     it('Geflüchtetenlager', () => {
         const result = beGone.entferneInitialForTesting("Geflüchtetenlager");
-        expect(result).to.be.equal("Flüchtlingslager");
+        expect(result).to.be.equal("Flüchtlyslager");
     });
 });
 
@@ -428,19 +498,9 @@ describe('Empfehlungen Uni Hamburg werden korrigiert', () => {
 describe('TODO oder nicht ohne weiteres lösbar', () => {
     let beGone = new BeGone();
 
-    // it('Mehrzahl', () => {
-    //     const result = beGone.entferneInitialForTesting("mit mehr als 50 Sprecher*innen");
-    //     expect(result).to.be.equal("mit mehr als 50 Sprechern");
-    // });
-
-    // it('bekannten Musiker:innen -> bekannten Musikern', () => {
-    //     const result = beGone.entferneInitialForTesting("von einigen Dutzend mehr oder eher weniger bekannten Musiker:innen unterzeichneten Aufruf");
-    //     expect(result).to.be.equal("von einigen Dutzend mehr oder eher weniger bekannten Musikern unterzeichneten Aufruf");
-    // });
-
-    // it('des/der LehrerIn -> des Lehrers', () => {
+    // it('des/der LehrerIn -> des Lehrys', () => {
     //     const result = beGone.entferneInitialForTesting("des/der LehrerIn");
-    //     expect(result).to.be.equal("des Lehrers");
+    //     expect(result).to.be.equal("des Lehrys");
     // });
 });
 
