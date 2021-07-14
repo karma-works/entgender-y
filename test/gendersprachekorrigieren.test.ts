@@ -176,6 +176,11 @@ describe('entferne Binnen-I', () => {
         const result = beGone.entferneInitialForTesting("Ich habe oft das Gefühl, Solidarität mit Palästinenser*innen und Jüdinnen*Juden schließe sich aus.");
         expect(result).to.be.equal("Ich habe oft das Gefühl, Solidarität mit Palästinensys und Judys schließe sich aus.");
     });
+
+    it("Corona-Leugner·innen", () => {
+        const result = beGone.entferneInitialForTesting("Corona-Leugner·innen");
+        expect(result).to.be.equal("Corona-Leugnys");
+    });
  });
 
  describe('entferne Doppelformen', () => {
