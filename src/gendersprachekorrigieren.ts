@@ -469,7 +469,7 @@ export class BeGone {
             this.replacementsb++;
             return p1 + "ie";
         });
-        s = s.replace(/(ern|er|en|e)$/,"");
+        s = s.replace(/(ern|ers|er|en|e)$/,"");
         s = s + "ys";
         return s;
     }

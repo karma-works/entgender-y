@@ -285,6 +285,11 @@ describe('entferne Binnen-I', () => {
          expect(result).to.be.equal("auf Vorschlag des Präsidenty");
      });
 
+     it('Doppelform im Genitiv', () => {
+         const result = beGone.entferneInitialForTesting("Position des Anwenders oder der Anwenderin");
+         expect(result).to.be.equal("Position des Anwendys");
+     });
+
      // noch keine Lösung vorhanden
      // it('zweier Fraktionen oder einer Fraktion -> nicht ersetzen', ()=> {
      //     const result = beGone.entferneInitialForTesting("Mitglieder des Landtages, zweier Fraktionen oder einer Fraktion gemeinsam mit den Abgeordneten");
