@@ -129,16 +129,7 @@ export class BeGone {
         }
     }    
 
-    private entferneBinnenIs(s: string): string {
-        this.log("10000");
-
-        // entferne *x am Ende
-        if (/\*x/.test(s)) {
-            // behandle "einer/m*x progressive*n*x"
-            s = s.replace(/([\w\/*]+)\*x\b\b/ig, (match, p1) => {
-                return p1;
-            });            
-        }
+    private artikelUndKontraktionen(s: string): string {
 
         if (/[a-zA-ZäöüßÄÖÜ][\/\*.&_\(]-?[a-zA-ZäöüßÄÖÜ]/.test(s) && /der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(]-?e?r\b|em?\(e?r\)\b/.test(s)) {
             this.log("11000");
@@ -255,19 +246,19 @@ export class BeGone {
                         return p2;
                     }
                 });
-                s = s.replace(/\b(z)(um\/zur|ur\/zum)\b/ig, (match, p1) => {
+                s = s.replace(/\b(z)(um[\/\*_\(-]zur|ur[\/\*_\(-]zum)\b/ig, (match, p1) => {
                     this.log("11123");
                     this.replacementsb++;
                     return p1 + "um";
                 });
-                s = s.replace(/\jede[rnms]?[\/\*_\(-](jede[rnms]?)\b/ig, (match, p1) => {
+                s = s.replace(/\b(j)ede[rnms]?[\/\*_\(-](jede[rnms]?)\b/ig, (match, p1) => {
                     this.log("11124");
                     this.replacementsb++;
                     return p1;
                 });
             }
 
-            //extra Stuff				
+            //extra Stuff
             if (/eR\b|em?[\/\*_\(-]{1,2}e?r\b|em?\(e?r\)\b/.test(s)) {
                 this.log("11200");
 
@@ -284,7 +275,6 @@ export class BeGone {
                     return "es";
                 }); //jedes/r
             }
-
             //man
             if (/\/(frau|man|mensch)/.test(s)) {
                 this.log("11300");
@@ -294,6 +284,23 @@ export class BeGone {
                 });
             }
         }
+
+        return s;
+    }
+
+
+    private entferneBinnenIs(s: string): string {
+        this.log("10000");
+
+        // entferne *x am Ende
+        if (/\*x/.test(s)) {
+            // behandle "einer/m*x progressive*n*x"
+            s = s.replace(/([\w\/*]+)\*x\b\b/ig, (match, p1) => {
+                return p1;
+            });            
+        }
+
+        s = this.artikelUndKontraktionen(s);
 
         if (/[a-zäöüß\u00AD\u200B]{2}((\/-?|_|\*|:|\.|\u00b7| und -)?In|(\/-?|_|\*|:|\.|\u00b7| und -)in(n[\*|\.]en)?|INNen|\([Ii]n+(en\)|\)en)?|\/inne?)(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)|[A-ZÄÖÜß\u00AD\u200B]{3}(\/-?|_|\*|:|\.)IN\b/.test(s)) {
             this.log("12000");

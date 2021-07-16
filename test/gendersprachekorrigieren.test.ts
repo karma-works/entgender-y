@@ -183,6 +183,19 @@ describe('entferne Binnen-I', () => {
     });
  });
 
+describe('Kontraktionen und Artikel', () => {
+    let beGone = new BeGone();
+    it("zum*zur Gewalttäter*in", () => {
+        const result = beGone.entferneInitialForTesting("zum*zur Gewalttäter*in");
+        expect(result).to.be.equal("zum Gewalttäty");
+    });
+
+    it("zum/zur Gewalttäter/in", () => {
+        const result = beGone.entferneInitialForTesting("zum/zur Gewalttäter/in");
+        expect(result).to.be.equal("zum Gewalttäty");
+    });
+});
+
  describe('entferne Doppelformen', () => {
      let beGone = new BeGone();
     it('Lehrer und Lehrerinnen -> Lehrys', () => {
