@@ -194,6 +194,16 @@ describe('Kontraktionen und Artikel', () => {
         const result = beGone.entferneInitialForTesting("zum/zur Gewalttäter/in");
         expect(result).to.be.equal("zum Gewalttäty");
     });
+
+    it("keinem/keiner", () => {
+        const result = beGone.entferneInitialForTesting("keinem/keiner");
+        expect(result).to.be.equal("keinem");
+    });
+
+    it("keinem*keiner", () => {
+        const result = beGone.entferneInitialForTesting("keinem*keiner");
+        expect(result).to.be.equal("keinem");
+    });
 });
 
  describe('entferne Doppelformen', () => {

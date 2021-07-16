@@ -133,35 +133,37 @@ export class BeGone {
 
         if (/[a-zA-ZäöüßÄÖÜ][\/\*.&_\(]-?[a-zA-ZäöüßÄÖÜ]/.test(s) && /der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(]-?e?r\b|em?\(e?r\)\b/.test(s)) {
             this.log("11000");
+            s = s.replace(/[\/\*_\(-]/, "_");
+
             //Stuff
             if (/der|die|dessen|ein|sie|ih[rmn]|zu[rm]|jede/i.test(s)) {
                 this.log("11100");
-                s = s.replace(/\b(d)(ie[\/\*_\(-]+der|er[\/\*_\(-]+die)\b/ig, (match, p1) => {
+                s = s.replace(/\b(d)(ie_+der|er_+die)\b/ig, (match, p1) => {
                     this.log("11101");
                     this.replacementsb++;
                     return p1 + "as";
                 });
-                s = s.replace(/\b(d)(en[\/\*_\(-]+die|ie[\/\*_\(-]+den)\b/ig, (match, p1) => {
+                s = s.replace(/\b(d)(en_+die|ie_+den)\b/ig, (match, p1) => {
                     this.log("11102");
                     this.replacementsb++;
                     return p1 + "as";
                 });
-                s = s.replace(/\b(d)(es[\/\*_\(-]+der|er[\/\*_\(-]+des)\b/ig, (match, p1) => {
+                s = s.replace(/\b(d)(es_+der|er_+des)\b/ig, (match, p1) => {
                     this.log("11103");
                     this.replacementsb++;
                     return p1 + "es";
                 });
-                s = s.replace(/\b(d)(er[\/\*_\(-]+dem|em[\/\*_\(-]+der)\b/ig, (match, p1) => {
+                s = s.replace(/\b(d)(er_+dem|em_+der)\b/ig, (match, p1) => {
                     this.log("11104");
                     this.replacementsb++;
                     return p1 + "em";
                 });
-                s = s.replace(/\b(d)(eren[\/\*_\(-]dessen|essen[\/\*_\(-]deren)\b/ig, (match, p1) => {
+                s = s.replace(/\b(d)(eren_dessen|essen_deren)\b/ig, (match, p1) => {
                     this.log("11105");
                     this.replacementsb++;
                     return p1 + "essen";
                 });
-                s = s.replace(/\bdiese[r]?[\/\*_\(-](diese[rnms])|(diese[rnms])[\/\*_\(-]diese[r]?\b/ig, (match, p1, p2) => {
+                s = s.replace(/\bdiese[r]?_(diese[rnms])|(diese[rnms])_diese[r]?\b/ig, (match, p1, p2) => {
                     this.replacementsb++;
                     if (p1) {
                         this.log("11106");
@@ -171,72 +173,72 @@ export class BeGone {
                         return p2;
                     }
                 });
-                s = s.replace(/\b([KkDMSdms]?[Ee])in([\/\*_\(-]+e |\(e\) |E )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])in(_+e |\(e\) |E )/g, (match, p1) => {
                     this.log("11108");
                     this.replacementsb++;
                     return p1 + "in ";
                 });
-                s = s.replace(/\b([KkDMSdms]?[Ee])ine([\/\*_\(-]+r |\(r\) |R )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])ine(_+r |\(r\) |R )/g, (match, p1) => {
                     this.log("11109");
                     this.replacementsb++;
                     return p1 + "iner ";
                 });
-                s = s.replace(/\b([KkDMSdms]?[Ee])iner([\/\*_\(-]+s |\(S\) |S )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])iner(_+s |\(S\) |S )/g, (match, p1) => {
                     this.log("11110");
                     this.replacementsb++;
                     return p1 + "ines ";
                 });
-                s = s.replace(/\b([KkDMSdms]?[Ee])ines([\/\*_\(-]+r |\(R\) |R )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])ines(_+r |\(R\) |R )/g, (match, p1) => {
                     this.log("11111");
                     this.replacementsb++;
                     return p1 + "ines ";
                 });
-                s = s.replace(/\b([KkDMSdms]?[Ee])iner([\/\*_\(-]+m |\(m\) |M )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])iner(_+m |\(m\) |M )/g, (match, p1) => {
                     this.log("11112");
                     this.replacementsb++;
                     return p1 + "inem ";
                 });
-                s = s.replace(/\b([KkDMSdms]?[Ee])inem([\/\*_\(-]+r |\(r\) |R )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])inem(_+r |\(r\) |R )/g, (match, p1) => {
                     this.log("11113");
                     this.replacementsb++;
                     return p1 + "inem ";
                 });
-                s = s.replace(/\b([KkDMSdms]?[Ee])ine([\/\*_\(-]+n |\(n\) |N )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])ine(_+n |\(n\) |N )/g, (match, p1) => {
                     this.log("11114");
                     this.replacementsb++;
                     return p1 + "in ";
                 });
-                s = s.replace(/\bsie[\/\*_\(-]er|er[\/\*_\(-]sie\b/g, () => {
+                s = s.replace(/\bsie_er|er_sie\b/g, () => {
                     this.log("11115");
                     this.replacementsb++;
                     return "er";
                 });
-                s = s.replace(/\bSie[\/\*_\(-][Ee]r|Er[\/\*_\(-][Ss]ie\b/g, () => {
+                s = s.replace(/\bSie_[Ee]r|Er_[Ss]ie\b/g, () => {
                     this.log("11116");
                     this.replacementsb++;
                     return "Er";
                 });
-                s = s.replace(/\b(i)(hr[\/\*_\(-]ihm|hm[\/\*_\(-]ihr)\b/ig, (match, p1) => {
+                s = s.replace(/\b(i)(hr_ihm|hm_ihr)\b/ig, (match, p1) => {
                     this.log("11117");
                     this.replacementsb++;
                     return p1 + "hm";
                 });
-                s = s.replace(/\bsie[\/\*_\(-]ihn|ihn[\/\*_\(-]ie\b/g, () => {
+                s = s.replace(/\bsie_ihn|ihn_ie\b/g, () => {
                     this.log("11118");
                     this.replacementsb++;
                     return "ihn";
                 });
-                s = s.replace(/\bSie[\/\*_\(-][Ii]hn|Ihn[\/\*_\(-][Ss]ie\b/g, () => {
+                s = s.replace(/\bSie_[Ii]hn|Ihn_[Ss]ie\b/g, () => {
                     this.log("11119");
                     this.replacementsb++;
                     return "Ihn";
                 });
-                s = s.replace(/\bihr[\/\*_\(-]e\b/ig, () => {
+                s = s.replace(/\bihr_e\b/ig, () => {
                     this.log("11120");
                     this.replacementsb++;
                     return "ihr";
                 }); //ihr*e Partner*in
-                s = s.replace(/\bihre?[rnms]?[\/\*_\(-](seine?[rnms]?)|(seine?[rnms]?)[\/\*_\(-]ihre?[rnms]?\b/ig, (match, p1, p2) => {
+                s = s.replace(/\bihre?[rnms]?_(seine?[rnms]?)|(seine?[rnms]?)_ihre?[rnms]?\b/ig, (match, p1, p2) => {
                     this.replacementsb++;
                     if (p1) {
                         this.log("11121");
@@ -246,12 +248,12 @@ export class BeGone {
                         return p2;
                     }
                 });
-                s = s.replace(/\b(z)(um[\/\*_\(-]zur|ur[\/\*_\(-]zum)\b/ig, (match, p1) => {
+                s = s.replace(/\b(z)(um_zur|ur_zum)\b/ig, (match, p1) => {
                     this.log("11123");
                     this.replacementsb++;
                     return p1 + "um";
                 });
-                s = s.replace(/\b(j)ede[rnms]?[\/\*_\(-](jede[rnms]?)\b/ig, (match, p1) => {
+                s = s.replace(/\b(j)ede[rnms]?_(jede[rnms]?)\b/ig, (match, p1) => {
                     this.log("11124");
                     this.replacementsb++;
                     return p1;
@@ -259,18 +261,18 @@ export class BeGone {
             }
 
             //extra Stuff
-            if (/eR\b|em?[\/\*_\(-]{1,2}e?r\b|em?\(e?r\)\b/.test(s)) {
+            if (/eR\b|em?_{1,2}e?r\b|em?\(e?r\)\b/.test(s)) {
                 this.log("11200");
 
-                s = s.replace(/e[\/\*_\(-]+r|e\(r\)|eR\b/g, () => {
+                s = s.replace(/e_+r|e\(r\)|eR\b/g, () => {
                     this.replacementsb++;
                     return "es";
                 }); //jede/r,jede(r),jedeR,
-                s = s.replace(/em\(e?r\)|em[\/\*_\(-]+r\b/g, () => {
+                s = s.replace(/em\(e?r\)|em_+r\b/g, () => {
                     this.replacementsb++;
                     return "em";
                 }); //jedem/r
-                s = s.replace(/er\(e?s\)|es[\/\*_\(-]+r\b/g, () => {
+                s = s.replace(/er\(e?s\)|es_+r\b/g, () => {
                     this.replacementsb++;
                     return "es";
                 }); //jedes/r
@@ -278,7 +280,7 @@ export class BeGone {
             //man
             if (/\/(frau|man|mensch)/.test(s)) {
                 this.log("11300");
-                s = s.replace(/\b(frau|man+|mensch)+[\/\*_\(-](frau|man+|mensch|[\/\*_\(-])*/, () => {
+                s = s.replace(/\b(frau|man+|mensch)+_(frau|man+|mensch|_)*/, () => {
                     this.replacementsb++;
                     return "man";
                 });
