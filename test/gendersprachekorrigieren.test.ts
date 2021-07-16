@@ -195,14 +195,14 @@ describe('Kontraktionen und Artikel', () => {
         expect(result).to.be.equal("zum Gewalttäty");
     });
 
-    it("keinem/keiner", () => {
-        const result = beGone.entferneInitialForTesting("keinem/keiner");
-        expect(result).to.be.equal("keinem");
+    it("Keinem/keiner", () => {
+        const result = beGone.entferneInitialForTesting("Keinem/keiner ");
+        expect(result).to.be.equal("Keinem ");
     });
 
-    it("keinem*keiner", () => {
-        const result = beGone.entferneInitialForTesting("keinem*keiner");
-        expect(result).to.be.equal("keinem");
+    it("Einem*einer", () => {
+        const result = beGone.entferneInitialForTesting("Einem*einer ");
+        expect(result).to.be.equal("Einem ");
     });
 });
 

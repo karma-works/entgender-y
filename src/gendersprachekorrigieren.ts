@@ -203,6 +203,14 @@ export class BeGone {
                     this.replacementsb++;
                     return p1 + "inem ";
                 });
+
+                //  einer_einem, keiner_keinem
+                s = s.replace(/\b([KkDMSdms]?[Ee])ine(m|r)_([KkDMSdms]?[Ee])ine(m |r )/g, (match, p1) => {
+                    this.log("11113");
+                    this.replacementsb++;
+                    return p1 + "inem ";
+                });
+
                 s = s.replace(/\b([KkDMSdms]?[Ee])ine(_+n |\(n\) |N )/g, (match, p1) => {
                     this.log("11114");
                     this.replacementsb++;
