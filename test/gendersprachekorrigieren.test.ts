@@ -204,6 +204,11 @@ describe('Kontraktionen und Artikel', () => {
         const result = beGone.entferneInitialForTesting("Einem*einer ");
         expect(result).to.be.equal("Einem ");
     });
+
+    it("Der*die", () => {
+        const result = beGone.entferneInitialForTesting("Der*die ");
+        expect(result).to.be.equal("Das ");
+    });
 });
 
  describe('entferne Doppelformen', () => {
