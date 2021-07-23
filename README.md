@@ -69,7 +69,8 @@ Schritte / Steps:
 Fertig. Im Verzeichnis `/dist` befinden sich jetzt die Assets des Plugins. / Done. The directory `/dist` now contains all plugin assets.
 
 ## Links
-[Folge uns auf Twitter](https://twitter.com/entgendery) um über neue Versionen und Updates informiert zu sein.
+[Folge uns auf Twitter](https://twitter.com/entgendy) um über neue Versionen und Updates informiert zu sein.
+
 [Gendersprache korrigieren](https://github.com/brilliance-richter-huh/gendersprache-korrigieren) ersetzt gegenderte Texte durch das generische Maskulinum.
 
 ## Credits
