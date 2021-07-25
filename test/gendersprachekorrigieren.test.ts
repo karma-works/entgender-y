@@ -546,6 +546,11 @@ describe('TODO oder nicht ohne weiteres lösbar', () => {
     //     const result = beGone.entferneInitialForTesting("des/der LehrerIn");
     //     expect(result).to.be.equal("des Lehrys");
     // });
+
+    // it('Sonderformen Sinti und Roma', () => {
+    //     const result = beGone.entferneInitialForTesting("Sinti*ze und Rom*nja");
+    //     expect(result).to.be.equal("Sintys und Romys");
+    // });
 });
 
 /** 
