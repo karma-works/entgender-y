@@ -181,6 +181,12 @@ describe('entferne Binnen-I', () => {
         const result = beGone.entferneInitialForTesting("Corona-Leugner·innen");
         expect(result).to.be.equal("Corona-Leugnys");
     });
+
+
+    it("Bindestrich im Wort sozial-ökologische bleibt erhalten", () => {
+        const result = beGone.entferneInitialForTesting("auf die globale sozial-ökologische Transformation. ");
+        expect(result).to.be.equal("auf die globale sozial-ökologische Transformation. ");
+    });
  });
 
 describe('Kontraktionen und Artikel', () => {
@@ -531,6 +537,11 @@ describe('Empfehlungen Uni Hamburg werden korrigiert', () => {
 describe('TODO oder nicht ohne weiteres lösbar', () => {
     let beGone = new BeGone();
 
+    // it("konserviere antworten oder die Antwort überspringen", () => {
+    //     const result = beGone.entferneInitialForTesting("\"stimme nicht zu\" antworten oder die Antworten überspringen. ");
+    //     expect(result).to.be.equal("\"stimme nicht zu\" antworten oder die Antworten überspringen. ");
+    // });
+    //
     // it('des/der LehrerIn -> des Lehrys', () => {
     //     const result = beGone.entferneInitialForTesting("des/der LehrerIn");
     //     expect(result).to.be.equal("des Lehrys");
