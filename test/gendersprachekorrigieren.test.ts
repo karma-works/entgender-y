@@ -551,6 +551,13 @@ describe('TODO oder nicht ohne weiteres lösbar', () => {
     //     const result = beGone.entferneInitialForTesting("Sinti*ze und Rom*nja");
     //     expect(result).to.be.equal("Sintys und Romys");
     // });
+
+
+    // Eichhörnchen:innen
+    // it('Eichhörnchen:innen', () => {
+    //     const result = beGone.entferneInitialForTesting("Eichhörnchen:innen");
+    //     expect(result).to.be.equal("Eichhörnchys");
+    // });
 });
 
 /** 
