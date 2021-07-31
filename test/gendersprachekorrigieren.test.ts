@@ -558,6 +558,12 @@ describe('TODO oder nicht ohne weiteres lösbar', () => {
     //     const result = beGone.entferneInitialForTesting("Eichhörnchen:innen");
     //     expect(result).to.be.equal("Eichhörnchys");
     // });
+
+    // einer Ärztin oder eines Arztes
+    // it('einer Ärztin oder eines Arztes', () => {
+    //     const result = beGone.entferneInitialForTesting("einer Ärztin oder eines Arztes");
+    //     expect(result).to.be.equal("eines Arztys");
+    // });
 });
 
 /** 
