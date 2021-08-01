@@ -297,6 +297,21 @@ export class BeGone {
         return s;
     }
 
+    private entferneUnregelmaessigeFormen(s: string): string {
+        // Sinti*ze und Rom*nja
+        s = s.replace(/\bSinti(\/-?|_|\*|:|\.|\x00b7)ze\b/g, (match, p1) => {
+            this.log("12312");
+            this.replacementsb++;
+            return "Sintys";
+        });
+        s = s.replace(/\bRom(\/-?|_|\*|:|\.|\x00b7)nja\b/g, (match, p1) => {
+            this.log("12312");
+            this.replacementsb++;
+            return "Romys";
+        });
+        return s;
+    }
+
 
     private entferneBinnenIs(s: string): string {
         this.log("10000");
@@ -310,6 +325,9 @@ export class BeGone {
         }
 
         s = this.artikelUndKontraktionen(s);
+
+        // unregelmässige Pluralformen
+        s = this.entferneUnregelmaessigeFormen(s);
 
         if (/[a-zäöüß\u00AD\u200B]{2}((\/-?|_|\*|:|\.|\u00b7| und -)?In|(\/-?|_|\*|:|\.|\u00b7| und -)in(n[\*|\.]en)?|INNen|\([Ii]n+(en\)|\)en)?|\/inne?)(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)|[A-ZÄÖÜß\u00AD\u200B]{3}(\/-?|_|\*|:|\.)IN\b/.test(s)) {
             this.log("12000");
@@ -397,6 +415,7 @@ export class BeGone {
             if (/[a-zäöüß]In/.test(s) && !/([Pp]lug|Log|[Aa]dd|Linked)In\b/.test(s)) {
                 this.log("12300");
                 //Prüfung auf Sonderfälle
+
                 if (/amtIn|stIn\B|verbesser(?=In)/.test(s)) {
                     s = s.replace(/verbesserIn/g, () => {
                         this.log("12301");
@@ -750,7 +769,7 @@ export class BeGone {
         let probePartizip = false;
         let probeGefluechtete = false;
         if (!this.settings.skip_topic || this.settings.skip_topic && this.mtype || this.settings.skip_topic && !/Binnen-I|Geflüchtete/.test(bodyTextContent)) {
-            probeBinnenI = /[a-zäöüß]{2}((\/-?|_|\*|:|\.|\u00b7| und -)?In|(\/-?|_|\*|:|\.|\u00b7| und -)in(n[\*|\.]en)?|INNen|\([Ii]n+(en\)|\)en)?|\/inne?)(?!(\w{1,2}\b)|[A-Z]|[cf]o|t|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)|[A-ZÄÖÜß]{3}(\/-?|_|\*|:|\.)IN\b|(der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(])/.test(bodyTextContent);
+            probeBinnenI = /[a-zäöüß]{2}((\/-?|_|\*|:|\.|\u00b7| und -)?In|(\/-?|_|\*|:|\.|\u00b7| und -)in(n[\*|\.]en)?|(\/-?|_|\*|:|\.|\u00b7)ze|(\/-?|_|\*|:|\.|\u00b7)nja|INNen|\([Ii]n+(en\)|\)en)?|\/inne?)(?!(\w{1,2}\b)|[A-Z]|[cf]o|t|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)|[A-ZÄÖÜß]{3}(\/-?|_|\*|:|\.)IN\b|(der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(])/.test(bodyTextContent);
 
             if (this.settings.doppelformen) {
                 probeRedundancy = /\b(und|oder|bzw)\b/.test(bodyTextContent);

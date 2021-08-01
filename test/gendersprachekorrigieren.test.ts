@@ -187,7 +187,24 @@ describe('entferne Binnen-I', () => {
         const result = beGone.entferneInitialForTesting("auf die globale sozial-ökologische Transformation. ");
         expect(result).to.be.equal("auf die globale sozial-ökologische Transformation. ");
     });
- });
+
+    it('des/der LehrerIn -> des Lehrys', () => {
+        const result = beGone.entferneInitialForTesting("des/der LehrerIn");
+        expect(result).to.be.equal("des Lehry");
+    });
+
+
+});
+
+
+describe('Unregelmässige Formen', () => {
+    let beGone = new BeGone();
+    it('Sonderformen Sinti und Roma', () => {
+        const result = beGone.entferneInitialForTesting(" Sinti*ze und Rom*nja ");
+        expect(result).to.be.equal(" Sintys und Romys ");
+    });
+});
+
 
 describe('Kontraktionen und Artikel', () => {
     let beGone = new BeGone();
@@ -540,26 +557,11 @@ describe('Empfehlungen Uni Hamburg werden korrigiert', () => {
         const result = beGone.entferneInitialForTesting("Sehr geehrte Teilnehmende");
         expect(result).to.be.equal("Sehr geehrte Teilnehmys");
     });
-
-    it('des/der LehrerIn -> des Lehrys', () => {
-        const result = beGone.entferneInitialForTesting("des/der LehrerIn");
-        expect(result).to.be.equal("des Lehry");
-    });
 });
 
 
 describe('TODO oder nicht ohne weiteres lösbar', () => {
     let beGone = new BeGone();
-
-
-
-
-
-    // it('Sonderformen Sinti und Roma', () => {
-    //     const result = beGone.entferneInitialForTesting("Sinti*ze und Rom*nja");
-    //     expect(result).to.be.equal("Sintys und Romys");
-    // });
-
 });
 
 /** 
