@@ -536,6 +536,10 @@ describe('Empfehlungen Uni Hamburg werden korrigiert', () => {
         expect(result).to.be.equal("Sehr geehrte Teilnehmys");
     });
 
+    it('des/der LehrerIn -> des Lehrys', () => {
+        const result = beGone.entferneInitialForTesting("des/der LehrerIn");
+        expect(result).to.be.equal("des Lehry");
+    });
 });
 
 
@@ -547,21 +551,11 @@ describe('TODO oder nicht ohne weiteres lösbar', () => {
     //     expect(result).to.be.equal("\"stimme nicht zu\" antworten oder die Antworten überspringen. ");
     // });
     //
-    // it('des/der LehrerIn -> des Lehrys', () => {
-    //     const result = beGone.entferneInitialForTesting("des/der LehrerIn");
-    //     expect(result).to.be.equal("des Lehrys");
-    // });
+
 
     // it('Sonderformen Sinti und Roma', () => {
     //     const result = beGone.entferneInitialForTesting("Sinti*ze und Rom*nja");
     //     expect(result).to.be.equal("Sintys und Romys");
-    // });
-
-
-    // Eichhörnchen:innen
-    // it('Eichhörnchen:innen', () => {
-    //     const result = beGone.entferneInitialForTesting("Eichhörnchen:innen");
-    //     expect(result).to.be.equal("Eichhörnchys");
     // });
 
 });
