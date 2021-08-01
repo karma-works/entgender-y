@@ -491,7 +491,7 @@ export class BeGone {
     }
 
     private singulary(s: string): string {
-        if(s.trim().length == 0){
+        if (s.trim().length == 0) {
             return s;
         }
         s = s.replace(/(^[dD]+)(en|er|ie)/, (match, p1) => {
@@ -499,8 +499,14 @@ export class BeGone {
             this.replacementsb++;
             return p1 + "as";
         });
-        s = s.replace(/(en|ern|er)$/,"");
-        s = s + "y";
+        if (/(en|ern|er)$/.test(s)) {
+            s = s.replace(/(en|ern|er)$/, "y");
+        } else if (/(ens|erns|ers|es)$/.test(s)) { // Genitiv
+            s = s.replace(/(es)$/, "ys"); // eines Arztes
+        } else {
+            s = s + "y";
+        }
+
         return s;
     }
 

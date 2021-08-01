@@ -324,6 +324,11 @@ describe('Kontraktionen und Artikel', () => {
          expect(result).to.be.equal("Position des Anwendys");
      });
 
+     it('einer Ärztin oder eines Arztes', () => {
+         const result = beGone.entferneInitialForTesting("einer Ärztin oder eines Arztes");
+         expect(result).to.be.equal("eines Arztys");
+     });
+
      // noch keine Lösung vorhanden
      // it('zweier Fraktionen oder einer Fraktion -> nicht ersetzen', ()=> {
      //     const result = beGone.entferneInitialForTesting("Mitglieder des Landtages, zweier Fraktionen oder einer Fraktion gemeinsam mit den Abgeordneten");
@@ -559,11 +564,6 @@ describe('TODO oder nicht ohne weiteres lösbar', () => {
     //     expect(result).to.be.equal("Eichhörnchys");
     // });
 
-    // einer Ärztin oder eines Arztes
-    // it('einer Ärztin oder eines Arztes', () => {
-    //     const result = beGone.entferneInitialForTesting("einer Ärztin oder eines Arztes");
-    //     expect(result).to.be.equal("eines Arztys");
-    // });
 });
 
 /** 
