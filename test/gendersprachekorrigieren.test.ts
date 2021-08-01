@@ -329,6 +329,11 @@ describe('Kontraktionen und Artikel', () => {
          expect(result).to.be.equal("eines Arztys");
      });
 
+     it("konserviere antworten oder die Antwort überspringen", () => {
+         const result = beGone.entferneInitialForTesting("\"stimme nicht zu\" antworten oder die Antworten überspringen. ");
+         expect(result).to.be.equal("\"stimme nicht zu\" antworten oder die Antworten überspringen. ");
+     });
+
      // noch keine Lösung vorhanden
      // it('zweier Fraktionen oder einer Fraktion -> nicht ersetzen', ()=> {
      //     const result = beGone.entferneInitialForTesting("Mitglieder des Landtages, zweier Fraktionen oder einer Fraktion gemeinsam mit den Abgeordneten");
@@ -546,11 +551,8 @@ describe('Empfehlungen Uni Hamburg werden korrigiert', () => {
 describe('TODO oder nicht ohne weiteres lösbar', () => {
     let beGone = new BeGone();
 
-    // it("konserviere antworten oder die Antwort überspringen", () => {
-    //     const result = beGone.entferneInitialForTesting("\"stimme nicht zu\" antworten oder die Antworten überspringen. ");
-    //     expect(result).to.be.equal("\"stimme nicht zu\" antworten oder die Antworten überspringen. ");
-    // });
-    //
+
+
 
 
     // it('Sonderformen Sinti und Roma', () => {
