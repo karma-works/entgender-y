@@ -181,7 +181,58 @@ describe('entferne Binnen-I', () => {
         const result = beGone.entferneInitialForTesting("Corona-Leugner·innen");
         expect(result).to.be.equal("Corona-Leugnys");
     });
- });
+
+
+    it("Bindestrich im Wort sozial-ökologische bleibt erhalten", () => {
+        const result = beGone.entferneInitialForTesting("auf die globale sozial-ökologische Transformation. ");
+        expect(result).to.be.equal("auf die globale sozial-ökologische Transformation. ");
+    });
+
+    it('des/der LehrerIn -> des Lehrys', () => {
+        const result = beGone.entferneInitialForTesting("des/der LehrerIn");
+        expect(result).to.be.equal("des Lehry");
+    });
+
+
+});
+
+
+describe('Unregelmässige Formen', () => {
+    let beGone = new BeGone();
+    it('Sonderformen Sinti und Roma', () => {
+        const result = beGone.entferneInitialForTesting(" Sinti*ze und Rom*nja ");
+        expect(result).to.be.equal(" Sintys und Romys ");
+    });
+});
+
+
+describe('Kontraktionen und Artikel', () => {
+    let beGone = new BeGone();
+    it("zum*zur Gewalttäter*in", () => {
+        const result = beGone.entferneInitialForTesting("zum*zur Gewalttäter*in");
+        expect(result).to.be.equal("zum Gewalttäty");
+    });
+
+    it("zum/zur Gewalttäter/in", () => {
+        const result = beGone.entferneInitialForTesting("zum/zur Gewalttäter/in");
+        expect(result).to.be.equal("zum Gewalttäty");
+    });
+
+    it("Keinem/keiner", () => {
+        const result = beGone.entferneInitialForTesting("Keinem/keiner ");
+        expect(result).to.be.equal("Keinem ");
+    });
+
+    it("Einem*einer", () => {
+        const result = beGone.entferneInitialForTesting("Einem*einer ");
+        expect(result).to.be.equal("Einem ");
+    });
+
+    it("Der*die", () => {
+        const result = beGone.entferneInitialForTesting("Der*die ");
+        expect(result).to.be.equal("Das ");
+    });
+});
 
  describe('entferne Doppelformen', () => {
      let beGone = new BeGone();
@@ -283,6 +334,21 @@ describe('entferne Binnen-I', () => {
      it('Präsident -> Präsidenty', ()=> {
          const result = beGone.entferneInitialForTesting("auf Vorschlag der Präsidentin oder des Präsidenten");
          expect(result).to.be.equal("auf Vorschlag des Präsidenty");
+     });
+
+     it('Doppelform im Genitiv', () => {
+         const result = beGone.entferneInitialForTesting("Position des Anwenders oder der Anwenderin");
+         expect(result).to.be.equal("Position des Anwendys");
+     });
+
+     it('einer Ärztin oder eines Arztes', () => {
+         const result = beGone.entferneInitialForTesting("einer Ärztin oder eines Arztes");
+         expect(result).to.be.equal("eines Arztys");
+     });
+
+     it("konserviere antworten oder die Antwort überspringen", () => {
+         const result = beGone.entferneInitialForTesting("\"stimme nicht zu\" antworten oder die Antworten überspringen. ");
+         expect(result).to.be.equal("\"stimme nicht zu\" antworten oder die Antworten überspringen. ");
      });
 
      // noch keine Lösung vorhanden
@@ -491,17 +557,11 @@ describe('Empfehlungen Uni Hamburg werden korrigiert', () => {
         const result = beGone.entferneInitialForTesting("Sehr geehrte Teilnehmende");
         expect(result).to.be.equal("Sehr geehrte Teilnehmys");
     });
-
 });
 
 
 describe('TODO oder nicht ohne weiteres lösbar', () => {
     let beGone = new BeGone();
-
-    // it('des/der LehrerIn -> des Lehrys', () => {
-    //     const result = beGone.entferneInitialForTesting("des/der LehrerIn");
-    //     expect(result).to.be.equal("des Lehrys");
-    // });
 });
 
 /** 

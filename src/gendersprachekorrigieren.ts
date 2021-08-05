@@ -129,19 +129,11 @@ export class BeGone {
         }
     }    
 
-    private entferneBinnenIs(s: string): string {
-        this.log("10000");
-
-        // entferne *x am Ende
-        if (/\*x/.test(s)) {
-            // behandle "einer/m*x progressive*n*x"
-            s = s.replace(/([\w\/*]+)\*x\b\b/ig, (match, p1) => {
-                return p1;
-            });            
-        }
+    private artikelUndKontraktionen(s: string): string {
 
         if (/[a-zA-ZäöüßÄÖÜ][\/\*.&_\(]-?[a-zA-ZäöüßÄÖÜ]/.test(s) && /der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(]-?e?r\b|em?\(e?r\)\b/.test(s)) {
             this.log("11000");
+
             //Stuff
             if (/der|die|dessen|ein|sie|ih[rmn]|zu[rm]|jede/i.test(s)) {
                 this.log("11100");
@@ -210,6 +202,14 @@ export class BeGone {
                     this.replacementsb++;
                     return p1 + "inem ";
                 });
+
+                //  einer_einem, keiner_keinem
+                s = s.replace(/\b([KkDMSdms]?[Ee])ine(m|r)[\/\*_\(-]([KkDMSdms]?[Ee])ine(m |r )/g, (match, p1) => {
+                    this.log("11113");
+                    this.replacementsb++;
+                    return p1 + "inem ";
+                });
+
                 s = s.replace(/\b([KkDMSdms]?[Ee])ine([\/\*_\(-]+n |\(n\) |N )/g, (match, p1) => {
                     this.log("11114");
                     this.replacementsb++;
@@ -255,7 +255,7 @@ export class BeGone {
                         return p2;
                     }
                 });
-                s = s.replace(/\b(z)(um\/zur|ur\/zum)\b/ig, (match, p1) => {
+                s = s.replace(/\b(z)(um[\/\*_\(-]zur|ur\[\/\*_\(-]zum)\b/ig, (match, p1) => {
                     this.log("11123");
                     this.replacementsb++;
                     return p1 + "um";
@@ -267,7 +267,7 @@ export class BeGone {
                 });
             }
 
-            //extra Stuff				
+            //extra Stuff
             if (/eR\b|em?[\/\*_\(-]{1,2}e?r\b|em?\(e?r\)\b/.test(s)) {
                 this.log("11200");
 
@@ -284,7 +284,6 @@ export class BeGone {
                     return "es";
                 }); //jedes/r
             }
-
             //man
             if (/\/(frau|man|mensch)/.test(s)) {
                 this.log("11300");
@@ -294,6 +293,41 @@ export class BeGone {
                 });
             }
         }
+
+        return s;
+    }
+
+    private entferneUnregelmaessigeFormen(s: string): string {
+        // Sinti*ze und Rom*nja
+        s = s.replace(/\bSinti(\/-?|_|\*|:|\.|\x00b7)ze\b/g, (match, p1) => {
+            this.log("12312");
+            this.replacementsb++;
+            return "Sintys";
+        });
+        s = s.replace(/\bRom(\/-?|_|\*|:|\.|\x00b7)nja\b/g, (match, p1) => {
+            this.log("12312");
+            this.replacementsb++;
+            return "Romys";
+        });
+        return s;
+    }
+
+
+    private entferneBinnenIs(s: string): string {
+        this.log("10000");
+
+        // entferne *x am Ende
+        if (/\*x/.test(s)) {
+            // behandle "einer/m*x progressive*n*x"
+            s = s.replace(/([\w\/*]+)\*x\b\b/ig, (match, p1) => {
+                return p1;
+            });            
+        }
+
+        s = this.artikelUndKontraktionen(s);
+
+        // unregelmässige Pluralformen
+        s = this.entferneUnregelmaessigeFormen(s);
 
         if (/[a-zäöüß\u00AD\u200B]{2}((\/-?|_|\*|:|\.|\u00b7| und -)?In|(\/-?|_|\*|:|\.|\u00b7| und -)in(n[\*|\.]en)?|INNen|\([Ii]n+(en\)|\)en)?|\/inne?)(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)|[A-ZÄÖÜß\u00AD\u200B]{3}(\/-?|_|\*|:|\.)IN\b/.test(s)) {
             this.log("12000");
@@ -381,6 +415,7 @@ export class BeGone {
             if (/[a-zäöüß]In/.test(s) && !/([Pp]lug|Log|[Aa]dd|Linked)In\b/.test(s)) {
                 this.log("12300");
                 //Prüfung auf Sonderfälle
+
                 if (/amtIn|stIn\B|verbesser(?=In)/.test(s)) {
                     s = s.replace(/verbesserIn/g, () => {
                         this.log("12301");
@@ -469,13 +504,13 @@ export class BeGone {
             this.replacementsb++;
             return p1 + "ie";
         });
-        s = s.replace(/(ern|er|en|e)$/,"");
+        s = s.replace(/(ern|ers|er|en|e)$/,"");
         s = s + "ys";
         return s;
     }
 
     private singulary(s: string): string {
-        if(s.trim().length == 0){
+        if (s.trim().length == 0) {
             return s;
         }
         s = s.replace(/(^[dD]+)(en|er|ie)/, (match, p1) => {
@@ -483,8 +518,14 @@ export class BeGone {
             this.replacementsb++;
             return p1 + "as";
         });
-        s = s.replace(/(en|ern|er)$/,"");
-        s = s + "y";
+        if (/(en|ern|er)$/.test(s)) {
+            s = s.replace(/(en|ern|er)$/, "y");
+        } else if (/(ens|erns|ers|es)$/.test(s)) { // Genitiv
+            s = s.replace(/(es)$/, "ys"); // eines Arztes
+        } else {
+            s = s + "y";
+        }
+
         return s;
     }
 
@@ -555,7 +596,7 @@ export class BeGone {
                     return this.pluraly(p14);
                 }
             }); //unregelmäßiger Plural: Bäuerinnen und Bauern
-            s = s.replace(/\b((von |für |mit |als )?((d|jed|ein|ihr|zum|sein)(e[rnms]?|ie) )?([a-zäöüß]{4,20}[enr] )?([a-zäöüß]{2,})(e?(n|s|r)?))( und | oder | & | bzw\.? |[\/\*_\(-])(\2|von der )?(((von |zu )?d|jed|ein|ihr|zur|sein)(e[rn]?|ie) )?\6?\7(in(nen)?|en?)\b/ig, (match, p1) => {
+            s = s.replace(/\b((von |für |mit |als )?((d|jed|ein|ihr|zum|sein)(e[rnms]?|ie) )?([A-Z][a-zäöüß]{3,20}[enr] )?([A-Za-zäöüß]{2,})(e?(n|s|r)?))( und | oder | & | bzw\.? |[\/\*_\(-])(\2|von der )?(((von |zu )?d|jed|ein|ihr|zur|sein)(e[rn]?|ie) )?\6?\7(in(nen)?|en?)\b/g, (match, p1) => {
                 this.log("21011");
                 this.replacementsd++;
                 return this.pluraly(p1);
@@ -728,7 +769,7 @@ export class BeGone {
         let probePartizip = false;
         let probeGefluechtete = false;
         if (!this.settings.skip_topic || this.settings.skip_topic && this.mtype || this.settings.skip_topic && !/Binnen-I|Geflüchtete/.test(bodyTextContent)) {
-            probeBinnenI = /[a-zäöüß]{2}((\/-?|_|\*|:|\.|\u00b7| und -)?In|(\/-?|_|\*|:|\.|\u00b7| und -)in(n[\*|\.]en)?|INNen|\([Ii]n+(en\)|\)en)?|\/inne?)(?!(\w{1,2}\b)|[A-Z]|[cf]o|t|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)|[A-ZÄÖÜß]{3}(\/-?|_|\*|:|\.)IN\b|(der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(])/.test(bodyTextContent);
+            probeBinnenI = /[a-zäöüß]{2}((\/-?|_|\*|:|\.|\u00b7| und -)?In|(\/-?|_|\*|:|\.|\u00b7| und -)in(n[\*|\.]en)?|(\/-?|_|\*|:|\.|\u00b7)ze|(\/-?|_|\*|:|\.|\u00b7)nja|INNen|\([Ii]n+(en\)|\)en)?|\/inne?)(?!(\w{1,2}\b)|[A-Z]|[cf]o|t|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)|[A-ZÄÖÜß]{3}(\/-?|_|\*|:|\.)IN\b|(der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(])/.test(bodyTextContent);
 
             if (this.settings.doppelformen) {
                 probeRedundancy = /\b(und|oder|bzw)\b/.test(bodyTextContent);
