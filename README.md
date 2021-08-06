@@ -7,13 +7,14 @@
 
 [Edge Addon installieren](https://microsoftedge.microsoft.com/addons/detail/entgendy-entgendern-nach/kmpabhlkegofalbbdmgibjpbainobbbc)
 
+**Wie würde eine Welt aussehen, in der jede Webseite entgendern würde anstatt zu gendern? Probier es heute aus!**
 Das Entgendy-Plugin entgendert Texte nach der Methode von Hermes Phettberg, so benannt von Thomas Kronschläger. Entgendy stellt Internetseiten in einer expressiven, entsexualisierten und gerechten Sprache dar, ohne dabei den Inhalt von Texten zu ändern.
 
-Beim entgendern versucht man den Geschlechtsbezug aus der Sprache zu entfernen (im Gegensatz zum Gendern wo versucht wird alle Geschlechter erwähnen)
+Ziel des Entgendern ist es, den Geschlechtsbezug aus der Sprache zu entfernen (im Gegensatz zum Gendern wo versucht wird alle Geschlechter zu erwähnen)
 1. Berufs- und Personenbezeichnugnen werden in das Neutrum («das») gesetzt -> das Leser
-2. männliche Endung "er" wird zu "y", im Plural zu "ys" ->  das Lesy
-3. Konjugation auf das Neutrum anpassen (nur im singular) ->
-   «Lieber Leser» wird zu «Liebes Lesy» (analog z.B. zu "Kind"), «Liebe Leser» zu «Liebe Lesys»
+2. männliche Endung "er" wird zur neutralen Endung "y" abgewandelt, im Plural zu "ys" ->  das Lesy
+3. Im Singular wird zusätzlich noch die Konjugation an das Neutrum angepasst ->
+   «Lieber Leser» wird zu «Liebes Lesy», so wie bei anderen Wortern im Neutrum (z.B. "Liebes Kind"). Im Plural muss nichts geändert werden, «Liebe Leser / Liebe Leserin» zu «Liebe Lesys».
    
    
 **Wichtig: Entgendy ändert nur gegenderte Texte! Ansonsten würde sich der Inhalt von Texten ändern.** 
@@ -34,7 +35,7 @@ Viel Spass mit der Erweiterung! Für einen freundlichen, gerechten, entsexualisi
 * Studierende -> Studentys
 
 
-Die Semantik wird nicht verändert, daher Maskulin bleibt Maskulin, Feminin bleibt Feminin, 
+Die Semantik wird nicht verändert, die Verständlichkeit des Textes bleibt erhalten. Maskulin bleibt Maskulin, Feminin bleibt Feminin, 
 > Bundestkanzler*Innen hatte die BRD schon viele. Der erste Bundeskanzler war Konrad Adenauer, die erste Bundeskanzlerin Angela Merkel.
 
 wird zu
@@ -47,10 +48,10 @@ Mehr Beispiele finden sich im Verzeichnis `/test`, in dem sich einige Unit-Tests
 ## Entgendern nach Phettberg
 [Entgenderung nach Phettberg](https://blog.lplusl.de/nebenbei/gendern-nach-phettberg/) ( [Erklärvideo](https://youtu.be/xVmGb7qACfA) ) hat viele Vorteile!
 
-* Barrierefreiheit
 * leicht lesbar und erlernbar
 * Keine Sonderzeichen innerhalb von Wörtern
-* Niemand ist nur «mit gemeint». Da es sich um eine neue Form handelt, werden Personen jeden Geschlechts gleichermassen und gleichberechtigt angesprochen.
+* Barrierefreier
+* Fairer als das Gendersternchen, denn niemand ist nur «mit gemeint». Es gibt keine Reihenfolgeproblem (Leser*in -> zuerst männlich, dann divers, dann weiblich). Es findet keine Überbetonung des Geschlechts statt. Da es sich um eine neue Form handelt, werden Personen jeden Geschlechts gleichermassen und gleichberechtigt angesprochen.
 * Ermöglicht eine präzisere Sprache: «Der Drucker» ist ein Gerät, «Das Drucky» eine Person, «ein Radler» ein alkoholhaltiges Süssgetränk, «ein Radly» eine Person die Fahrrad fährt. Das Maskulinum bezeichnet einen Mann (wenn dieser als Mann angesprochen werden möchte und diese Tatsache fur den Author relevant ist).
 
 
