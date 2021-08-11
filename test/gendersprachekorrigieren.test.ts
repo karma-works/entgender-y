@@ -568,6 +568,11 @@ describe('TODO oder nicht ohne weiteres lösbar', () => {
         expect(result).to.be.equal("Studenty ");
     });
 
+    it('Doktor*in', () => {
+        const result = beGone.entferneInitialForTesting("Doktor*in ");
+        expect(result).to.be.equal("Doktory ");
+    });
+
     it('Ein*e', () => {
         const result = beGone.entferneInitialForTesting("Ein*e ");
         expect(result).to.be.equal("Ein ");
