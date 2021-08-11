@@ -492,7 +492,7 @@ export class BeGone {
                 s = s.replace(/([nrtmdbplhfcNRTMDBPLHFC])In(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)/g, (match, p1) => {
                     this.log("12312");
                     this.replacementsb++;
-                    return p1;
+                    return p1 + "y";
                 });
             }
 
