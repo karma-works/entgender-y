@@ -564,13 +564,13 @@ describe('TODO oder nicht ohne weiteres lösbar', () => {
     let beGone = new BeGone();
 
     it('Student*in', () => {
-        const result = beGone.entferneInitialForTesting("Student*in");
-        expect(result).to.be.equal("Studenty");
+        const result = beGone.entferneInitialForTesting("Student*in ");
+        expect(result).to.be.equal("Studenty ");
     });
 
     it('Ein*e', () => {
-        const result = beGone.entferneInitialForTesting("Ein*e");
-        expect(result).to.be.equal("Ein");
+        const result = beGone.entferneInitialForTesting("Ein*e ");
+        expect(result).to.be.equal("Ein ");
     });
 });
 

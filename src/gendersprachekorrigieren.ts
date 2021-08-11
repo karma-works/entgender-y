@@ -131,7 +131,7 @@ export class BeGone {
 
     private artikelUndKontraktionen(s: string): string {
 
-        if (/[a-zA-ZäöüßÄÖÜ][\/\*.&_\(]-?[a-zA-ZäöüßÄÖÜ]/.test(s) && /der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(]-?e?r\b|em?\(e?r\)\b/.test(s)) {
+        if (/[a-zA-ZäöüßÄÖÜ][\/\*.&_\(]-?[a-zA-ZäöüßÄÖÜ]/.test(s) || /der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(]-?e?r\b|em?\(e?r\)\b/.test(s)) {
             this.log("11000");
 
             //Stuff
@@ -756,20 +756,23 @@ export class BeGone {
         return s;
     }
 
-    private probeDocument(bodyTextContent: string = document.body.textContent ? document.body.textContent : ""): 
+    private probeDocument(bodyTextContent: string = document.body.textContent ? document.body.textContent : ""):
     {
         probeBinnenI: boolean,
         probeRedundancy: boolean,
-        probePartizip: boolean
-        probeGefluechtete: boolean;
+        probePartizip: boolean,
+        probeGefluechtete: boolean,
+        probeArtikelUndKontraktionen: boolean;
 
     } {
         let probeBinnenI = false;
         let probeRedundancy = false;
         let probePartizip = false;
         let probeGefluechtete = false;
+        let probeArtikelUndKontraktionen = false;
         if (!this.settings.skip_topic || this.settings.skip_topic && this.mtype || this.settings.skip_topic && !/Binnen-I|Geflüchtete/.test(bodyTextContent)) {
             probeBinnenI = /[a-zäöüß]{2}((\/-?|_|\*|:|\.|\u00b7| und -)?In|(\/-?|_|\*|:|\.|\u00b7| und -)in(n[\*|\.]en)?|(\/-?|_|\*|:|\.|\u00b7)ze|(\/-?|_|\*|:|\.|\u00b7)nja|INNen|\([Ii]n+(en\)|\)en)?|\/inne?)(?!(\w{1,2}\b)|[A-Z]|[cf]o|t|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)|[A-ZÄÖÜß]{3}(\/-?|_|\*|:|\.)IN\b|(der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(])/.test(bodyTextContent);
+            probeArtikelUndKontraktionen = /[a-zA-ZäöüßÄÖÜ][\/\*.&_\(]-?[a-zA-ZäöüßÄÖÜ]/.test(bodyTextContent) || /der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(]-?e?r\b|em?\(e?r\)\b/.test(bodyTextContent);
 
             if (this.settings.doppelformen) {
                 probeRedundancy = /\b(und|oder|bzw)\b/.test(bodyTextContent);
@@ -787,7 +790,8 @@ export class BeGone {
             probeBinnenI: probeBinnenI,
             probeRedundancy: probeRedundancy,
             probePartizip: probePartizip,
-            probeGefluechtete : probeGefluechtete
+            probeGefluechtete : probeGefluechtete,
+            probeArtikelUndKontraktionen : probeArtikelUndKontraktionen
         }
     }
 
@@ -854,7 +858,7 @@ export class BeGone {
     public entferneInitial() {
         const probeResult = this.probeDocument()
 
-        if (probeResult.probeBinnenI || this.settings.doppelformen && probeResult.probeRedundancy || this.settings.partizip && probeResult.probePartizip) {
+        if (probeResult.probeBinnenI || this.settings.doppelformen && probeResult.probeRedundancy || this.settings.partizip && probeResult.probePartizip || probeResult.probeArtikelUndKontraktionen) {
             this.nodes = this.textNodesUnder(document)
             if (this.settings.doppelformen && probeResult.probeRedundancy) {
                 this.applyToNodes(this.nodes, this.entferneDoppelformen);
@@ -869,6 +873,10 @@ export class BeGone {
                 this.applyToNodes(this.nodes, this.ersetzeGefluechteteDurchFluechtlinge);
             }
 
+            if (probeResult.probeArtikelUndKontraktionen){
+                this.applyToNodes(this.nodes, this.artikelUndKontraktionen);
+            }
+
             if (this.settings.counter) {
                 this.sendCounttoBackgroundScript();
             }
@@ -878,7 +886,7 @@ export class BeGone {
     public entferneInitialForTesting(s: string): string {
         const probeResult = this.probeDocument(s)
 
-        if (probeResult.probeBinnenI || this.settings.doppelformen && probeResult.probeRedundancy || this.settings.partizip && probeResult.probePartizip || this.settings.partizip && probeResult.probeGefluechtete) {
+        if (probeResult.probeBinnenI || this.settings.doppelformen && probeResult.probeRedundancy || this.settings.partizip && probeResult.probePartizip || this.settings.partizip && probeResult.probeGefluechtete || probeResult.probeArtikelUndKontraktionen) {
             if (this.settings.doppelformen && probeResult.probeRedundancy) {
                 s = this.entferneDoppelformen(s);
             }
@@ -890,6 +898,10 @@ export class BeGone {
             }
             if (probeResult.probeGefluechtete) {
                 s = this.ersetzeGefluechteteDurchFluechtlinge(s);
+            }
+
+            if (probeResult.probeArtikelUndKontraktionen){
+                s = this.artikelUndKontraktionen(s);
             }
 
             if (this.settings.counter) {
