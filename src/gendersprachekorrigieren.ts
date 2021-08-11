@@ -298,12 +298,6 @@ export class BeGone {
     }
 
     private entferneUnregelmaessigeFormen(s: string): string {
-        s = s.replace(/\bStudent(\/-?|_|\*|:|\.|\x00b7)in\b/g, (match, p1) => {
-            this.log("12312");
-            this.replacementsb++;
-            return "Studenty";
-        });
-
         // Sinti*ze und Rom*nja
         s = s.replace(/\bSinti(\/-?|_|\*|:|\.|\x00b7)ze\b/g, (match, p1) => {
             this.log("12312");
