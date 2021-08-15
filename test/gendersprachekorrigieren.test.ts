@@ -577,6 +577,11 @@ describe('TODO oder nicht ohne weiteres lösbar', () => {
         const result = beGone.entferneInitialForTesting("Ein*e ");
         expect(result).to.be.equal("Ein ");
     });
+
+    it('ein europäische*n Wehrbeauftragte*n“ zu etablieren', () => {
+        const result = beGone.entferneInitialForTesting("ein europäische*n Wehrbeauftragte*n“ zu etablieren");
+        expect(result).to.be.equal("ein europäisches Wehrbeauftragty“ zu etablieren");
+    });
 });
 
 /** 
