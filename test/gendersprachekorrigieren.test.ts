@@ -592,6 +592,22 @@ describe('Empfehlungen Uni Hamburg werden korrigiert', () => {
 describe('TODO oder nicht ohne weiteres lösbar', () => {
     let beGone = new BeGone();
 
+    it('Erste*r', () => {
+        const result = beGone.entferneInitialForTesting(" Erste*r ");
+        expect(result).to.be.equal(" Erstes ");
+    });
+
+    it('Expert*innengespräche', () => {
+        const result = beGone.entferneInitialForTesting(" Expert*innengespräche ");
+        expect(result).to.be.equal(" Expertygespräche ");
+    });
+
+    it('Kanditat*innen', () => {
+        const result = beGone.entferneInitialForTesting(" Kanditat*innen ");
+        expect(result).to.be.equal(" Kandidatys ");
+    });
+
+
 });
 
 /** 
