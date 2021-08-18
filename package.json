@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "start:firefox": "web-ext run --source-dir ./dist/",
-    "start:chromium": "web-ext run -t chromium --source-dir ./dist/",
     "test": "cross-env TS_NODE_FILES=true mocha --exit --require ts-node/register --colors test/**/*.ts",
     "coverage": "nyc --reporter=lcov --reporter=text-summary ./node_modules/.bin/npm test",
     "build": "./node_modules/.bin/parcel build ./src/gendersprachekorrigieren.ts",
@@ -29,6 +28,5 @@
     "web-ext": "^6.1.0"
   },
   "the-following-property-is-for-package": "parcel-plugin-asset-copier",
-  "assetsPath": "assets",
-  "dependencies": {}
+  "assetsPath": "assets"
 }
