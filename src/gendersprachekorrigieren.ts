@@ -129,19 +129,11 @@ export class BeGone {
         }
     }    
 
-    private entferneBinnenIs(s: string): string {
-        this.log("10000");
+    private artikelUndKontraktionen(s: string): string {
 
-        // entferne *x am Ende
-        if (/\*x/.test(s)) {
-            // behandle "einer/m*x progressive*n*x"
-            s = s.replace(/([\w\/*]+)\*x\b\b/ig, (match, p1) => {
-                return p1;
-            });            
-        }
-
-        if (/[a-zA-ZäöüßÄÖÜ][\/\*.&_\(]-?[a-zA-ZäöüßÄÖÜ]/.test(s) && /der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(]-?e?r\b|em?\(e?r\)\b/.test(s)) {
+        if (/[a-zA-ZäöüßÄÖÜ][\/\*.&_\(]-?[a-zA-ZäöüßÄÖÜ]/.test(s) || /der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(]-?e?r\b|em?\(e?r\)\b/.test(s)) {
             this.log("11000");
+
             //Stuff
             if (/der|die|dessen|ein|sie|ih[rmn]|zu[rm]|jede/i.test(s)) {
                 this.log("11100");
@@ -180,37 +172,45 @@ export class BeGone {
                         return p2;
                     }
                 });
-                s = s.replace(/\b([DMSdms]?[Ee])in([\/\*_\(-]+e |\(e\) |E )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])in([\/\*_\(-]+e |\(e\) |E )/g, (match, p1) => {
                     this.log("11108");
                     this.replacementsb++;
                     return p1 + "in ";
                 });
-                s = s.replace(/\b([DMSdms]?[Ee])ine([\/\*_\(-]+r |\(r\) |R )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])ine([\/\*_\(-]+r |\(r\) |R )/g, (match, p1) => {
                     this.log("11109");
                     this.replacementsb++;
                     return p1 + "iner ";
                 });
-                s = s.replace(/\b([DMSdms]?[Ee])iner([\/\*_\(-]+s |\(S\) |S )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])iner([\/\*_\(-]+s |\(S\) |S )/g, (match, p1) => {
                     this.log("11110");
                     this.replacementsb++;
                     return p1 + "ines ";
                 });
-                s = s.replace(/\b([DMSdms]?[Ee])ines([\/\*_\(-]+r |\(R\) |R )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])ines([\/\*_\(-]+r |\(R\) |R )/g, (match, p1) => {
                     this.log("11111");
                     this.replacementsb++;
                     return p1 + "ines ";
                 });
-                s = s.replace(/\b([DMSdms]?[Ee])iner([\/\*_\(-]+m |\(m\) |M )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])iner([\/\*_\(-]+m |\(m\) |M )/g, (match, p1) => {
                     this.log("11112");
                     this.replacementsb++;
                     return p1 + "inem ";
                 });
-                s = s.replace(/\b([DMSdms]?[Ee])inem([\/\*_\(-]+r |\(r\) |R )/g, (match, p1) => {
+                s = s.replace(/\b([KkDMSdms]?[Ee])inem([\/\*_\(-]+r |\(r\) |R )/g, (match, p1) => {
                     this.log("11113");
                     this.replacementsb++;
                     return p1 + "inem ";
                 });
-                s = s.replace(/\b([DMSdms]?[Ee])ine([\/\*_\(-]+n |\(n\) |N )/g, (match, p1) => {
+
+                //  einer_einem, keiner_keinem
+                s = s.replace(/\b([KkDMSdms]?[Ee])ine(m|r)[\/\*_\(-]([KkDMSdms]?[Ee])ine(m |r )/g, (match, p1) => {
+                    this.log("11113");
+                    this.replacementsb++;
+                    return p1 + "inem ";
+                });
+
+                s = s.replace(/\b([KkDMSdms]?[Ee])ine([\/\*_\(-]+n |\(n\) |N )/g, (match, p1) => {
                     this.log("11114");
                     this.replacementsb++;
                     return p1 + "in ";
@@ -255,7 +255,7 @@ export class BeGone {
                         return p2;
                     }
                 });
-                s = s.replace(/\b(z)(um\/zur|ur\/zum)\b/ig, (match, p1) => {
+                s = s.replace(/\b(z)(um[\/\*_\(-]zur|ur\[\/\*_\(-]zum)\b/ig, (match, p1) => {
                     this.log("11123");
                     this.replacementsb++;
                     return p1 + "um";
@@ -267,9 +267,27 @@ export class BeGone {
                 });
             }
 
-            //extra Stuff				
-            if (/eR\b|em?[\/\*_\(-]{1,2}e?r\b|em?\(e?r\)\b/.test(s)) {
+            //extra Stuff
+            if (/eR\b|em?[\/\*_\(-]{1,2}e?[rn]\b|em?\(e?r\)\b/.test(s)) {
                 this.log("11200");
+
+                // Dativ: einem progressive*n Staatsoberhaupt
+                s = s.replace(/(?<beginning>m\b.{3,30})(?<star>[\/\*_\(-]{1,2})(?<suffix>[rn])\b/ig, (match, p1, p2, p3) => {
+                    this.replacementsb++;
+                    return p1 + p3;
+                });
+
+                // jede*n, europäische*n
+                s = s.replace(/(\b[a-zäöü]+e)([\/\*_\(-]+)(n|e\(n\)|eN\b)/g, (match, p1, p2, p3) => {
+                    this.replacementsb++;
+                    return p1 + "s";
+                });
+
+                // Wehrbeauftragte*n“
+                s = s.replace(/([\b“ ][A-ZÄÖÜ]\w+)(e[\/\*_\(-]+)(n|e\(n\)|eN[\b“ ])/g, (match, p1, p2, p3) => {
+                    this.replacementsb++;
+                    return p1 + "y";
+                });
 
                 s = s.replace(/e[\/\*_\(-]+r|e\(r\)|eR\b/g, () => {
                     this.replacementsb++;
@@ -284,7 +302,6 @@ export class BeGone {
                     return "es";
                 }); //jedes/r
             }
-
             //man
             if (/\/(frau|man|mensch)/.test(s)) {
                 this.log("11300");
@@ -295,14 +312,54 @@ export class BeGone {
             }
         }
 
-        if (/[a-zäöüß\u00AD\u200B]{2}((\/-?|_|\*|:|\.| und -)?In|(\/-?|_|\*|:|\.| und -)in(n[\*|\.]en)?|INNen|\([Ii]n+(en\)|\)en)?|\/inne?)(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)|[A-ZÄÖÜß\u00AD\u200B]{3}(\/-?|_|\*|:|\.)IN\b/.test(s)) {
+        return s;
+    }
+
+    private entferneUnregelmaessigeFormen(s: string): string {
+        // Sinti*ze und Rom*nja
+        s = s.replace(/\bSinti(\/-?|_|\*|:|\.|\x00b7)ze\b/g, (match, p1) => {
+            this.log("12312");
+            this.replacementsb++;
+            return "Sintys";
+        });
+        s = s.replace(/\bRom(\/-?|_|\*|:|\.|\x00b7)nja\b/g, (match, p1) => {
+            this.log("12312");
+            this.replacementsb++;
+            return "Romys";
+        });
+
+        s = s.replace(/\bMuslim(\/-?|_|\*|:|\.|\xb7)a\b/g, (match, p1) => {
+            this.log("12312");
+            this.replacementsb++;
+            return "Muslimy";
+        });
+
+        return s;
+    }
+
+
+    private entferneBinnenIs(s: string): string {
+        this.log("10000");
+
+        // entferne *x am Ende
+        if (/\*x/.test(s)) {
+            // behandle "einer/m*x progressive*n*x"
+            s = s.replace(/([\w\/*]+)\*x\b\b/ig, (match, p1) => {
+                return p1;
+            });            
+        }
+
+        // unregelmässige Pluralformen
+        s = this.entferneUnregelmaessigeFormen(s);
+
+        if (/[a-zäöüß\u00AD\u200B]{2}((\/-?|_|\*|:|\.|\u00b7| und -)?In|(\/-?|_|\*|:|\.|\u00b7| und -)in(n[\*|\.]en)?|INNen|\([Ii]n+(en\)|\)en)?|\/inne?)(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)|[A-ZÄÖÜß\u00AD\u200B]{3}(\/-?|_|\*|:|\.)IN\b/.test(s)) {
             this.log("12000");
             s = s.replace(/[\u00AD\u200B]/g, ""); //entfernt soft hyphens
 
             //Prüfung auf Ersetzung
-            if (/[a-zäöüß](\/-?|_|\*|:|\.| und -)in\b/i.test(s) || /[a-zäöüß](\/-?|_|\*|:|\.| und -)inn(\*|\.|\))?en/i.test(s) || /[a-zäöüß](\(|\/)in/i.test(s) || /[a-zäöüß]INNen/.test(s)) {
+            if (/[a-zäöüß](\/-?|_|\*|:|\.|\u00b7| und -)in\b/i.test(s) || /[a-zäöüß](\/-?|_|\*|:|\.|\u00b7| und -)inn(\*|\.|\))?en/i.test(s) || /[a-zäöüß](\(|\/)in/i.test(s) || /[a-zäöüß]INNen/.test(s)) {
                 this.log("12100");
-                s = s.replace(/(\/-?|_|\*|:|\.)inn(\*|\.|\/)?e(\*|\.|\/)?n/ig, "Innen"); //Schüler/innen
+                s = s.replace(/(\/-?|_|\*|:|\u00b7|\.)inn(\*|\.|\/)?e(\*|\.|\/)?n/ig, "Innen"); //Schüler/innen
                 s = s.replace(/([a-zäöüß])\(inn(en\)|\)en)/ig, "$1Innen"); //Schüler(innen)
                 s = s.replace(/([a-zäöüß])INNen/g, "$1Innen"); //SchülerINNen
                 s = s.replace(/ und -innen\b/ig, () => {
@@ -381,6 +438,7 @@ export class BeGone {
             if (/[a-zäöüß]In/.test(s) && !/([Pp]lug|Log|[Aa]dd|Linked)In\b/.test(s)) {
                 this.log("12300");
                 //Prüfung auf Sonderfälle
+
                 if (/amtIn|stIn\B|verbesser(?=In)/.test(s)) {
                     s = s.replace(/verbesserIn/g, () => {
                         this.log("12301");
@@ -451,11 +509,13 @@ export class BeGone {
                 s = s.replace(/([nrtmdbplhfcNRTMDBPLHFC])In(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)/g, (match, p1) => {
                     this.log("12312");
                     this.replacementsb++;
-                    return p1;
+                    return p1 + "y";
                 });
             }
 
         }
+
+        s = this.artikelUndKontraktionen(s);
 
         return s;
     }
@@ -464,20 +524,44 @@ export class BeGone {
         if(s.trim().length == 0){
             return s;
         }
-        s = s.replace(/(der|das)/, "die");
-        s = s.replace(/(ern|er|en|e)$/,"");
+        s = s.replace(/(^[dD]+)(er|as)/, (match, p1) => {
+            this.log("11101");
+            this.replacementsb++;
+            return p1 + "ie";
+        });
+        s = s.replace(/(ern|ers|er|en|e)$/,"");
         s = s + "ys";
         return s;
     }
 
     private singulary(s: string): string {
-        if(s.trim().length == 0){
+        if (s.trim().length == 0) {
             return s;
         }
-        s = s.replace(/(den|der|die)/, "das");
-        s = s.replace(/(ern|er)$/,"");
-        s = s + "y";
+        s = s.replace(/(^[dD]+)(en|er|ie)/, (match, p1) => {
+            this.log("11101");
+            this.replacementsb++;
+            return p1 + "as";
+        });
+        if (/(en|ern|er)$/.test(s)) {
+            s = s.replace(/(en|ern|er)$/, "y");
+        } else if (/(ens|erns|ers|es)$/.test(s)) { // Genitiv
+            s = s.replace(/(es)$/, "ys"); // eines Arztes
+        } else {
+            s = s + "y";
+        }
+
         return s;
+    }
+
+    private startsWithCapitalLetter(s: string): boolean {
+        return s != null && s.length > 0 && /[A-Z]/.test(s[0]);
+    }
+    private capitalize(s: string): string {
+        if(s == null || s.length < 1) {
+            return "";
+        }
+        return s.charAt(0).toUpperCase() + s.slice(1);
     }
 
     private entferneDoppelformen(s: string): string {
@@ -511,6 +595,9 @@ export class BeGone {
                     return p13 + p6 + this.pluraly(p18);
                 } else {
                     this.log("21006");
+                    if(this.startsWithCapitalLetter(p2)){
+                        return this.capitalize(this.singulary(p12));
+                    }
                     return this.singulary(p12);
                 }
             }); //die Bürgerin und der Bürger
@@ -534,7 +621,7 @@ export class BeGone {
                     return this.pluraly(p14);
                 }
             }); //unregelmäßiger Plural: Bäuerinnen und Bauern
-            s = s.replace(/\b((von |für |mit |als )?((d|jed|ein|ihr|zum|sein)(e[rnms]?|ie) )?([a-zäöüß]{4,20}[enr] )?([a-zäöüß]{2,})(e?(n|s|r)?))( und | oder | & | bzw\.? |[\/\*_\(-])(\2|von der )?(((von |zu )?d|jed|ein|ihr|zur|sein)(e[rn]?|ie) )?\6?\7(in(nen)?|en?)\b/ig, (match, p1) => {
+            s = s.replace(/\b((von |für |mit |als )?((d|jed|ein|ihr|zum|sein)(e[rnms]?|ie) )?([A-Z][a-zäöüß]{3,20}[enr] )?([A-Za-zäöüß]{2,})(e?(n|s|r)?))( und | oder | & | bzw\.? |[\/\*_\(-])(\2|von der )?(((von |zu )?d|jed|ein|ihr|zur|sein)(e[rn]?|ie) )?\6?\7(in(nen)?|en?)\b/g, (match, p1) => {
                 this.log("21011");
                 this.replacementsd++;
                 return this.pluraly(p1);
@@ -559,16 +646,13 @@ export class BeGone {
     }
 
     private entfernePartizip(s: string): string {
-        if (/(ier|arbeit|orsch|fahr|verdien|nehm|es)ende|Interessierte/.test(s)) {
+        if (/(ier|arbeit|orsch|fahr|verdien|nehm|es)ende|(?<!^)(?<!\. )Interessierte/.test(s)) {
             s = s.replace(/der Studierende\b/g, (match) => {
                 this.replacementsp++;
                 let suffix = "das Studenty";
-                if(match.endsWith("n") || match.endsWith("e")){
-                    suffix = suffix + "s"
-                }
                 return suffix;
             });
-            s = s.replace(/Studierende(r|n?)?/g, (match) => {
+            s = s.replace(/(?<!^)(?<!\. )Studierende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Studenty";
                 if(match.endsWith("n") || match.endsWith("e")){
@@ -576,7 +660,7 @@ export class BeGone {
                 }
                 return suffix;
             });
-            s = s.replace(/Teilnehmende(r|n?)?/g, (match) => {
+            s = s.replace(/(?<!^)(?<!\. )Teilnehmende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Teilnehmy";
                 if(match.endsWith("n") || match.endsWith("e")){
@@ -584,7 +668,7 @@ export class BeGone {
                 }
                 return suffix;
             });
-            s = s.replace(/Dozierende(r|n?)?/g, (match) => {
+            s = s.replace(/(?<!^)(?<!\. )Dozierende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Dozenty";
                 if(match.endsWith("n") || match.endsWith("e")){
@@ -592,7 +676,7 @@ export class BeGone {
                 }
                 return suffix;
             });
-            s = s.replace(/Lesende(r|n?)?/g, (match) => {
+            s = s.replace(/(?<!^)(?<!\. )Lesende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Lesy";
                 if(match.endsWith("n") || match.endsWith("e")){
@@ -600,7 +684,7 @@ export class BeGone {
                 }
                 return suffix;
             });
-            s = s.replace(/Assistierende(r|n?)?/g, (match) => {
+            s = s.replace(/(?<!^)(?<!\. )Assistierende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Assistenty";
                 if(match.endsWith("n") || match.endsWith("e")){
@@ -608,7 +692,7 @@ export class BeGone {
                 }
                 return suffix;
             });
-            s = s.replace(/Mitarbeitende(r|n?)?/g, (match) => {
+            s = s.replace(/(?<!^)(?<!\. )Mitarbeitende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Mitarbeity";
                 if(match.endsWith("n") || match.endsWith("e")){
@@ -616,7 +700,7 @@ export class BeGone {
                 }
                 return suffix;
             });
-            s = s.replace(/Forschende(r|n?)?/g, (match) => {
+            s = s.replace(/(?<!^)(?<!\. )Forschende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix =  "Forschy";
                 if(match.endsWith("n") || match.endsWith("e")){
@@ -624,7 +708,7 @@ export class BeGone {
                 }
                 return suffix;
             });
-            s = s.replace(/Interessierte(r|n?)?/g, (match) => {
+            s = s.replace(/(?<!^)(?<!\. )Interessierte(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Interessenty";
                 if(match.endsWith("n") || match.endsWith("e")){
@@ -632,7 +716,7 @@ export class BeGone {
                 }
                 return suffix;
             });
-            s = s.replace(/([A-Z]+[a-zäöü]+)fahrende(r|n?)?/g, (match, p1) => {
+            s = s.replace(/(?<!^)(?<!\. )([A-Z]+[a-zäöü]+)fahrende(r|n?)?/g, (match, p1) => {
                 this.replacementsp++;
                 let suffix = "fahry";
                 if(match.endsWith("n") || match.endsWith("e")){
@@ -640,7 +724,7 @@ export class BeGone {
                 }
                 return p1 + suffix;
             });
-            s = s.replace(/([A-Z]+[a-zäöü]+)verdienende(r|n?)?/g, (match, p1) => {
+            s = s.replace(/(?<!^)(?<!\. )([A-Z]+[a-zäöü]+)verdienende(r|n?)?/g, (match, p1) => {
                 this.replacementsp++;
 
                 let suffix = "verdieny"
@@ -664,7 +748,7 @@ export class BeGone {
             }
 
             s = s.replace(/\b[Dd]er Geflüchtete\b/g, (match, praeposition, zahlwort, aufzaehlung, gefluechtete, endung, zufolge) => {
-                return "Der Flüchtling";                
+                return "Das Flüchtly";
             });
 
             // Annahme: Gefluechtete wird fast ausschließlich in der Mehrzahl verwendet, was die Ersetzung einfacher macht
@@ -678,9 +762,9 @@ export class BeGone {
                 if (!den) den = "";
 
                 if (praeposition || den) {
-                    return  praeposition + den + zahlwort + aufzaehlung + "Flüchtlingen" + zufolge;
+                    return  praeposition + den + zahlwort + aufzaehlung + "Flüchtlys" + zufolge;
                 } else {
-                    return  praeposition + den + zahlwort + aufzaehlung + "Flüchtlinge" + zufolge;
+                    return  praeposition + den + zahlwort + aufzaehlung + "Flüchtlys" + zufolge;
                 }
             });
 
@@ -691,26 +775,29 @@ export class BeGone {
 
             // "Geflüchtetenxxx" -> "Flüchtlingsxxx"
             s = s.replace(/\b(Geflüchteten)([\w]{3,})\b/g, (match, gefluechteten, rest) => {
-                return "Flüchtlings" + rest;
+                return "Flüchtlys" + rest;
             });
         }
         return s;
     }
 
-    private probeDocument(bodyTextContent: string = document.body.textContent ? document.body.textContent : ""): 
+    private probeDocument(bodyTextContent: string = document.body.textContent ? document.body.textContent : ""):
     {
         probeBinnenI: boolean,
         probeRedundancy: boolean,
-        probePartizip: boolean
-        probeGefluechtete: boolean;
+        probePartizip: boolean,
+        probeGefluechtete: boolean,
+        probeArtikelUndKontraktionen: boolean;
 
     } {
         let probeBinnenI = false;
         let probeRedundancy = false;
         let probePartizip = false;
         let probeGefluechtete = false;
+        let probeArtikelUndKontraktionen = false;
         if (!this.settings.skip_topic || this.settings.skip_topic && this.mtype || this.settings.skip_topic && !/Binnen-I|Geflüchtete/.test(bodyTextContent)) {
-            probeBinnenI = /[a-zäöüß]{2}((\/-?|_|\*|:|\.| und -)?In|(\/-?|_|\*|:|\.| und -)in(n[\*|\.]en)?|INNen|\([Ii]n+(en\)|\)en)?|\/inne?)(?!(\w{1,2}\b)|[A-Z]|[cf]o|t|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)|[A-ZÄÖÜß]{3}(\/-?|_|\*|:|\.)IN\b|(der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(])/.test(bodyTextContent);
+            probeBinnenI = /[a-zäöüß]{2}((\/-?|_|\*|:|\.|\u00b7| und -)?In|(\/-?|_|\*|:|\.|\u00b7| und -)in(n[\*|\.]en)?|(\/-?|_|\*|:|\.|\u00b7)ze||(\/-?|_|\*|:|\.|\u00b7)a|(\/-?|_|\*|:|\.|\u00b7)nja|INNen|\([Ii]n+(en\)|\)en)?|\/inne?)(?!(\w{1,2}\b)|[A-Z]|[cf]o|t|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)|[A-ZÄÖÜß]{3}(\/-?|_|\*|:|\.)IN\b|(der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(])/.test(bodyTextContent);
+            probeArtikelUndKontraktionen = /[a-zA-ZäöüßÄÖÜ][\/\*.&_\(]-?[a-zA-ZäöüßÄÖÜ]/.test(bodyTextContent) || /der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(]-?e?r\b|em?\(e?r\)\b/.test(bodyTextContent);
 
             if (this.settings.doppelformen) {
                 probeRedundancy = /\b(und|oder|bzw)\b/.test(bodyTextContent);
@@ -728,7 +815,8 @@ export class BeGone {
             probeBinnenI: probeBinnenI,
             probeRedundancy: probeRedundancy,
             probePartizip: probePartizip,
-            probeGefluechtete : probeGefluechtete
+            probeGefluechtete : probeGefluechtete,
+            probeArtikelUndKontraktionen : probeArtikelUndKontraktionen
         }
     }
 
@@ -795,7 +883,7 @@ export class BeGone {
     public entferneInitial() {
         const probeResult = this.probeDocument()
 
-        if (probeResult.probeBinnenI || this.settings.doppelformen && probeResult.probeRedundancy || this.settings.partizip && probeResult.probePartizip) {
+        if (probeResult.probeBinnenI || this.settings.doppelformen && probeResult.probeRedundancy || this.settings.partizip && probeResult.probePartizip || probeResult.probeArtikelUndKontraktionen) {
             this.nodes = this.textNodesUnder(document)
             if (this.settings.doppelformen && probeResult.probeRedundancy) {
                 this.applyToNodes(this.nodes, this.entferneDoppelformen);
@@ -810,6 +898,10 @@ export class BeGone {
                 this.applyToNodes(this.nodes, this.ersetzeGefluechteteDurchFluechtlinge);
             }
 
+            if (probeResult.probeArtikelUndKontraktionen){
+                this.applyToNodes(this.nodes, this.artikelUndKontraktionen);
+            }
+
             if (this.settings.counter) {
                 this.sendCounttoBackgroundScript();
             }
@@ -819,7 +911,7 @@ export class BeGone {
     public entferneInitialForTesting(s: string): string {
         const probeResult = this.probeDocument(s)
 
-        if (probeResult.probeBinnenI || this.settings.doppelformen && probeResult.probeRedundancy || this.settings.partizip && probeResult.probePartizip || this.settings.partizip && probeResult.probeGefluechtete) {
+        if (probeResult.probeBinnenI || this.settings.doppelformen && probeResult.probeRedundancy || this.settings.partizip && probeResult.probePartizip || this.settings.partizip && probeResult.probeGefluechtete || probeResult.probeArtikelUndKontraktionen) {
             if (this.settings.doppelformen && probeResult.probeRedundancy) {
                 s = this.entferneDoppelformen(s);
             }
@@ -831,6 +923,10 @@ export class BeGone {
             }
             if (probeResult.probeGefluechtete) {
                 s = this.ersetzeGefluechteteDurchFluechtlinge(s);
+            }
+
+            if (probeResult.probeArtikelUndKontraktionen){
+                s = this.artikelUndKontraktionen(s);
             }
 
             if (this.settings.counter) {
