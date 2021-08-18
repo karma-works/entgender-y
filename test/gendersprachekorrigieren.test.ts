@@ -165,7 +165,7 @@ describe('entferne Binnen-I', () => {
     it('von Autor*innen und Freund*innen -> von Autoren und Freunden', () => {
         const result = beGone.entferneInitialForTesting("Wenn Friedrich Merz Bundeskanzler wird, dann wandere ich aus in ein Land mit einer/m*x progressive*n*x Staatsoberhaupt.");
         // besser als nichts
-        expect(result).to.be.equal("Wenn Friedrich Merz Bundeskanzler wird, dann wandere ich aus in ein Land mit einem progressive*n Staatsoberhaupt.");
+        expect(result).to.be.equal("Wenn Friedrich Merz Bundeskanzler wird, dann wandere ich aus in ein Land mit einem progressiven Staatsoberhaupt.");
     });
 
     it('Mehrzahl', () => {
@@ -203,6 +203,11 @@ describe('Unregelmässige Formen', () => {
         const result = beGone.entferneInitialForTesting(" Sinti*ze und Rom*nja ");
         expect(result).to.be.equal(" Sintys und Romys ");
     });
+
+    it('Sonderformen Muslim:a', () => {
+        const result = beGone.entferneInitialForTesting(" Muslim:a ");
+        expect(result).to.be.equal(" Muslimy ");
+    });
 });
 
 
@@ -231,6 +236,20 @@ describe('Kontraktionen und Artikel', () => {
     it("Der*die", () => {
         const result = beGone.entferneInitialForTesting("Der*die ");
         expect(result).to.be.equal("Das ");
+    });
+    it('Ein*e', () => {
+        const result = beGone.entferneInitialForTesting("Ein*e ");
+        expect(result).to.be.equal("Ein ");
+    });
+
+    it('ein europäische*n Wehrbeauftragte*n“ zu etablieren', () => {
+        const result = beGone.entferneInitialForTesting("ein europäische*n Wehrbeauftragte*n“ zu etablieren");
+        expect(result).to.be.equal("ein europäisches Wehrbeauftragty“ zu etablieren");
+    });
+
+    it('jede*n', () => {
+        const result = beGone.entferneInitialForTesting("jede*n ");
+        expect(result).to.be.equal("jedes ");
     });
 });
 
@@ -557,11 +576,6 @@ describe('Empfehlungen Uni Hamburg werden korrigiert', () => {
         const result = beGone.entferneInitialForTesting("Sehr geehrte Teilnehmende");
         expect(result).to.be.equal("Sehr geehrte Teilnehmys");
     });
-});
-
-
-describe('TODO oder nicht ohne weiteres lösbar', () => {
-    let beGone = new BeGone();
 
     it('Student*in', () => {
         const result = beGone.entferneInitialForTesting("Student*in ");
@@ -572,21 +586,11 @@ describe('TODO oder nicht ohne weiteres lösbar', () => {
         const result = beGone.entferneInitialForTesting("Doktor*in ");
         expect(result).to.be.equal("Doktory ");
     });
+});
 
-    it('Ein*e', () => {
-        const result = beGone.entferneInitialForTesting("Ein*e ");
-        expect(result).to.be.equal("Ein ");
-    });
 
-    it('ein europäische*n Wehrbeauftragte*n“ zu etablieren', () => {
-        const result = beGone.entferneInitialForTesting("ein europäische*n Wehrbeauftragte*n“ zu etablieren");
-        expect(result).to.be.equal("ein europäisches Wehrbeauftragty“ zu etablieren");
-    });
-
-    it('jede*n', () => {
-        const result = beGone.entferneInitialForTesting("jede*n ");
-        expect(result).to.be.equal("jedes ");
-    });
+describe('TODO oder nicht ohne weiteres lösbar', () => {
+    let beGone = new BeGone();
 
 });
 
