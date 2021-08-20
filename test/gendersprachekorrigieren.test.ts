@@ -608,6 +608,12 @@ describe('TODO oder nicht ohne weiteres lösbar', () => {
     });
 
 
+    it('LinkedIn Links', () => {
+        const result = beGone.entferneInitialForTesting(" https://lnkd.in/dummy ");
+        expect(result).to.be.equal(" https://lnkd.in/dummy ");
+    });
+
+
 });
 
 /** 
