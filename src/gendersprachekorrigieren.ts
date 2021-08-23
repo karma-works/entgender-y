@@ -1,3 +1,6 @@
+import replacements from './replacements'
+import Replacements from "./replacements";
+
 declare var chrome: any;
 interface BeGoneSettings {
     aktiv?: boolean;
@@ -127,7 +130,7 @@ export class BeGone {
                 });
             }
         }
-    }    
+    }
 
     private artikelUndKontraktionen(s: string): string {
 
@@ -255,16 +258,25 @@ export class BeGone {
                         return p2;
                     }
                 });
-                s = s.replace(/\b(z)(um[\/\*_\(-]zur|ur\[\/\*_\(-]zum)\b/ig, (match, p1) => {
-                    this.log("11123");
-                    this.replacementsb++;
-                    return p1 + "um";
-                });
-                s = s.replace(/\jede[rnms]?[\/\*_\(-](jede[rnms]?)\b/ig, (match, p1) => {
-                    this.log("11124");
-                    this.replacementsb++;
-                    return p1;
-                });
+                // s = s.replace(/\b(z)(um[\/\*_\(-]zur|ur\[\/\*_\(-]zum)\b/ig, (match, p1) => {
+                //     this.log("11123");
+                //     this.replacementsb++;
+                //     return p1 + "um";
+                // });
+                // s = s.replace(/\jede[rnms]?[\/\*_\(-](jede[rnms]?)\b/ig, (match, p1) => {
+                //     this.log("11124");
+                //     this.replacementsb++;
+                //     return p1;
+                // });
+                var outer = this;
+                var repl = new Replacements();
+                s = repl.replaceAll(s, function(){ outer.replacementsb++ });
+
+                // for (const replacement of replacements.rmap()) {
+                //     console.log(replacement.regex, replacement.replacement);
+                //     s = s.replace(replacement.regex, replacement.replacement);
+                // }
+
             }
 
             //extra Stuff

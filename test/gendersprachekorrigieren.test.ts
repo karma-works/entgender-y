@@ -599,11 +599,11 @@ describe('TODO oder nicht ohne weiteres lösbar', () => {
 
     it('Expert*innengespräche', () => {
         const result = beGone.entferneInitialForTesting(" Expert*innengespräche ");
-        expect(result).to.be.equal(" Expertygespräche ");
+        expect(result).to.be.equal(" Expertysgespräche ");
     });
 
-    it('Kanditat*innen', () => {
-        const result = beGone.entferneInitialForTesting(" Kanditat*innen ");
+    it('Kandidat*innen', () => {
+        const result = beGone.entferneInitialForTesting(" Kandidat*innen ");
         expect(result).to.be.equal(" Kandidatys ");
     });
 
