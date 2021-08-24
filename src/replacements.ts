@@ -4,6 +4,7 @@ export class Replacement {
     modifier: string;
     replacement: string;
     description: string | undefined;
+    last: boolean = false;
 
     constructor(regex: string, modifier: string, replacement: string, description: string | undefined) {
         this.regex = regex;
@@ -23,24 +24,24 @@ export class Replacement {
 }
 
 export default class Replacements {
-    private gstar: string  = String.raw`[\/\*_\(-]`;
+    private gstar: string  = String.raw`[\/\*_\(-]{1,2}`;
 
     private _rmap: Array<Replacement> = [
-        new Replacement(String.raw`\b(d)(ie${this.gstar}+der|er${this.gstar}+die)\b`, "ig", "\$1as", ""),
-        new Replacement(String.raw`\b(d)(en${this.gstar}+die|ie${this.gstar}+den)\b`, "ig", "\$1as", ""),
-        new Replacement(String.raw`\b(d)(es${this.gstar}+der|er${this.gstar}+des)\b`, "ig", "\$1es", ""),
-        new Replacement(String.raw`\b(d)(er${this.gstar}+dem|em${this.gstar}+der)\b`, "ig", "\$1em", ""),
+        new Replacement(String.raw`\b(d)(ie${this.gstar}der|er${this.gstar}die)\b`, "ig", "\$1as", ""),
+        new Replacement(String.raw`\b(d)(en${this.gstar}die|ie${this.gstar}den)\b`, "ig", "\$1as", ""),
+        new Replacement(String.raw`\b(d)(es${this.gstar}der|er${this.gstar}des)\b`, "ig", "\$1es", ""),
+        new Replacement(String.raw`\b(d)(er${this.gstar}dem|em${this.gstar}der)\b`, "ig", "\$1em", ""),
         new Replacement(String.raw`b(d)(eren${this.gstar}dessen|essen${this.gstar}deren)\b`, "ig", "\$1essen", ""),
         new Replacement(String.raw`\bdiese[r]?${this.gstar}(diese[rnms])`, "ig", "\$1", "1"),
         new Replacement(String.raw`(diese[rnms])${this.gstar}diese[r]?\b`, "ig", "\$1", "2"),
-        new Replacement(String.raw`\b([KkDMSdms]?[Ee])in(${this.gstar}+e |\(e\) |E )`, "g", "\$1in ", ""),
-        new Replacement(String.raw`\b([KkDMSdms]?[Ee])ine(${this.gstar}+r |\(r\) |R )`, "g", "\$1iner ", ""),
-        new Replacement(String.raw`\b([KkDMSdms]?[Ee])iner(${this.gstar}+s |\(S\) |S )`, "g", "\$1ines ", ""),
-        new Replacement(String.raw`\b([KkDMSdms]?[Ee])ines(${this.gstar}+r |\(R\) |R )`, "g", "\$1ines ", ""),
-        new Replacement(String.raw`\b([KkDMSdms]?[Ee])iner(${this.gstar}+m |\(m\) |M )`, "g", "\$1inem ", ""),
-        new Replacement(String.raw`\b([KkDMSdms]?[Ee])inem(${this.gstar}+r |\(r\) |R )`, "g", "\$1inem ", ""),
+        new Replacement(String.raw`\b([KkDMSdms]?[Ee])in(${this.gstar}e |\(e\) |E )`, "g", "\$1in ", ""),
+        new Replacement(String.raw`\b([KkDMSdms]?[Ee])ine(${this.gstar}r |\(r\) |R )`, "g", "\$1iner ", ""),
+        new Replacement(String.raw`\b([KkDMSdms]?[Ee])iner(${this.gstar}s |\(S\) |S )`, "g", "\$1ines ", ""),
+        new Replacement(String.raw`\b([KkDMSdms]?[Ee])ines(${this.gstar}r |\(R\) |R )`, "g", "\$1ines ", ""),
+        new Replacement(String.raw`\b([KkDMSdms]?[Ee])iner(${this.gstar}m |\(m\) |M )`, "g", "\$1inem ", ""),
+        new Replacement(String.raw`\b([KkDMSdms]?[Ee])inem(${this.gstar}r |\(r\) |R )`, "g", "\$1inem ", ""),
         new Replacement(String.raw`\b([KkDMSdms]?[Ee])ine(m|r)${this.gstar}([KkDMSdms]?[Ee])ine(m |r )`, "g", "\$1inem ", "einer_einem, keiner_keinem"),
-        new Replacement(String.raw`\b([KkDMSdms]?[Ee])ine(${this.gstar}+n |\(n\) |N )`, "g", "\$1in ", ""),
+        new Replacement(String.raw`\b([KkDMSdms]?[Ee])ine(${this.gstar}n |\(n\) |N )`, "g", "\$1in ", ""),
         new Replacement(String.raw`\bsie${this.gstar}er|er${this.gstar}sie\b`, "g", "er", ""),
         new Replacement(String.raw`\bSie${this.gstar}[Ee]r|Er${this.gstar}[Ss]ie\b`, "g", "Es", ""),
         new Replacement(String.raw`\b(i)(hr${this.gstar}ihm|hm${this.gstar}ihr)\b`, "ig", "\$1hm", ""),
@@ -49,7 +50,7 @@ export default class Replacements {
         new Replacement(String.raw`\bihr${this.gstar}e\b`, "ig", "ihr", "ihr*e Partner*in"),
         new Replacement(String.raw`\bihre?[rnms]?${this.gstar}(seine?[rnms]?)`, "ig", "\$1", "ihr*e Partner*in"),
         new Replacement(String.raw`(seine?[rnms]?)${this.gstar}ihre?[rnms]?\b`, "ig", "\$1", "ihr*e Partner*in"),
-        new Replacement(String.raw`\b(z)(um${this.gstar}zur|ur\${this.gstar}zum)\b`, "ig", "\$1um", ""),
+        new Replacement(String.raw`\b(z)(um${this.gstar}zur|ur${this.gstar}zum)\b`, "ig", "\$1um", ""),
         new Replacement(String.raw`jede[rnms]?${this.gstar}(jede[rnms]?)\b`, "ig",  "\$1", "")
     ];
 
