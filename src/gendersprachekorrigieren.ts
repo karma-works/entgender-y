@@ -248,16 +248,16 @@ export class BeGone {
                     this.replacementsb++;
                     return "ihr";
                 }); //ihr*e Partner*in
-                s = s.replace(/\bihre?[rnms]?[\/\*_\(-](seine?[rnms]?)|(seine?[rnms]?)[\/\*_\(-]ihre?[rnms]?\b/ig, (match, p1, p2) => {
-                    this.replacementsb++;
-                    if (p1) {
-                        this.log("11121");
-                        return p1;
-                    } else if (p2) {
-                        this.log("11122");
-                        return p2;
-                    }
-                });
+                // s = s.replace(/\bihre?[rnms]?[\/\*_\(-](seine?[rnms]?)|(seine?[rnms]?)[\/\*_\(-]ihre?[rnms]?\b/ig, (match, p1, p2) => {
+                //     this.replacementsb++;
+                //     if (p1) {
+                //         this.log("11121");
+                //         return p1;
+                //     } else if (p2) {
+                //         this.log("11122");
+                //         return p2;
+                //     }
+                // });
                 // s = s.replace(/\b(z)(um[\/\*_\(-]zur|ur\[\/\*_\(-]zum)\b/ig, (match, p1) => {
                 //     this.log("11123");
                 //     this.replacementsb++;
