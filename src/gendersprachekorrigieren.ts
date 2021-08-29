@@ -141,7 +141,7 @@ export class BeGone {
             if (/der|die|dessen|ein|sie|ih[rmn]|zu[rm]|jede/i.test(s)) {
                 var outer = this;
                 var repl = new Replacements();
-                s = repl.replaceAll(s, function(){ outer.replacementsb++ });
+                s = repl.replaceArtikel1(s, function(){ outer.replacementsb++ });
             }
 
             //extra Stuff

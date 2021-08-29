@@ -1,4 +1,11 @@
 
+
+enum Preconditions {
+    ARTIKEL,
+    ARTIKEL_STUFF,
+    ARTIKEL_STUFF_2
+}
+
 export class Replacement {
     regex: string;
     modifier: string;
@@ -26,7 +33,7 @@ export class Replacement {
 export default class Replacements {
     private gstar: string  = String.raw`[\/\*_\(-]{1,2}`;
 
-    private _rmap: Array<Replacement> = [
+    private artikelStuff: Array<Replacement> = [
         new Replacement(String.raw`\b(d)(ie${this.gstar}der|er${this.gstar}die)\b`, "ig", "\$1as", ""),
         new Replacement(String.raw`\b(d)(en${this.gstar}die|ie${this.gstar}den)\b`, "ig", "\$1as", ""),
         new Replacement(String.raw`\b(d)(es${this.gstar}der|er${this.gstar}des)\b`, "ig", "\$1es", ""),
@@ -54,50 +61,49 @@ export default class Replacements {
         new Replacement(String.raw`jede[rnms]?${this.gstar}(jede[rnms]?)\b`, "ig",  "\$1", "")
     ];
 
-    rmap(): Array<Replacement> {
+    private _rmap: Map<Preconditions, Array<Replacement>> = new Map<Preconditions, Array<Replacement>>([[Preconditions.ARTIKEL_STUFF, this.artikelStuff]]);
+
+    rmap(): Map<Preconditions, Array<Replacement>> {
         return this._rmap;
     }
 
-    public replaceAll(inputString: string, incrementCounter: () => void): string {
+    public replaceAll(inputString: string, preconditions: Preconditions[], incrementCounter: () => void): string {
         let outputString = inputString;
-        for (const replacement of this.rmap()) {
-            let regex = RegExp(replacement.regex, replacement.modifier);
-            if(regex.test(outputString)){
-                outputString = outputString.replace(regex, replacement.replacement);
-                incrementCounter();
+
+        this.rmap().forEach((rmap: Array<Replacement>, key: Preconditions) => {
+            if(preconditions.includes(key)) {
+                for (const replacement of rmap) {
+                    let regex = RegExp(replacement.regex, replacement.modifier);
+                    if (regex.test(outputString)) {
+                        outputString = outputString.replace(regex, replacement.replacement);
+                        incrementCounter();
+                    }
+                }
             }
-        }
+        });
 
         return outputString;
     }
 
+    public replaceArtikel1(inputString: string, incrementCounter: () => void): string {
+        return this.replaceAll(inputString, [Preconditions.ARTIKEL_STUFF], incrementCounter);
+    }
+
+    public replaceArtikel2(inputString: string, incrementCounter: () => void): string {
+        return this.replaceAll(inputString, [Preconditions.ARTIKEL_STUFF_2], incrementCounter);
+    }
+
     public getDebug(inputString: string): string {
         let out = '\n';
-        for (const replacement of this.rmap()) {
-            let regex = RegExp(replacement.regex, replacement.modifier);
-            if(regex.test(inputString)){
-                out = out + replacement + "\n";
+        this.rmap().forEach((rmap: Array<Replacement>, key: Preconditions) => {
+            for (const replacement of rmap) {
+                let regex = RegExp(replacement.regex, replacement.modifier);
+                if (regex.test(inputString)) {
+                    out = out + replacement + "\n";
+                }
             }
-        }
+        });
 
         return out + "\n";
-    }
-}
-
-export class Preconditions {
-    rxArtikel1: Replacement = new Replacement(String.raw`[a-zA-ZäöüßÄÖÜ][\\/\\*.&_\\(]-?[a-zA-ZäöüßÄÖÜ]`, "", "", "");
-    rxArtikel2: Replacement = new Replacement(String.raw`der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\\b|em?[\\/\\*.&_\\(]-?e?r\\b|em?\\(e?r\\)\\b`, "", "", "");
-    rxArtikelStuff: Replacement = new Replacement(String.raw`der|die|dessen|ein|sie|ih[rmn]|zu[rm]|jede`, "i", "", "");
-
-    inputString: string;
-
-    artikel: boolean =  false;
-    artikelStuff: boolean = false;
-
-
-    constructor(inputString: string){
-        this.inputString = inputString;
-        this.artikel = this.rxArtikel1.regexp().test(inputString) || this.rxArtikel2.regexp().test(inputString);
-        this.artikelStuff = this.artikel || this.rxArtikelStuff.regexp().test(inputString);
     }
 }
