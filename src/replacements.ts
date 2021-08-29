@@ -61,7 +61,19 @@ export default class Replacements {
         new Replacement(String.raw`jede[rnms]?${this.gstar}(jede[rnms]?)\b`, "ig",  "\$1", "")
     ];
 
-    private _rmap: Map<Preconditions, Array<Replacement>> = new Map<Preconditions, Array<Replacement>>([[Preconditions.ARTIKEL_STUFF, this.artikelStuff]]);
+    private artikelStuff2: Array<Replacement> = [
+        new Replacement(String.raw`(?<beginning>m\b.{3,30})(?<star>[\/\*_\(-]{1,2})(?<suffix>[rn])\b`, "ig", "\$1\$3", "Dativ: einem progressive*n Staatsoberhaupt"),
+        new Replacement(String.raw`(\b[a-zäöü]+e)([\/\*_\(-]+)(n|e\(n\)|eN\b)`, "g", "\$1s", "jede*n, europäische*n"),
+        new Replacement(String.raw`([\b“ ][A-ZÄÖÜ]\w+)(e[\/\*_\(-]+)(n|e\(n\)|eN[\b“ ])`, "g", "\$1y", "Wehrbeauftragte*n“"),
+        new Replacement(String.raw`e[\/\*_\(-]+r|e\(r\)|eR\b`, "g", "es", "jede/r,jede(r),jedeR"),
+        new Replacement(String.raw`em\(e?r\)|em[\/\*_\(-]+r\b`, "g", "em", "jedem/r"),
+        new Replacement(String.raw`er\(e?s\)|es[\/\*_\(-]+r\b`, "g", "es", "jedes/r")
+    ];
+
+    private _rmap: Map<Preconditions, Array<Replacement>> = new Map<Preconditions, Array<Replacement>>([
+        [Preconditions.ARTIKEL_STUFF, this.artikelStuff],
+        [Preconditions.ARTIKEL_STUFF_2, this.artikelStuff2]
+    ]);
 
     rmap(): Map<Preconditions, Array<Replacement>> {
         return this._rmap;

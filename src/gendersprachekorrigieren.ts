@@ -137,51 +137,21 @@ export class BeGone {
         if (/[a-zA-ZäöüßÄÖÜ][\/\*.&_\(]-?[a-zA-ZäöüßÄÖÜ]/.test(s) || /der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(]-?e?r\b|em?\(e?r\)\b/.test(s)) {
             this.log("11000");
 
+            var outer = this;
+            var repl = new Replacements();
+
             //Stuff
             if (/der|die|dessen|ein|sie|ih[rmn]|zu[rm]|jede/i.test(s)) {
-                var outer = this;
-                var repl = new Replacements();
                 s = repl.replaceArtikel1(s, function(){ outer.replacementsb++ });
             }
 
             //extra Stuff
             if (/eR\b|em?[\/\*_\(-]{1,2}e?[rn]\b|em?\(e?r\)\b/.test(s)) {
-                this.log("11200");
-
-                // Dativ: einem progressive*n Staatsoberhaupt
-                s = s.replace(/(?<beginning>m\b.{3,30})(?<star>[\/\*_\(-]{1,2})(?<suffix>[rn])\b/ig, (match, p1, p2, p3) => {
-                    this.replacementsb++;
-                    return p1 + p3;
-                });
-
-                // jede*n, europäische*n
-                s = s.replace(/(\b[a-zäöü]+e)([\/\*_\(-]+)(n|e\(n\)|eN\b)/g, (match, p1, p2, p3) => {
-                    this.replacementsb++;
-                    return p1 + "s";
-                });
-
-                // Wehrbeauftragte*n“
-                s = s.replace(/([\b“ ][A-ZÄÖÜ]\w+)(e[\/\*_\(-]+)(n|e\(n\)|eN[\b“ ])/g, (match, p1, p2, p3) => {
-                    this.replacementsb++;
-                    return p1 + "y";
-                });
-
-                s = s.replace(/e[\/\*_\(-]+r|e\(r\)|eR\b/g, () => {
-                    this.replacementsb++;
-                    return "es";
-                }); //jede/r,jede(r),jedeR,
-                s = s.replace(/em\(e?r\)|em[\/\*_\(-]+r\b/g, () => {
-                    this.replacementsb++;
-                    return "em";
-                }); //jedem/r
-                s = s.replace(/er\(e?s\)|es[\/\*_\(-]+r\b/g, () => {
-                    this.replacementsb++;
-                    return "es";
-                }); //jedes/r
+                s = repl.replaceArtikel2(s, function(){ outer.replacementsb++ });
             }
+
             //man
             if (/\/(frau|man|mensch)/.test(s)) {
-                this.log("11300");
                 s = s.replace(/\b(frau|man+|mensch)+[\/\*_\(-](frau|man+|mensch|[\/\*_\(-])*/, () => {
                     this.replacementsb++;
                     return "man";
