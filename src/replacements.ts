@@ -1,9 +1,9 @@
 
 
 enum Preconditions {
-    ARTIKEL,
     ARTIKEL_STUFF,
-    ARTIKEL_STUFF_2
+    ARTIKEL_STUFF_2,
+    ARTIKEL_STUFF_3
 }
 
 export class Replacement {
@@ -70,9 +70,14 @@ export default class Replacements {
         new Replacement(String.raw`er\(e?s\)|es[\/\*_\(-]+r\b`, "g", "es", "jedes/r")
     ];
 
+    private artikelStuff3: Array<Replacement> = [
+        new Replacement( String.raw`\b(frau|man+|mensch)+[\/\*_\(-](frau|man+|mensch|[\/\*_\(-])*`, "", "man", "")
+    ];
+
     private _rmap: Map<Preconditions, Array<Replacement>> = new Map<Preconditions, Array<Replacement>>([
         [Preconditions.ARTIKEL_STUFF, this.artikelStuff],
-        [Preconditions.ARTIKEL_STUFF_2, this.artikelStuff2]
+        [Preconditions.ARTIKEL_STUFF_2, this.artikelStuff2],
+        [Preconditions.ARTIKEL_STUFF_3, this.artikelStuff3]
     ]);
 
     rmap(): Map<Preconditions, Array<Replacement>> {
@@ -103,6 +108,10 @@ export default class Replacements {
 
     public replaceArtikel2(inputString: string, incrementCounter: () => void): string {
         return this.replaceAll(inputString, [Preconditions.ARTIKEL_STUFF_2], incrementCounter);
+    }
+
+    public replaceArtikel3(inputString: string, incrementCounter: () => void): string {
+        return this.replaceAll(inputString, [Preconditions.ARTIKEL_STUFF_3], incrementCounter);
     }
 
     public getDebug(inputString: string): string {

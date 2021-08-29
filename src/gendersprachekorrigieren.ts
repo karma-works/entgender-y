@@ -152,10 +152,7 @@ export class BeGone {
 
             //man
             if (/\/(frau|man|mensch)/.test(s)) {
-                s = s.replace(/\b(frau|man+|mensch)+[\/\*_\(-](frau|man+|mensch|[\/\*_\(-])*/, () => {
-                    this.replacementsb++;
-                    return "man";
-                });
+                s = repl.replaceArtikel3(s, function(){ outer.replacementsb++ });
             }
         }
 
