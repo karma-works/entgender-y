@@ -25,6 +25,16 @@ export class Replacement {
         return ret;
     }
 
+    public replace(inputString: string, incrementCounter: () => void){
+        let outputString = inputString;
+        let reg = RegExp(this.regex, this.modifier);
+        if (reg.test(outputString)) {
+            outputString = outputString.replace(reg, this.replacement);
+            incrementCounter();
+        }
+        return outputString;
+    }
+
     public regexp(): RegExp {
         return new RegExp(this.regex, this.modifier);
     }
@@ -90,11 +100,7 @@ export default class Replacements {
         this.rmap().forEach((rmap: Array<Replacement>, key: Preconditions) => {
             if(preconditions.includes(key)) {
                 for (const replacement of rmap) {
-                    let regex = RegExp(replacement.regex, replacement.modifier);
-                    if (regex.test(outputString)) {
-                        outputString = outputString.replace(regex, replacement.replacement);
-                        incrementCounter();
-                    }
+                    outputString = replacement.replace(outputString, incrementCounter);
                 }
             }
         });
