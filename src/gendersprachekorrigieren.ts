@@ -1,4 +1,4 @@
-import replacements from './replacements'
+import replacements, {Replacement} from './replacements'
 import Replacements from "./replacements";
 
 declare var chrome: any;
@@ -160,23 +160,15 @@ export class BeGone {
     }
 
     private entferneUnregelmaessigeFormen(s: string): string {
-        // Sinti*ze und Rom*nja
-        s = s.replace(/\bSinti(\/-?|_|\*|:|\.|\x00b7)ze\b/g, (match, p1) => {
-            this.log("12312");
-            this.replacementsb++;
-            return "Sintys";
-        });
-        s = s.replace(/\bRom(\/-?|_|\*|:|\.|\x00b7)nja\b/g, (match, p1) => {
-            this.log("12312");
-            this.replacementsb++;
-            return "Romys";
-        });
+        let outer = this;
+        let counter = function() {outer.replacementsb++;};
 
-        s = s.replace(/\bMuslim(\/-?|_|\*|:|\.|\xb7)a\b/g, (match, p1) => {
-            this.log("12312");
-            this.replacementsb++;
-            return "Muslimy";
-        });
+        // Sinti*ze und Rom*nja
+        s = new Replacement(String.raw`\bSinti(\/-?|_|\*|:|\.|\x00b7)ze\b`, "g",
+            "Sintys", "Sinti*ze und Rom*nja").replace(s, counter);
+        s = new Replacement(String.raw`\bRom(\/-?|_|\*|:|\.|\x00b7)nja\b`, "g", "Romys", "Sinti*ze und Rom*nja").replace(s, counter);;
+
+        s = new Replacement(String.raw`\bMuslim(\/-?|_|\*|:|\.|\xb7)a\b`, "g", "Muslimy", "").replace(s, counter);
 
         return s;
     }
@@ -184,13 +176,13 @@ export class BeGone {
 
     private entferneBinnenIs(s: string): string {
         this.log("10000");
+        let outer = this;
+        let counter = function() {outer.replacementsb++;};
 
         // entferne *x am Ende
         if (/\*x/.test(s)) {
             // behandle "einer/m*x progressive*n*x"
-            s = s.replace(/([\w\/*]+)\*x\b\b/ig, (match, p1) => {
-                return p1;
-            });            
+            s = new Replacement(String.raw`([\w\/*]+)\*x\b\b`, "ig", "\$1", "").replace(s, counter);
         }
 
         // unregelmässige Pluralformen
@@ -198,21 +190,17 @@ export class BeGone {
 
         if (/[a-zäöüß\u00AD\u200B]{2}((\/-?|_|\*|:|\.|\u00b7| und -)?In|(\/-?|_|\*|:|\.|\u00b7| und -)in(n[\*|\.]en)?|INNen|\([Ii]n+(en\)|\)en)?|\/inne?)(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)|[A-ZÄÖÜß\u00AD\u200B]{3}(\/-?|_|\*|:|\.)IN\b/.test(s)) {
             this.log("12000");
-            s = s.replace(/[\u00AD\u200B]/g, ""); //entfernt soft hyphens
+            s = new Replacement(String.raw`[\u00AD\u200B]`, "g", "", "entfernt soft hyphens").replace(s, counter);
 
             //Prüfung auf Ersetzung
             if (/[a-zäöüß](\/-?|_|\*|:|\.|\u00b7| und -)in\b/i.test(s) || /[a-zäöüß](\/-?|_|\*|:|\.|\u00b7| und -)inn(\*|\.|\))?en/i.test(s) || /[a-zäöüß](\(|\/)in/i.test(s) || /[a-zäöüß]INNen/.test(s)) {
                 this.log("12100");
-                s = s.replace(/(\/-?|_|\*|:|\u00b7|\.)inn(\*|\.|\/)?e(\*|\.|\/)?n/ig, "Innen"); //Schüler/innen
-                s = s.replace(/([a-zäöüß])\(inn(en\)|\)en)/ig, "$1Innen"); //Schüler(innen)
-                s = s.replace(/([a-zäöüß])INNen/g, "$1Innen"); //SchülerINNen
-                s = s.replace(/ und -innen\b/ig, () => {
-                    this.log("12101");
-                    this.replacementsb++;
-                    return "";
-                }); //und -innen
-                s = s.replace(/(\/-?|_|\*|:|\.)in\b/ig, "In"); //Schüler/in
-                s = s.replace(/([a-zäöüß])\(in\)/ig, "$1In"); //Schüler(in)
+                s = new Replacement(String.raw`(\/-?|_|\*|:|\u00b7|\.)inn(\*|\.|\/)?e(\*|\.|\/)?n`, "ig", "Innen", "Schüler/innen").replace(s, counter);
+                s = new Replacement(String.raw`([a-zäöüß])\(inn(en\)|\)en)`, "ig", "\$1Innen", "Schüler(innen)").replace(s, counter);
+                s = new Replacement(String.raw`([a-zäöüß])INNen`, "g", "\$1Innen", "SchülerINNen").replace(s, counter);
+                s = new Replacement(String.raw` und -innen\b`, "ig", "", "und -innen").replace(s, counter);
+                s = new Replacement(String.raw`(\/-?|_|\*|:|\.)in\b`, "ig", "In", "Schüler/in").replace(s, counter);
+                s = new Replacement(String.raw`([a-zäöüß])\(in\)`, "ig", "$1In", "Schüler(in)").replace(s, counter);
                 this.log(s);
             }
 
@@ -221,61 +209,24 @@ export class BeGone {
                 this.log("12200");
                 //Prüfung auf Sonderfälle
                 if (/(chef|fan|gött|verbesser|äur|äs)innen/i.test(s)) {
-                    s = s.replace(/(C|c)hefInnen/g, (match, p1) => {
-                        this.log("12201");
-                        this.replacementsb++;
-                        return p1 + "hefys";
-                    });
-                    s = s.replace(/(F|f)anInnen/g, (match, p1) => {
-                        this.log("12202");
-                        this.replacementsb++;
-                        return p1 + "ans";
-                    });
-                    s = s.replace(/([Gg]ött|verbesser)(?=Innen)/g, (match, p1) => {
-                        this.log("12203");
-                        this.replacementsb++;
-                        return p1 + "ys";
-                    });
-                    s = s.replace(/äue?rInnen/g, () => {
-                        this.log("12204");
-                        this.replacementsb++;
-                        return "auern";
-                    });
-                    s = s.replace(/äsInnen/g, () => {
-                        this.log("12205");
-                        this.replacementsb++;
-                        return "asys";
-                    });
+                    s = new Replacement(String.raw`(C|c)hefInnen`, "g",  "\$1hefys", "").replace(s, counter);
+
+                    s = new Replacement(String.raw`(F|f)anInnen`, "g",  "\$1ans", "").replace(s, counter);
+                    s = new Replacement(String.raw`([Gg]ött|verbesser)(?=Innen)`, "g", "\$1ys", "").replace(s, counter);
+                    s = new Replacement(String.raw`äue?rInnen`, "g", "auern", "").replace(s, counter);
+                    s = new Replacement(String.raw`äsInnen`, "g", "asys", "").replace(s, counter);
                 }
                 // statt Leerzeichen kommt [\s]{1,2} zum Einsatz -> Leerzeichen oder Leerzeichen + Markerzeichen für die Kontexterkennung (hacky, aber so what)
-                s = s.replace(/\b(([Dd]en|[Aa]us|[Aa]ußer|[Bb]ei|[Dd]ank|[Gg]egenüber|[Ll]aut|[Mm]it(samt)?|[Nn]ach|[Ss]amt|[Vv]on|[Uu]nter|[Zz]u|[Ww]egen|[MmSsDd]?einen)(?: zwei| drei| [0-9]+)?[\s]{1,2}([ID]?[a-zäöüß]+en[\s]{1,2}|[0-9.,]+[\s]{1,2})?[A-ZÄÖÜ][a-zäöüß]+)erInnen\b/g, (match, p1) => {
-                    this.log("12206");
-                    this.replacementsb++;
-                    return p1 + "ys";
-                }); //unregelmäßiger Dativ bei Wörtern auf ...erInnen
-                s = s.replace(/(er?|ER?)Innen/g, (match, p1) => {
-                    this.log("12207");
-                    this.replacementsb++;
-                    return "ys";
-                });
+                s = new Replacement(String.raw`\b(([Dd]en|[Aa]us|[Aa]ußer|[Bb]ei|[Dd]ank|[Gg]egenüber|[Ll]aut|[Mm]it(samt)?|[Nn]ach|[Ss]amt|[Vv]on|[Uu]nter|[Zz]u|[Ww]egen|[MmSsDd]?einen)(?: zwei| drei| [0-9]+)?[\s]{1,2}([ID]?[a-zäöüß]+en[\s]{1,2}|[0-9.,]+[\s]{1,2})?[A-ZÄÖÜ][a-zäöüß]+)erInnen\b`, "g", "\$1ys", "unregelmäßiger Dativ bei Wörtern auf ...erInnen").replace(s, counter);
+
+                s = new Replacement(String.raw`(er?|ER?)Innen`, "g", "ys", "").replace(s, counter);
 
                 // Notiz: (?:[A-Z][a-zöüä]+\b[,] |[A-Z][*I_ïa-zöüä]+\b und ) soll Aufzählungen erkennen, die mit Komma oder "und" verkettet sind; bspw. "AutorInnen und FreundInnen", was der Anlass für diese Regel war (als Kopie von Markierung 1)
-                s = s.replace(/((?:von[\s]{1,2}|mit[\s]{1,2})(?:[A-Z][a-zöüä]+\b[,][\s]{1,2}|[A-Z][*I_ïa-zöüä]+\b und[\s]{1,2})[a-zA-Zöäüß]*?)([Aa]nwält|[Ää]rzt|e[iu]nd|rät|amt|äst|würf|äus|[ai(eu)]r|irt)Innen/g, (match, p1, p2) => {
-                    this.replacementsb++;
-                    return p1 + p2 + "ys";
-                });
+                s = new Replacement(String.raw`((?:von[\s]{1,2}|mit[\s]{1,2})(?:[A-Z][a-zöüä]+\b[,][\s]{1,2}|[A-Z][*I_ïa-zöüä]+\b und[\s]{1,2})[a-zA-Zöäüß]*?)([Aa]nwält|[Ää]rzt|e[iu]nd|rät|amt|äst|würf|äus|[ai(eu)]r|irt)Innen`, "g", "\$1\$2ys", "").replace(s, counter);
 
                 // Markierung 1
-                s = s.replace(/([Aa]nwält|[Ää]rzt|e[iu]nd|rät|amt|äst|würf|äus|[ai(eu)]r|irt)Innen/g, (match, p1) => {
-                    this.log("12208");
-                    this.replacementsb++;
-                    return p1 + "ys";
-                });
-                s = s.replace(/([nrtsmdfghpbklvwNRTSMDFGHPBKLVW])Innen/g, (match, p1) => {
-                    this.log("12209");
-                    this.replacementsb++;
-                    return p1 + "ys";
-                });
+                s = new Replacement(String.raw`([Aa]nwält|[Ää]rzt|e[iu]nd|rät|amt|äst|würf|äus|[ai(eu)]r|irt)Innen`, "g",  "\$1ys", "").replace(s, counter);
+                s = new Replacement(String.raw`([nrtsmdfghpbklvwNRTSMDFGHPBKLVW])Innen`, "g",  "\$1ys", "").replace(s, counter);
             }
 
             //Singular			
@@ -284,77 +235,26 @@ export class BeGone {
                 //Prüfung auf Sonderfälle
 
                 if (/amtIn|stIn\B|verbesser(?=In)/.test(s)) {
-                    s = s.replace(/verbesserIn/g, () => {
-                        this.log("12301");
-                        this.replacementsb++;
-                        return "verbessy";
-                    });
-                    s = s.replace(/amtIn/g, () => {
-                        this.log("12302");
-                        this.replacementsb++;
-                        return "amty";
-                    });
-                    s = s.replace(/stIn\B(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di[ac]|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)/g, () => {
-                        this.log("12303");
-                        this.replacementsb++;
-                        return "sty";
-                    }); //JournalistInfrage
+                    s = new Replacement(String.raw`verbesserIn`, "g",  "verbessy", "").replace(s, counter);
+                    s = new Replacement(String.raw`amtIn`, "g", "amty", "").replace(s, counter);
+                    s = new Replacement(String.raw`stIn\B(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di[ac]|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)`, "g", "sty", "JournalistInfrage").replace(s, counter);
                 }
                 //Prüfung auf Umlaute
                 if (/[äöüÄÖÜ][a-z]{0,3}In/.test(s)) {
-                    s = s.replace(/ä(?=s(t)?In|tIn|ltIn|rztIn)/g, () => {
-                        this.log("12304");
-                        this.replacementsb++;
-                        return "a";
-                    });
-                    s = s.replace(/ÄrztIn/g, () => {
-                        this.log("12305");
-                        this.replacementsb++;
-                        return "Arzty";
-                    });
-                    s = s.replace(/ö(?=ttIn|chIn)/g, () => {
-                        this.log("12306");
-                        this.replacementsb++;
-                        return "o";
-                    });
-                    s = s.replace(/ü(?=rfIn)/g, () => {
-                        this.log("12307");
-                        this.replacementsb++;
-                        return "u";
-                    });
-                    s = s.replace(/ündIn/g, () => {
-                        this.log("12308");
-                        this.replacementsb++;
-                        return "und";
-                    });
-                    s = s.replace(/äue?rIn/g, () => {
-                        this.log("12309");
-                        this.replacementsb++;
-                        return "auer";
-                    });
+                    s = new Replacement(String.raw`ä(?=s(t)?In|tIn|ltIn|rztIn)`, "g", "a", "").replace(s, counter);
+                    s = new Replacement(String.raw`ÄrztIn`, "g", "Arzty", "").replace(s, counter);
+                    s = new Replacement(String.raw`ö(?=ttIn|chIn)`, "g", "o", "").replace(s, counter);
+                    s = new Replacement(String.raw`ü(?=rfIn)`, "g", "u", "").replace(s, counter);
+                    s = new Replacement(String.raw`ündIn`, "g", "und", "").replace(s, counter);
+                    s = new Replacement(String.raw`äue?rIn`, "g", "auer", "").replace(s, counter);
                 }
-                s = s.replace(/\b(([Dd]en|[Aa]us|[Aa]ußer|[Bb]ei|[Dd]ank|[Gg]egenüber|[Ll]aut|[Mm]it(samt)?|[Nn]ach|[Ss]amt|[Uu]nter|[Vv]on|[Zz]u|[Ww]egen|[MmSsDd]?eine[mnrs]) ([ID]?[a-zäöüß]+en)?[A-ZÄÖÜ][a-zäöüß]+)logIn\b/g, (match, p1) => {
-                    this.log("12310");
-                    this.replacementsb++;
-                    return p1 + "logy";
-                }); //unregelmäßiger Dativ bei eine/n Psycholog/in
-                s = s.replace(/([skgvwzSKGVWZ]|ert|[Bb]rit|[Kk]und|ach)In(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)/g, (match, p1) => {
-                    this.log("12311");
-                    this.replacementsb++;
-                    return p1 + "y";
-                }); //ExpertIn, BritIn, KundIn, WachIn
+                s = new Replacement(String.raw`\b(([Dd]en|[Aa]us|[Aa]ußer|[Bb]ei|[Dd]ank|[Gg]egenüber|[Ll]aut|[Mm]it(samt)?|[Nn]ach|[Ss]amt|[Uu]nter|[Vv]on|[Zz]u|[Ww]egen|[MmSsDd]?eine[mnrs]) ([ID]?[a-zäöüß]+en)?[A-ZÄÖÜ][a-zäöüß]+)logIn\b`, "g", "logy", "unregelmäßiger Dativ bei eine/n Psycholog/in").replace(s, counter);
 
-                s = s.replace(/(e[nrtmdbplhfcNRTMDBPLHFC])In(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)/g, (match, p1) => {
-                    this.log("12312");
-                    this.replacementsb++;
-                    return "y";
-                });
+                s = new Replacement(String.raw`([skgvwzSKGVWZ]|ert|[Bb]rit|[Kk]und|ach)In(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)`, "g","\$1y", "ExpertIn, BritIn, KundIn, WachIn").replace(s, counter);
 
-                s = s.replace(/([nrtmdbplhfcNRTMDBPLHFC])In(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)/g, (match, p1) => {
-                    this.log("12312");
-                    this.replacementsb++;
-                    return p1 + "y";
-                });
+                s = new Replacement(String.raw`(e[nrtmdbplhfcNRTMDBPLHFC])In(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)`, "g", "y", "").replace(s, counter);
+
+                s = new Replacement(String.raw`([nrtmdbplhfcNRTMDBPLHFC])In(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)`, "g", "\$1y", "").replace(s, counter);
             }
 
         }
@@ -368,12 +268,11 @@ export class BeGone {
         if(s.trim().length == 0){
             return s;
         }
-        s = s.replace(/(^[dD]+)(er|as)/, (match, p1) => {
-            this.log("11101");
-            this.replacementsb++;
-            return p1 + "ie";
-        });
-        s = s.replace(/(ern|ers|er|en|e)$/,"");
+
+        let outer = this;
+        let counter = function() {outer.replacementsb++;};
+        s = new Replacement(String.raw`(^[dD]+)(er|as)`, "", "\$1ie", "").replace(s, counter);
+        s = new Replacement(String.raw`(ern|ers|er|en|e)$`,"", "", "").replace(s,counter);
         s = s + "ys";
         return s;
     }
@@ -382,15 +281,14 @@ export class BeGone {
         if (s.trim().length == 0) {
             return s;
         }
-        s = s.replace(/(^[dD]+)(en|er|ie)/, (match, p1) => {
-            this.log("11101");
-            this.replacementsb++;
-            return p1 + "as";
-        });
+        let outer = this;
+        let counter = function() {outer.replacementsb++;};
+
+        s = new Replacement(String.raw`(^[dD]+)(en|er|ie)`, "", "\$1as", "").replace(s, counter);
         if (/(en|ern|er)$/.test(s)) {
-            s = s.replace(/(en|ern|er)$/, "y");
+            s = new Replacement(String.raw`(en|ern|er)$`, "","y", "").replace(s, counter);
         } else if (/(ens|erns|ers|es)$/.test(s)) { // Genitiv
-            s = s.replace(/(es)$/, "ys"); // eines Arztes
+            s = new Replacement(String.raw`(es)$`, "", "ys", "eines Arztes").replace(s, counter);
         } else {
             s = s + "y";
         }
@@ -491,11 +389,10 @@ export class BeGone {
 
     private entfernePartizip(s: string): string {
         if (/(ier|arbeit|orsch|fahr|verdien|nehm|es)ende|(?<!^)(?<!\. )Interessierte/.test(s)) {
-            s = s.replace(/der Studierende\b/g, (match) => {
-                this.replacementsp++;
-                let suffix = "das Studenty";
-                return suffix;
-            });
+            let outer = this;
+            let counter = function() {outer.replacementsp++;};
+
+            s = new Replacement(String.raw`der Studierende\b`, "g", "das Studenty", "").replace(s, counter);
             s = s.replace(/(?<!^)(?<!\. )Studierende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Studenty";
@@ -584,16 +481,18 @@ export class BeGone {
 
     private ersetzeGefluechteteDurchFluechtlinge(s: string): string {
         if (/flüch/.test(s)) {
-            s = s.replace(/[\u00AD\u200B]/g, ""); //entfernt soft hyphens
+            let outer = this;
+            let counter = function() {};
+
+
+            s = new Replacement(String.raw`[\u00AD\u200B]`, "g", "", "entfernt soft hyphens").replace(s, counter);
 
             // "Geflüchtete" vor einem Substantiv ignorieren - das ist ein Adjektiv
             if (/\bGeflüchtet(e\b|er\b|en\b)[\s]{1,2}[A-Z]/g.test(s)) {
                 return s;
             }
 
-            s = s.replace(/\b[Dd]er Geflüchtete\b/g, (match, praeposition, zahlwort, aufzaehlung, gefluechtete, endung, zufolge) => {
-                return "Das Flüchtly";
-            });
+            s = new Replacement(String.raw`\b[Dd]er Geflüchtete\b`, "g", "Das Flüchtly", "").replace(s, counter);
 
             // Annahme: Gefluechtete wird fast ausschließlich in der Mehrzahl verwendet, was die Ersetzung einfacher macht
             // (?:[A-Z][a-zöüä]+\b[,] ) -> Behandlung von Aufzählungen der Form "gegenüber Obdachlosen, Geflüchteten und Menschen ohne Papiere"
@@ -686,7 +585,8 @@ export class BeGone {
 
     // unfortunately this lead to newlines being removed in tweets on Twitter etc.; TODO: once FireFox supports the dotAll operator we should use this in the regexes instead, or modify the regexes to handle newlines as whitespace
     private replaceLineBreak(s: string) {
-        return s.replace(/(\n|\r|\r\n)/ig, " ");
+        let counter = function(){};
+        return new Replacement(String.raw`(\n|\r|\r\n)`, "ig", " ", "").replace(s, counter);
     }
 
     private applyToNodes(nodes: Array<CharacterData>, modifyData: (s: string) => string) {
