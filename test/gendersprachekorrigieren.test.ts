@@ -606,15 +606,23 @@ describe('TODO oder nicht ohne weiteres lösbar', () => {
         const result = beGone.entferneInitialForTesting(" Kandidat*innen ");
         expect(result).to.be.equal(" Kandidatys ");
     });
+});
 
+describe('Formulierungen die erhalten bleiben müssen', () => {
+    let beGone = new BeGone();
 
     it('LinkedIn Links', () => {
         const result = beGone.entferneInitialForTesting(" https://lnkd.in/dummy ");
         expect(result).to.be.equal(" https://lnkd.in/dummy ");
     });
 
-
+    it('Baden-Baden', () => {
+        const result = beGone.entferneInitialForTesting(" Baden-Baden ");
+        expect(result).to.be.equal(" Baden-Baden ");
+    });
 });
+
+
 
 /** 
  * Sammlung:
