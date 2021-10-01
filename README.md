@@ -74,5 +74,14 @@ Fertig. Im Verzeichnis `/dist` befinden sich jetzt die Assets des Plugins. / Don
 
 [Gendersprache korrigieren](https://github.com/brilliance-richter-huh/gendersprache-korrigieren) ersetzt gegenderte Texte durch das generische Maskulinum.
 
+## Entgendern nach Phettberg für iOS und Android
+Für Firefox (Android) und Safari (Mac, iPhone) gibt es momentan keine Plugins. Wer etwas Mühe nicht scheut, kann als Ersatz folgendes [Bookmarklet](https://gendern.uber.space/)
+verwenden. [Anleitung Chrome (Android)](https://android.stackexchange.com/questions/159308/how-can-a-bookmarklet-be-added-on-mobile-chrome-without-copying-and-pasting)
+, [Anleitung iOs](https://support.apple.com/de-ch/guide/iphone/iph42ab2f3a7/ios)
+
+Mozilla bewilligt momentan keine Plugins für Android, vermutlich um den Akku-Verbrauch von Firefox im Griff zu behalten.
+Sobald Mozilla neue Plugins zulässt, kann der Plugin auch für Android erscheinen, voraussichtlich ohne technische Anpassungen. Eine Veröffentlichung für Safari ist mit kleinen technischen Anpassungen möglich,
+jedoch benötigt man einen Mac und einen Apple Entwickler Account.
+
 ## Credits
 Technisch basiert die Erweiterung auf dem Add-on *Gender korrigieren* und *Binnen-I be gone*. Vielen Dank dafür!
