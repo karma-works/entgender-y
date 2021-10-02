@@ -606,6 +606,16 @@ describe('TODO oder nicht ohne weiteres lösbar', () => {
         const result = beGone.entferneInitialForTesting(" Kandidat*innen ");
         expect(result).to.be.equal(" Kandidatys ");
     });
+
+    it('eine:n', () => {
+        const result = beGone.entferneInitialForTesting(" was eine:n selbst betrifft ");
+        expect(result).to.be.equal(" was einen selbst betrifft ");
+    });
+
+    it('Kundin oder Kunde', () => {
+        const result = beGone.entferneInitialForTesting("Kundin oder Kunde");
+        expect(result).to.be.equal("Kundy");
+    });
 });
 
 describe('Formulierungen die erhalten bleiben müssen', () => {
@@ -619,6 +629,11 @@ describe('Formulierungen die erhalten bleiben müssen', () => {
     it('Baden-Baden', () => {
         const result = beGone.entferneInitialForTesting(" Baden-Baden ");
         expect(result).to.be.equal(" Baden-Baden ");
+    });
+
+    it('Bordkarten', () => {
+        const result = beGone.entferneInitialForTesting("Bordkarte(n) konnte(n)");
+        expect(result).to.be.equal("Bordkarte(n) konnte(n)");
     });
 });
 
