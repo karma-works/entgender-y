@@ -24,11 +24,11 @@ class BeGoneSettingsHelper {
 
     public static whiteliststring(settings: BeGoneSettings): string {
         return settings.whitelist ? settings.whitelist.replace(/(\r\n|\n|\r)/gm, "|") : "";
-    } 
+    }
 
     public static blackliststring(settings: BeGoneSettings): string {
         return settings.blacklist ? settings.blacklist.replace(/(\r\n|\n|\r)/gm, "|") : "";
-    } 
+    }
 }
 
 export class BeGone {
@@ -48,7 +48,7 @@ export class BeGone {
         var n, a = new Array<CharacterData>(),
             walk = document.createTreeWalker(
                 el,
-                NodeFilter.SHOW_TEXT, 
+                NodeFilter.SHOW_TEXT,
                 { acceptNode: (node: Node) => {
                         //Nodes mit weniger als 5 Zeichen nicht filtern
                         if (!node.textContent || node.textContent.length < 5) {
@@ -57,7 +57,7 @@ export class BeGone {
                             // note about filtering <pre> elements: those elements might contain linebreaks (/r/n etc.) that are removed during filtering to make filtering easier; the easy fix is to ignore those elements
                             var isUntreatedElement = node.parentNode ? (node.parentNode instanceof HTMLInputElement || node.parentNode instanceof HTMLTextAreaElement || node.parentNode instanceof HTMLScriptElement || node.parentNode instanceof HTMLStyleElement || node.parentNode instanceof HTMLPreElement || node.parentNode.nodeName == "CODE" || node.parentNode.nodeName == "NOSCRIPT") : false;
                             var isDivTextbox = document.activeElement && (document.activeElement.getAttribute("role") == "textbox" || document.activeElement.getAttribute("contenteditable") == "true") && document.activeElement.contains(node);
-    
+
                             //Eingabeelemente, <script>, <style>, <code>-Tags nicht filtern
                             if (isUntreatedElement || isDivTextbox) {
                                 return NodeFilter.FILTER_REJECT;
@@ -69,7 +69,7 @@ export class BeGone {
                         }
                         return NodeFilter.FILTER_REJECT;
                     }
-                  
+
                 },
                 false);
         while (n = walk.nextNode() as CharacterData) {
@@ -95,14 +95,14 @@ export class BeGone {
 
     public handleResponse(message: { type?: string, response: string }) {
         this.settings = JSON.parse(message.response);
-    
+
         if (!this.settings.aktiv && this.settings.filterliste !== "Bei Bedarf" || this.settings.filterliste == "Bei Bedarf" && message.type !== "ondemand") return;
-    
+
         this.mtype = message.type;
         if (!BeGoneSettingsHelper.isWhitelist(this.settings) && !BeGoneSettingsHelper.isBlacklist(this.settings) || BeGoneSettingsHelper.isWhitelist(this.settings) && RegExp(BeGoneSettingsHelper.whiteliststring(this.settings)).test(document.URL) || BeGoneSettingsHelper.isBlacklist(this.settings) && !RegExp(BeGoneSettingsHelper.blackliststring(this.settings)).test(document.URL)){
             //Entfernen bei erstem Laden der Seite
             this.entferneInitial();
-    
+
             //Entfernen bei Seitenänderungen
             try {
                 var observer = new MutationObserver((mutations:any) => {
@@ -312,7 +312,7 @@ export class BeGone {
             this.log("21000");
             // Hinweis: \b am Anfang ersetzt durch (?=\b|[ÄäÖöÜö]), weil \b die Umlaute nicht matcht, bspw. "Ärztinnen und Ärzte" _am Anfang eines Satzes_ würden nicht ersetzt (in der Mitte aber kein Problem)
             s = s.replace(/(?=\b|[ÄäÖöÜö])((von[\s]{1,2}|für[\s]{1,2}|mit[\s]{1,2})?((d|jed|ein|ihr|zum|sein)(e[rn]?|ie)[\s]{1,2})?([a-zäöüß]{4,20} )?)([a-zäöüß]{2,})innen( und | oder | & | bzw\.? |[\/\*_\(-])\2?((d|jed|ein|ihr|zum|sein)(e[rmns]?|ie)[\s]{1,2})?\6?(\7(e?n?))\b([\f]?)/ig, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14) => {
-                    this.replacementsd++;
+                this.replacementsd++;
                 // Hinweis: p14 ist das /f-Zeichen, das u.U. verwendet wird, die zu ersetzende Wortgruppe zu umschließen
                 if (p1) {
                     this.log("21001");
@@ -322,7 +322,7 @@ export class BeGone {
                     return this.pluraly(p12) + (p14 ? p14 : "");
                 }
             }); //Bürgerinnen und Bürger
-            s = s.replace(/\b(von |für |mit |als )?(((zu )?d|jed|ein|ihr|zur|sein)(e|er|ie) )?(([a-zäöüß]{4,20}[enr]) )?([a-zäöüß]{2,})(en?|in)( und | oder | & | bzw\.? |[\/\*_\(-])(\1|vom )?((((zu )?d|jed|ein|ihr|zum|sein)(e[nrms])? )?(\7[nrms]? )?(\8(e?(s|n|r)?)))\b/ig, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18) => {
+            s = s.replace(/\b([Vv]on |[Ff]ür |[Mm]it |[Aa]ls |[Dd]ie |[Dd]er |[Dd]as )?(((zu )?d|jed|ein|ihr|zur|sein)(e|er|ie) )?(([a-zäöüß]{4,20}[enr]) )?([A-ZÄÖÜ][a-zäöüß]{2,})(en?|in)( und | oder | & | bzw\.? |[\/\*_\(-])(\1|vom )?((((zu )?d|jed|ein|ihr|zum|sein)(e[nrms])? )?(\7[nrms]? )?(\8(e?(s|n|r)?)))\b/g, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18) => {
                 this.replacementsd++;
                 if (p1) {
                     if (p6 && !p17) {
@@ -330,9 +330,19 @@ export class BeGone {
                         return p1 + p13 + p6 + p18;
                     } else {
                         this.log("21004");
-                        return p1 + p12;
+                        if(/[Dd]e[sm]/.test(p13)){
+                            return p13 + this.singulary(p8);
+                        }
+                        if(this.startsWithCapitalLetter(p1) && /[Dd]ie |[Dd]er |[Dd]as /.test(p1)){
+                            return "Das " + this.singulary(p8);
+                        } else {
+                            return "das " + this.singulary(p8);
+                        }
+                        return p1  + this.singulary(p8);
+
+
                     }
-                } else if (p6 && !p17) {
+                } else if (p13 & p6 && !p17) {
                     this.log("21005");
                     return p13 + p6 + this.pluraly(p18);
                 } else {
@@ -340,7 +350,7 @@ export class BeGone {
                     if(this.startsWithCapitalLetter(p2)){
                         return this.capitalize(this.singulary(p12));
                     }
-                    return this.singulary(p12);
+                    return this.singulary(p8);
                 }
             }); //die Bürgerin und der Bürger
             s = s.replace(/\b(von |für |mit |als )?(((zu )?d|jed|ein|ihr|sein)(e|er|ie) |zur )?(([a-zäöüß]{4,20}[enr]) )?([a-zäöüß]{4,20})?(ärztin|anwältin|bäue?rin|rätin|fränkin|schwäbin|schwägerin)( und | oder | & | bzw\.? |[\/\*_\(-])(\1|vom )?((((zu )?d|jed|ein|ihr|zum|sein)(e[nrms])? )?(\7[nrms]? )?(\8(e?(s|n|r)?))(arzt|anwalt|bauer|rat|frank|schwab|schwager)(e(n|s)?)?)\b/ig, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12) => {
@@ -363,7 +373,7 @@ export class BeGone {
                     return this.pluraly(p14);
                 }
             }); //unregelmäßiger Plural: Bäuerinnen und Bauern
-            s = s.replace(/\b((von |für |mit |als )?((d|jed|ein|ihr|zum|sein)(e[rnms]?|ie) )?([A-Z][a-zäöüß]{3,20}[enr] )?([A-Za-zäöüß]{2,})(e?(n|s|r)?))( und | oder | & | bzw\.? |[\/\*_\(-])(\2|von der )?(((von |zu )?d|jed|ein|ihr|zur|sein)(e[rn]?|ie) )?\6?\7(in(nen)?|en?)\b/g, (match, p1) => {
+            s = s.replace(/\b((von |für |mit |als )?((d|jed|ein|ihr|zum|sein)(e[rnms]?|ie) )?([A-Z][a-zäöüß]{3,20}[enr] )?([A-Z][a-zäöüß]{2,})(e?(n|s|r)?))( und | oder | & | bzw\.? |[\/\*_\(-])(\2|von der )?(((von |zu )?d|jed|ein|ihr|zur|sein)(e[rn]?|ie) )?\6?\7(in(nen)?|en?)\b/g, (match, p1) => {
                 this.log("21011");
                 this.replacementsd++;
                 return this.pluraly(p1);
@@ -525,14 +535,14 @@ export class BeGone {
     }
 
     private probeDocument(bodyTextContent: string = document.body.textContent ? document.body.textContent : ""):
-    {
-        probeBinnenI: boolean,
-        probeRedundancy: boolean,
-        probePartizip: boolean,
-        probeGefluechtete: boolean,
-        probeArtikelUndKontraktionen: boolean;
+        {
+            probeBinnenI: boolean,
+            probeRedundancy: boolean,
+            probePartizip: boolean,
+            probeGefluechtete: boolean,
+            probeArtikelUndKontraktionen: boolean;
 
-    } {
+        } {
         let probeBinnenI = false;
         let probeRedundancy = false;
         let probePartizip = false;
@@ -571,17 +581,17 @@ export class BeGone {
 
         nodeName = nodeName.toLowerCase();
 
-        return nodeName === "mark" 
-        || nodeName === "b" 
-        || nodeName === "strong" 
-        || nodeName === "i"
-        || nodeName === "em"
-        || nodeName === "small"
-        || nodeName === "del"
-        || nodeName === "ins"
-        || nodeName === "sub"
-        || nodeName === "sup"
-        || nodeName === "a";
+        return nodeName === "mark"
+            || nodeName === "b"
+            || nodeName === "strong"
+            || nodeName === "i"
+            || nodeName === "em"
+            || nodeName === "small"
+            || nodeName === "del"
+            || nodeName === "ins"
+            || nodeName === "sub"
+            || nodeName === "sup"
+            || nodeName === "a";
     }
 
     // unfortunately this lead to newlines being removed in tweets on Twitter etc.; TODO: once FireFox supports the dotAll operator we should use this in the regexes instead, or modify the regexes to handle newlines as whitespace
@@ -680,20 +690,20 @@ export class BeGone {
             }
         }
         return s;
-    }    
+    }
 
     private entferneInserted(nodes: Array<CharacterData>) {
         if (!this.settings.skip_topic || this.settings.skip_topic && this.mtype || this.settings.skip_topic && !/Binnen-I/.test(document.body.textContent ? document.body.textContent : "")) {
-                if (this.settings.doppelformen) {
-                    this.applyToNodes(nodes, this.entferneDoppelformen);
-                }
-                if (this.settings.partizip) {
-                    this.applyToNodes(nodes, this.entfernePartizip);
-                }
-                this.applyToNodes(nodes, this.entferneBinnenIs);
-                if (this.settings.counter) {
-                    this.sendCounttoBackgroundScript();
-                }
+            if (this.settings.doppelformen) {
+                this.applyToNodes(nodes, this.entferneDoppelformen);
+            }
+            if (this.settings.partizip) {
+                this.applyToNodes(nodes, this.entfernePartizip);
+            }
+            this.applyToNodes(nodes, this.entferneBinnenIs);
+            if (this.settings.counter) {
+                this.sendCounttoBackgroundScript();
+            }
         }
     }
 
@@ -704,7 +714,7 @@ export class BeGone {
             this.handleResponse(res);
         });
     }
-    
+
     private sendCounttoBackgroundScript() {
         chrome.runtime.sendMessage({
             countBinnenIreplacements: this.replacementsb,
@@ -712,7 +722,7 @@ export class BeGone {
             countPartizipreplacements: this.replacementsp,
             type: "count"
         });
-    }    
+    }
 }
 
 if (typeof document != "undefined" && document.body.textContent) {
