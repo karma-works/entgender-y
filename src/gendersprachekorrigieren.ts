@@ -149,7 +149,7 @@ export class BeGone {
             }
 
             //extra Stuff
-            if (/eR\b|em?[\/\*_\(-]{1,2}e?[rn]\b|em?\(e?r\)\b/.test(s)) {
+            if (/eR\b|(?<![kK]art)(?<![kK]onnt)em?[\/\*_\(-]{1,2}e?[rn]\b|em?\(e?r\)\b/.test(s)) {
                 s = repl.replaceArtikel2(s, counter);
             }
 
@@ -204,7 +204,7 @@ export class BeGone {
                 s = new Replacement(String.raw`([a-zäöüß])\(inn(en\)|\)en)`, "ig", "\$1Innen", "Schüler(innen)").replace(s, counter);
                 s = new Replacement(String.raw`([a-zäöüß])INNen`, "g", "\$1Innen", "SchülerINNen").replace(s, counter);
                 s = new Replacement(String.raw` und -innen\b`, "ig", "", "und -innen").replace(s, counter);
-                s = new Replacement(String.raw`(\/-?|_|\*|:|\.)in\b`, "ig", "In", "Schüler/in").replace(s, counter);
+                s = new Replacement(String.raw`(?<!https:\/\/lnkd)(\/-?|_|\*|:|\.)in\b`, "ig", "In", "Schüler/in").replace(s, counter);
                 s = new Replacement(String.raw`([a-zäöüß])\(in\)`, "ig", "$1In", "Schüler(in)").replace(s, counter);
                 this.log(s);
             }
