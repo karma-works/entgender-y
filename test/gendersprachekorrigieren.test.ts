@@ -635,6 +635,15 @@ describe('Formulierungen die erhalten bleiben müssen', () => {
         const result = beGone.entferneInitialForTesting("Bordkarte(n) konnte(n)");
         expect(result).to.be.equal("Bordkarte(n) konnte(n)");
     });
+    it('Kreditkarten', () => {
+        const result = beGone.entferneInitialForTesting("Kreditkarte(n)");
+        expect(result).to.be.equal("Kreditkarte(n)");
+    });
+
+    it('Fall-Zahlen', () => {
+        const result = beGone.entferneInitialForTesting("Die Corona-Zahlen steigen und steigen: Letzte Ausfahrt Lockdown?");
+        expect(result).to.be.equal("Die Corona-Zahlen steigen und steigen: Letzte Ausfahrt Lockdown?");
+    });
 });
 
 
