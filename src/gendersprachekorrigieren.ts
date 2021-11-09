@@ -1,6 +1,8 @@
 import replacements, {Replacement} from './replacements'
 import Replacements from "./replacements";
 
+let gstar = String.raw`[\:\/\*_\(-]{1,2}`;
+
 declare var chrome: any;
 interface BeGoneSettings {
     aktiv?: boolean;
@@ -133,28 +135,31 @@ export class BeGone {
     }
 
     private artikelUndKontraktionen(s: string): string {
+        var outer = this;
+        var repl = new Replacements();
+        let counter = function() {outer.replacementsb++;};
 
         if (/[a-zA-ZäöüßÄÖÜ][\/\*.&_\(]-?[a-zA-ZäöüßÄÖÜ]/.test(s) || /der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(]-?e?r\b|em?\(e?r\)\b/.test(s)) {
             this.log("11000");
 
-            var outer = this;
-            var repl = new Replacements();
 
             //Stuff
             if (/der|die|dessen|ein|sie|ih[rmn]|zu[rm]|jede/i.test(s)) {
-                s = repl.replaceArtikel1(s, function(){ outer.replacementsb++ });
+                s = repl.replaceArtikel1(s, counter );
             }
 
             //extra Stuff
             if (/eR\b|em?[\/\*_\(-]{1,2}e?[rn]\b|em?\(e?r\)\b/.test(s)) {
-                s = repl.replaceArtikel2(s, function(){ outer.replacementsb++ });
+                s = repl.replaceArtikel2(s, counter);
             }
 
             //man
             if (/\/(frau|man|mensch)/.test(s)) {
-                s = repl.replaceArtikel3(s, function(){ outer.replacementsb++ });
+                s = repl.replaceArtikel3(s, counter);
             }
         }
+
+        s = new Replacement(String.raw`\b(eine)${gstar}(n)\b`, "g", "$1$2", "eine:n").replace(s, counter);
 
         return s;
     }
