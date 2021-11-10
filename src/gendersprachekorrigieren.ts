@@ -1,7 +1,6 @@
 import replacements, {Replacement} from './replacements'
 import Replacements from "./replacements";
-
-let gstar = String.raw`[\:\/\*_\(-]{1,2}`;
+import {Const} from "./const";
 
 declare var chrome: any;
 interface BeGoneSettings {
@@ -139,9 +138,12 @@ export class BeGone {
         var repl = new Replacements();
         let counter = function() {outer.replacementsb++;};
 
+
+
         if (/[a-zA-ZäöüßÄÖÜ][\/\*.&_\(]-?[a-zA-ZäöüßÄÖÜ]/.test(s) || /der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(]-?e?r\b|em?\(e?r\)\b/.test(s)) {
             this.log("11000");
 
+            s = new Replacement(String.raw`\b(eine)${Const.gstar}(n selbst)\b`, "g", "$1$2", "eine:n selbst").replace(s, counter);
 
             //Stuff
             if (/der|die|dessen|ein|sie|ih[rmn]|zu[rm]|jede/i.test(s)) {
@@ -158,8 +160,6 @@ export class BeGone {
                 s = repl.replaceArtikel3(s, counter);
             }
         }
-
-        s = new Replacement(String.raw`\b(eine)${gstar}(n)\b`, "g", "$1$2", "eine:n").replace(s, counter);
 
         return s;
     }
@@ -204,7 +204,7 @@ export class BeGone {
                 s = new Replacement(String.raw`([a-zäöüß])\(inn(en\)|\)en)`, "ig", "\$1Innen", "Schüler(innen)").replace(s, counter);
                 s = new Replacement(String.raw`([a-zäöüß])INNen`, "g", "\$1Innen", "SchülerINNen").replace(s, counter);
                 s = new Replacement(String.raw` und -innen\b`, "ig", "", "und -innen").replace(s, counter);
-                s = new Replacement(String.raw`(?<!https:\/\/lnkd)(\/-?|_|\*|:|\.)in\b`, "ig", "In", "Schüler/in").replace(s, counter);
+                s = new Replacement(String.raw`(?<!https:\/\/lnkd)(er)?(${Const.gstar})in\b`, "ig", "y", "Schüler/in").replace(s, counter);
                 s = new Replacement(String.raw`([a-zäöüß])\(in\)`, "ig", "$1In", "Schüler(in)").replace(s, counter);
                 this.log(s);
             }

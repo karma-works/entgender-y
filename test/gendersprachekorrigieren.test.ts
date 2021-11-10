@@ -619,7 +619,7 @@ describe('TODO oder nicht ohne weiteres lösbar', () => {
 
     it('Ein/eine', () => {
         const result = beGone.entferneInitialForTesting("Ein/eine Schülersprecher/in");
-        expect(result).to.be.equal("Ein Schülersprecher/in");
+        expect(result).to.be.equal("Ein Schülersprechy");
     });
 });
 
