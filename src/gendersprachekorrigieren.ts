@@ -179,7 +179,7 @@ export class BeGone {
             if (/eR\b|(?<![kK]art)(?<![kK]onnt)em?[\/\*_\(-]{1,2}e?[rn]\b|em?\(e?r\)\b/.test(s)) {
                 s = new Replacement(String.raw`(?<beginning>m\b.{3,30})(?<star>[\/\*_\(-]{1,2})(?<suffix>[rn])\b`, "ig", "\$1\$3", "Dativ: einem progressive*n Staatsoberhaupt").replace(s, counter);
                 s = new Replacement(String.raw`(\b[a-zäöü]+e)([\/\*_\(-]+)(n|e\(n\)|eN\b)`, "g", "\$1s", "jede*n, europäische*n").replace(s, counter);
-                s = new Replacement(String.raw`([\b“ ][A-ZÄÖÜ]\w+)(e[\/\*_\(-]+)(n|e\(n\)|eN[\b“ ])`, "g", "\$1y", "Wehrbeauftragte*n“").replace(s, counter);
+                s = new Replacement(String.raw`([\b“ ][A-ZÄÖÜ]\w+)(e[\/\*_\(-]+)(n|e\(n\)|eN[\b“ ])`, "g", "\$1" + Const.y, "Wehrbeauftragte*n“").replace(s, counter);
                 s = new Replacement(String.raw`e[\/\*_\(-]+r|e\(r\)|eR\b`, "g", "es", "jede/r,jede(r),jedeR").replace(s, counter);
                 s = new Replacement(String.raw`em\(e?r\)|em[\/\*_\(-]+r\b`, "g", "em", "jedem/r").replace(s, counter);
                 s = new Replacement(String.raw`er\(e?s\)|es[\/\*_\(-]+r\b`, "g", "es", "jedes/r").replace(s, counter);
@@ -203,11 +203,11 @@ export class BeGone {
 
         // Sinti*ze und Rom*nja
         s = new Replacement(String.raw`\bSinti(\/-?|_|\*|:|\.|\x00b7)ze\b`, "g",
-            "Sintys", "Sinti*ze und Rom*nja").replace(s, counter);
-        s = new Replacement(String.raw`\bRom(\/-?|_|\*|:|\.|\x00b7)nja\b`, "g", "Romys", "Sinti*ze und Rom*nja").replace(s, counter);
+            "Sint" + Const.ys, "Sinti*ze und Rom*nja").replace(s, counter);
+        s = new Replacement(String.raw`\bRom(\/-?|_|\*|:|\.|\x00b7)nja\b`, "g", "Rom" + Const.ys, "Sinti*ze und Rom*nja").replace(s, counter);
         ;
 
-        s = new Replacement(String.raw`\bMuslim(\/-?|_|\*|:|\.|\xb7)a\b`, "g", "Muslimy", "").replace(s, counter);
+        s = new Replacement(String.raw`\bMuslim(\/-?|_|\*|:|\.|\xb7)a\b`, "g", "Muslim" + Const.y , "").replace(s, counter);
 
         return s;
     }
@@ -240,7 +240,7 @@ export class BeGone {
                 s = new Replacement(String.raw`([a-zäöüß])\(inn(en\)|\)en)`, "ig", "\$1Innen", "Schüler(innen)").replace(s, counter);
                 s = new Replacement(String.raw`([a-zäöüß])INNen`, "g", "\$1Innen", "SchülerINNen").replace(s, counter);
                 s = new Replacement(String.raw` und -innen\b`, "ig", "", "und -innen").replace(s, counter);
-                s = new Replacement(String.raw`(?<!https:\/\/lnkd)(er)?(${Const.gstar})in\b`, "ig", "y", "Schüler/in").replace(s, counter);
+                s = new Replacement(String.raw`(?<!https:\/\/lnkd)(er)?(${Const.gstar})in\b`, "ig", Const.y, "Schüler/in").replace(s, counter);
                 s = new Replacement(String.raw`([a-zäöüß])\(in\)`, "ig", "$1In", "Schüler(in)").replace(s, counter);
                 this.log(s);
             }
@@ -250,24 +250,24 @@ export class BeGone {
                 this.log("12200");
                 //Prüfung auf Sonderfälle
                 if (/(chef|fan|gött|verbesser|äur|äs)innen/i.test(s)) {
-                    s = new Replacement(String.raw`(C|c)hefInnen`, "g", "\$1hefys", "").replace(s, counter);
+                    s = new Replacement(String.raw`(C|c)hefInnen`, "g", "\$1hef" + Const.ys, "").replace(s, counter);
 
                     s = new Replacement(String.raw`(F|f)anInnen`, "g", "\$1ans", "").replace(s, counter);
-                    s = new Replacement(String.raw`([Gg]ött|verbesser)(?=Innen)`, "g", "\$1ys", "").replace(s, counter);
+                    s = new Replacement(String.raw`([Gg]ött|verbesser)(?=Innen)`, "g", "\$1" + Const.ys, "").replace(s, counter);
                     s = new Replacement(String.raw`äue?rInnen`, "g", "auern", "").replace(s, counter);
-                    s = new Replacement(String.raw`äsInnen`, "g", "asys", "").replace(s, counter);
+                    s = new Replacement(String.raw`äsInnen`, "g", "as" + Const.ys, "").replace(s, counter);
                 }
                 // statt Leerzeichen kommt [\s]{1,2} zum Einsatz -> Leerzeichen oder Leerzeichen + Markerzeichen für die Kontexterkennung (hacky, aber so what)
-                s = new Replacement(String.raw`\b(([Dd]en|[Aa]us|[Aa]ußer|[Bb]ei|[Dd]ank|[Gg]egenüber|[Ll]aut|[Mm]it(samt)?|[Nn]ach|[Ss]amt|[Vv]on|[Uu]nter|[Zz]u|[Ww]egen|[MmSsDd]?einen)(?: zwei| drei| [0-9]+)?[\s]{1,2}([ID]?[a-zäöüß]+en[\s]{1,2}|[0-9.,]+[\s]{1,2})?[A-ZÄÖÜ][a-zäöüß]+)erInnen\b`, "g", "\$1ys", "unregelmäßiger Dativ bei Wörtern auf ...erInnen").replace(s, counter);
+                s = new Replacement(String.raw`\b(([Dd]en|[Aa]us|[Aa]ußer|[Bb]ei|[Dd]ank|[Gg]egenüber|[Ll]aut|[Mm]it(samt)?|[Nn]ach|[Ss]amt|[Vv]on|[Uu]nter|[Zz]u|[Ww]egen|[MmSsDd]?einen)(?: zwei| drei| [0-9]+)?[\s]{1,2}([ID]?[a-zäöüß]+en[\s]{1,2}|[0-9.,]+[\s]{1,2})?[A-ZÄÖÜ][a-zäöüß]+)erInnen\b`, "g", "\$1" + Const.ys, "unregelmäßiger Dativ bei Wörtern auf ...erInnen").replace(s, counter);
 
-                s = new Replacement(String.raw`(er?|ER?)Innen`, "g", "ys", "").replace(s, counter);
+                s = new Replacement(String.raw`(er?|ER?)Innen`, "g", Const.ys, "").replace(s, counter);
 
                 // Notiz: (?:[A-Z][a-zöüä]+\b[,] |[A-Z][*I_ïa-zöüä]+\b und ) soll Aufzählungen erkennen, die mit Komma oder "und" verkettet sind; bspw. "AutorInnen und FreundInnen", was der Anlass für diese Regel war (als Kopie von Markierung 1)
-                s = new Replacement(String.raw`((?:von[\s]{1,2}|mit[\s]{1,2})(?:[A-Z][a-zöüä]+\b[,][\s]{1,2}|[A-Z][*I_ïa-zöüä]+\b und[\s]{1,2})[a-zA-Zöäüß]*?)([Aa]nwält|[Ää]rzt|e[iu]nd|rät|amt|äst|würf|äus|[ai(eu)]r|irt)Innen`, "g", "\$1\$2ys", "").replace(s, counter);
+                s = new Replacement(String.raw`((?:von[\s]{1,2}|mit[\s]{1,2})(?:[A-Z][a-zöüä]+\b[,][\s]{1,2}|[A-Z][*I_ïa-zöüä]+\b und[\s]{1,2})[a-zA-Zöäüß]*?)([Aa]nwält|[Ää]rzt|e[iu]nd|rät|amt|äst|würf|äus|[ai(eu)]r|irt)Innen`, "g", "\$1\$2" + Const.ys, "").replace(s, counter);
 
                 // Markierung 1
-                s = new Replacement(String.raw`([Aa]nwält|[Ää]rzt|e[iu]nd|rät|amt|äst|würf|äus|[ai(eu)]r|irt)Innen`, "g", "\$1ys", "").replace(s, counter);
-                s = new Replacement(String.raw`([nrtsmdfghpbklvwNRTSMDFGHPBKLVW])Innen`, "g", "\$1ys", "").replace(s, counter);
+                s = new Replacement(String.raw`([Aa]nwält|[Ää]rzt|e[iu]nd|rät|amt|äst|würf|äus|[ai(eu)]r|irt)Innen`, "g", "\$1" + Const.ys, "").replace(s, counter);
+                s = new Replacement(String.raw`([nrtsmdfghpbklvwNRTSMDFGHPBKLVW])Innen`, "g", "\$1" + Const.ys, "").replace(s, counter);
             }
 
             //Singular			
@@ -276,26 +276,26 @@ export class BeGone {
                 //Prüfung auf Sonderfälle
 
                 if (/amtIn|stIn\B|verbesser(?=In)/.test(s)) {
-                    s = new Replacement(String.raw`verbesserIn`, "g", "verbessy", "").replace(s, counter);
-                    s = new Replacement(String.raw`amtIn`, "g", "amty", "").replace(s, counter);
-                    s = new Replacement(String.raw`stIn\B(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di[ac]|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)`, "g", "sty", "JournalistInfrage").replace(s, counter);
+                    s = new Replacement(String.raw`verbesserIn`, "g", "verbess" + Const.y, "").replace(s, counter);
+                    s = new Replacement(String.raw`amtIn`, "g", "amt" + Const.y, "").replace(s, counter);
+                    s = new Replacement(String.raw`stIn\B(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di[ac]|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)`, "g", "st" + Const.y, "JournalistInfrage").replace(s, counter);
                 }
                 //Prüfung auf Umlaute
                 if (/[äöüÄÖÜ][a-z]{0,3}In/.test(s)) {
                     s = new Replacement(String.raw`ä(?=s(t)?In|tIn|ltIn|rztIn)`, "g", "a", "").replace(s, counter);
-                    s = new Replacement(String.raw`ÄrztIn`, "g", "Arzty", "").replace(s, counter);
+                    s = new Replacement(String.raw`ÄrztIn`, "g", "Arzt" + Const.y, "").replace(s, counter);
                     s = new Replacement(String.raw`ö(?=ttIn|chIn)`, "g", "o", "").replace(s, counter);
                     s = new Replacement(String.raw`ü(?=rfIn)`, "g", "u", "").replace(s, counter);
                     s = new Replacement(String.raw`ündIn`, "g", "und", "").replace(s, counter);
                     s = new Replacement(String.raw`äue?rIn`, "g", "auer", "").replace(s, counter);
                 }
-                s = new Replacement(String.raw`\b(([Dd]en|[Aa]us|[Aa]ußer|[Bb]ei|[Dd]ank|[Gg]egenüber|[Ll]aut|[Mm]it(samt)?|[Nn]ach|[Ss]amt|[Uu]nter|[Vv]on|[Zz]u|[Ww]egen|[MmSsDd]?eine[mnrs]) ([ID]?[a-zäöüß]+en)?[A-ZÄÖÜ][a-zäöüß]+)logIn\b`, "g", "logy", "unregelmäßiger Dativ bei eine/n Psycholog/in").replace(s, counter);
+                s = new Replacement(String.raw`\b(([Dd]en|[Aa]us|[Aa]ußer|[Bb]ei|[Dd]ank|[Gg]egenüber|[Ll]aut|[Mm]it(samt)?|[Nn]ach|[Ss]amt|[Uu]nter|[Vv]on|[Zz]u|[Ww]egen|[MmSsDd]?eine[mnrs]) ([ID]?[a-zäöüß]+en)?[A-ZÄÖÜ][a-zäöüß]+)logIn\b`, "g", "log" + Const.y, "unregelmäßiger Dativ bei eine/n Psycholog/in").replace(s, counter);
 
-                s = new Replacement(String.raw`([skgvwzSKGVWZ]|ert|[Bb]rit|[Kk]und|ach)In(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)`, "g", "\$1y", "ExpertIn, BritIn, KundIn, WachIn").replace(s, counter);
+                s = new Replacement(String.raw`([skgvwzSKGVWZ]|ert|[Bb]rit|[Kk]und|ach)In(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)`, "g", "\$1" + Const.y, "ExpertIn, BritIn, KundIn, WachIn").replace(s, counter);
 
-                s = new Replacement(String.raw`(e[nrtmdbplhfcNRTMDBPLHFC])In(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)`, "g", "y", "").replace(s, counter);
+                s = new Replacement(String.raw`(e[nrtmdbplhfcNRTMDBPLHFC])In(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)`, "g", Const.y, "").replace(s, counter);
 
-                s = new Replacement(String.raw`([nrtmdbplhfcNRTMDBPLHFC])In(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)`, "g", "\$1y", "").replace(s, counter);
+                s = new Replacement(String.raw`([nrtmdbplhfcNRTMDBPLHFC])In(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)`, "g", "\$1" + Const.y, "").replace(s, counter);
             }
 
         }
@@ -316,7 +316,7 @@ export class BeGone {
         };
         s = new Replacement(String.raw`(^[dD]+)(er|as)`, "", "\$1ie", "").replace(s, counter);
         s = new Replacement(String.raw`(ern|ers|er|en|e)$`, "", "", "").replace(s, counter);
-        s = s + "ys";
+        s = s + Const.ys;
         return s;
     }
 
@@ -331,11 +331,11 @@ export class BeGone {
 
         s = new Replacement(String.raw`(^[dD]+)(en|er|ie)`, "", "\$1as", "").replace(s, counter);
         if (/(en|ern|er)$/.test(s)) {
-            s = new Replacement(String.raw`(en|ern|er)$`, "", "y", "").replace(s, counter);
+            s = new Replacement(String.raw`(en|ern|er)$`, "", Const.y, "").replace(s, counter);
         } else if (/(ens|erns|ers|es)$/.test(s)) { // Genitiv
-            s = new Replacement(String.raw`(es)$`, "", "ys", "eines Arztes").replace(s, counter);
+            s = new Replacement(String.raw`(es)$`, "", Const.ys, "eines Arztes").replace(s, counter);
         } else {
-            s = s + "y";
+            s = s + Const.y;
         }
 
         return s;
@@ -450,10 +450,10 @@ export class BeGone {
                 outer.replacementsp++;
             };
 
-            s = new Replacement(String.raw`der Studierende\b`, "g", "das Studenty", "").replace(s, counter);
+            s = new Replacement(String.raw`der Studierende\b`, "g", "das Student" + Const.y, "").replace(s, counter);
             s = s.replace(/(?<!^)(?<!\. )Studierende(r|n?)?/g, (match) => {
                 this.replacementsp++;
-                let suffix = "Studenty";
+                let suffix = "Student" + Const.y;
                 if (match.endsWith("n") || match.endsWith("e")) {
                     suffix = suffix + "s"
                 }
@@ -461,7 +461,7 @@ export class BeGone {
             });
             s = s.replace(/(?<!^)(?<!\. )Teilnehmende(r|n?)?/g, (match) => {
                 this.replacementsp++;
-                let suffix = "Teilnehmy";
+                let suffix = "Teilnehm" + Const.y;
                 if (match.endsWith("n") || match.endsWith("e")) {
                     suffix = suffix + "s"
                 }
@@ -469,7 +469,7 @@ export class BeGone {
             });
             s = s.replace(/(?<!^)(?<!\. )Dozierende(r|n?)?/g, (match) => {
                 this.replacementsp++;
-                let suffix = "Dozenty";
+                let suffix = "Dozent" + Const.y;
                 if (match.endsWith("n") || match.endsWith("e")) {
                     suffix = suffix + "s"
                 }
@@ -477,7 +477,7 @@ export class BeGone {
             });
             s = s.replace(/(?<!^)(?<!\. )Lesende(r|n?)?/g, (match) => {
                 this.replacementsp++;
-                let suffix = "Lesy";
+                let suffix = "Les" + Const.y;
                 if (match.endsWith("n") || match.endsWith("e")) {
                     suffix = suffix + "s"
                 }
@@ -485,7 +485,7 @@ export class BeGone {
             });
             s = s.replace(/(?<!^)(?<!\. )Assistierende(r|n?)?/g, (match) => {
                 this.replacementsp++;
-                let suffix = "Assistenty";
+                let suffix = "Assistent" + Const.y;
                 if (match.endsWith("n") || match.endsWith("e")) {
                     suffix = suffix + "s"
                 }
@@ -493,7 +493,7 @@ export class BeGone {
             });
             s = s.replace(/(?<!^)(?<!\. )Mitarbeitende(r|n?)?/g, (match) => {
                 this.replacementsp++;
-                let suffix = "Mitarbeity";
+                let suffix = "Mitarbeit" + Const.y;
                 if (match.endsWith("n") || match.endsWith("e")) {
                     suffix = suffix + "s"
                 }
@@ -501,7 +501,7 @@ export class BeGone {
             });
             s = s.replace(/(?<!^)(?<!\. )Forschende(r|n?)?/g, (match) => {
                 this.replacementsp++;
-                let suffix = "Forschy";
+                let suffix = "Forsch" + Const.y;
                 if (match.endsWith("n") || match.endsWith("e")) {
                     suffix = suffix + "s"
                 }
@@ -509,7 +509,7 @@ export class BeGone {
             });
             s = s.replace(/(?<!^)(?<!\. )Interessierte(r|n?)?/g, (match) => {
                 this.replacementsp++;
-                let suffix = "Interessenty";
+                let suffix = "Interessent" + Const.y;
                 if (match.endsWith("n") || match.endsWith("e")) {
                     suffix = suffix + "s"
                 }
@@ -517,7 +517,7 @@ export class BeGone {
             });
             s = s.replace(/(?<!^)(?<!\. )([A-Z]+[a-zäöü]+)fahrende(r|n?)?/g, (match, p1) => {
                 this.replacementsp++;
-                let suffix = "fahry";
+                let suffix = "fahr" + Const.y;
                 if (match.endsWith("n") || match.endsWith("e")) {
                     suffix = suffix + "s"
                 }
@@ -526,7 +526,7 @@ export class BeGone {
             s = s.replace(/(?<!^)(?<!\. )([A-Z]+[a-zäöü]+)verdienende(r|n?)?/g, (match, p1) => {
                 this.replacementsp++;
 
-                let suffix = "verdieny"
+                let suffix = "verdien" + Const.y
                 if (match.endsWith("n") || match.endsWith("e")) {
                     suffix = suffix + "s"
                 }
@@ -551,7 +551,7 @@ export class BeGone {
                 return s;
             }
 
-            s = new Replacement(String.raw`\b[Dd]er Geflüchtete\b`, "g", "Das Flüchtly", "").replace(s, counter);
+            s = new Replacement(String.raw`\b[Dd]er Geflüchtete\b`, "g", "Das Flüchtl" + Const.y, "").replace(s, counter);
 
             // Annahme: Gefluechtete wird fast ausschließlich in der Mehrzahl verwendet, was die Ersetzung einfacher macht
             // (?:[A-Z][a-zöüä]+\b[,] ) -> Behandlung von Aufzählungen der Form "gegenüber Obdachlosen, Geflüchteten und Menschen ohne Papiere"
@@ -564,9 +564,9 @@ export class BeGone {
                 if (!den) den = "";
 
                 if (praeposition || den) {
-                    return praeposition + den + zahlwort + aufzaehlung + "Flüchtlys" + zufolge;
+                    return praeposition + den + zahlwort + aufzaehlung + "Flüchtl" + Const.ys + zufolge;
                 } else {
-                    return praeposition + den + zahlwort + aufzaehlung + "Flüchtlys" + zufolge;
+                    return praeposition + den + zahlwort + aufzaehlung + "Flüchtl" + Const.ys + zufolge;
                 }
             });
 
@@ -577,7 +577,7 @@ export class BeGone {
 
             // "Geflüchtetenxxx" -> "Flüchtlingsxxx"
             s = s.replace(/\b(Geflüchteten)([\w]{3,})\b/g, (match, gefluechteten, rest) => {
-                return "Flüchtlys" + rest;
+                return "Flüchtl" + Const.ys + rest;
             });
         }
         return s;
