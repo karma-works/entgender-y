@@ -1,8 +1,8 @@
-import replacements, {Replacement} from './replacements'
-import Replacements from "./replacements";
+import {Replacement} from './replacement'
 import {Const} from "./const";
 
 declare var chrome: any;
+
 interface BeGoneSettings {
     aktiv?: boolean;
     doppelformen?: boolean;
@@ -11,7 +11,7 @@ interface BeGoneSettings {
     whitelist?: string;
     blacklist?: string;
     counter?: boolean;
-    filterliste?: "Bei Bedarf"|"Whitelist"|"Blacklist"|undefined;
+    filterliste?: "Bei Bedarf" | "Whitelist" | "Blacklist" | undefined;
 }
 
 class BeGoneSettingsHelper {
@@ -37,7 +37,7 @@ export class BeGone {
     private replacementsb = 0;
     private replacementsd = 0;
     private replacementsp = 0;
-    private settings: BeGoneSettings = { aktiv: true, partizip: true, doppelformen: true, skip_topic: false };
+    private settings: BeGoneSettings = {aktiv: true, partizip: true, doppelformen: true, skip_topic: false};
     private nodes: Array<CharacterData> = new Array<CharacterData>();
     private mtype: string | undefined = undefined;
 
@@ -50,7 +50,8 @@ export class BeGone {
             walk = document.createTreeWalker(
                 el,
                 NodeFilter.SHOW_TEXT,
-                { acceptNode: (node: Node) => {
+                {
+                    acceptNode: (node: Node) => {
                         //Nodes mit weniger als 5 Zeichen nicht filtern
                         if (!node.textContent || node.textContent.length < 5) {
                             return NodeFilter.FILTER_REJECT;
@@ -77,8 +78,7 @@ export class BeGone {
             let nodeParent = n.parentNode;
             if (!nodeParent) {
                 a.push(n);
-            } else
-            if (!this.isHTMLFormattingNodeName(nodeParent.nodeName)){
+            } else if (!this.isHTMLFormattingNodeName(nodeParent.nodeName)) {
                 a.push(n);
             } else {
                 // we've got a text node that will probably need context to be analyzed (like an word highlighted with a <mark> tag) - save the context nodes as well
@@ -100,15 +100,15 @@ export class BeGone {
         if (!this.settings.aktiv && this.settings.filterliste !== "Bei Bedarf" || this.settings.filterliste == "Bei Bedarf" && message.type !== "ondemand") return;
 
         this.mtype = message.type;
-        if (!BeGoneSettingsHelper.isWhitelist(this.settings) && !BeGoneSettingsHelper.isBlacklist(this.settings) || BeGoneSettingsHelper.isWhitelist(this.settings) && RegExp(BeGoneSettingsHelper.whiteliststring(this.settings)).test(document.URL) || BeGoneSettingsHelper.isBlacklist(this.settings) && !RegExp(BeGoneSettingsHelper.blackliststring(this.settings)).test(document.URL)){
+        if (!BeGoneSettingsHelper.isWhitelist(this.settings) && !BeGoneSettingsHelper.isBlacklist(this.settings) || BeGoneSettingsHelper.isWhitelist(this.settings) && RegExp(BeGoneSettingsHelper.whiteliststring(this.settings)).test(document.URL) || BeGoneSettingsHelper.isBlacklist(this.settings) && !RegExp(BeGoneSettingsHelper.blackliststring(this.settings)).test(document.URL)) {
             //Entfernen bei erstem Laden der Seite
             this.entferneInitial();
 
             //Entfernen bei Seitenänderungen
             try {
-                var observer = new MutationObserver((mutations:any) => {
+                var observer = new MutationObserver((mutations: any) => {
                     var insertedNodes = new Array<CharacterData>();
-                    mutations.forEach((mutation:any) => {
+                    mutations.forEach((mutation: any) => {
                         for (var i = 0; i < mutation.addedNodes.length; i++) {
                             insertedNodes = insertedNodes.concat(this.textNodesUnder(mutation.addedNodes[i]));
                         }
@@ -135,9 +135,9 @@ export class BeGone {
 
     private artikelUndKontraktionen(s: string): string {
         var outer = this;
-        var repl = new Replacements();
-        let counter = function() {outer.replacementsb++;};
-
+        let counter = function () {
+            outer.replacementsb++;
+        };
 
 
         if (/[a-zA-ZäöüßÄÖÜ][\/\*.&_\(]-?[a-zA-ZäöüßÄÖÜ]/.test(s) || /der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(]-?e?r\b|em?\(e?r\)\b/.test(s)) {
@@ -147,17 +147,48 @@ export class BeGone {
 
             //Stuff
             if (/der|die|dessen|ein|sie|ih[rmn]|zu[rm]|jede/i.test(s)) {
-                s = repl.replaceArtikel1(s, counter );
+                s = new Replacement(String.raw`\b(d)(ie${Const.gstar}der|er${Const.gstar}die)\b`, "ig", "\$1as", "").replace(s, counter);
+                s = new Replacement(String.raw`\b(d)(en${Const.gstar}die|ie${Const.gstar}den)\b`, "ig", "\$1as", "").replace(s, counter);
+                s = new Replacement(String.raw`\b(d)(es${Const.gstar}der|er${Const.gstar}des)\b`, "ig", "\$1es", "").replace(s, counter);
+                s = new Replacement(String.raw`\b(d)(er${Const.gstar}dem|em${Const.gstar}der)\b`, "ig", "\$1em", "").replace(s, counter);
+                s = new Replacement(String.raw`b(d)(eren${Const.gstar}dessen|essen${Const.gstar}deren)\b`, "ig", "\$1essen", "").replace(s, counter);
+                s = new Replacement(String.raw`\bdiese[r]?${Const.gstar}(diese[rnms])`, "ig", "\$1", "1").replace(s, counter);
+                s = new Replacement(String.raw`(diese[rnms])${Const.gstar}diese[r]?\b`, "ig", "\$1", "2").replace(s, counter);
+                s = new Replacement(String.raw`\b([KkDMSdms]?[Ee])in(${Const.gstar}e |\(e\) |E )`, "g", "\$1in ", "").replace(s, counter);
+                s = new Replacement(String.raw`\b([KkDMSdms]?[Ee])ine(${Const.gstar}r |\(r\) |R )`, "g", "\$1iner ", "").replace(s, counter);
+                s = new Replacement(String.raw`\b([KkDMSdms]?[Ee])iner(${Const.gstar}s |\(S\) |S )`, "g", "\$1ines ", "").replace(s, counter);
+                s = new Replacement(String.raw`\b([KkDMSdms]?[Ee])ines(${Const.gstar}r |\(R\) |R )`, "g", "\$1ines ", "").replace(s, counter);
+                s = new Replacement(String.raw`\b([KkDMSdms]?[Ee])iner(${Const.gstar}m |\(m\) |M )`, "g", "\$1inem ", "").replace(s, counter);
+                s = new Replacement(String.raw`\b([KkDMSdms]?[Ee])inem(${Const.gstar}r |\(r\) |R )`, "g", "\$1inem ", "").replace(s, counter);
+                s = new Replacement(String.raw`\b([KkDMSdms]?[Ee])ine(m|r)${Const.gstar}([KkDMSdms]?[Ee])ine(m |r )`, "g", "\$1inem ", "einer_einem, keiner_keinem").replace(s, counter);
+                s = new Replacement(String.raw`\b([KkDMSdms]?[Ee])ine?(m|r)?${Const.gstar}([KkDMSdms]?[Ee])ine?(m |r )?`, "g", "\$1in", "ein/eine").replace(s, counter);
+                s = new Replacement(String.raw`\b([KkDMSdms]?[Ee])ine(${Const.gstar}n |\(n\) |N )`, "g", "\$1in ", "").replace(s, counter);
+                s = new Replacement(String.raw`\bsie${Const.gstar}er|er${Const.gstar}sie\b`, "g", "er", "").replace(s, counter);
+                s = new Replacement(String.raw`\bSie${Const.gstar}[Ee]r|Er${Const.gstar}[Ss]ie\b`, "g", "Es", "").replace(s, counter);
+                s = new Replacement(String.raw`\b(i)(hr${Const.gstar}ihm|hm${Const.gstar}ihr)\b`, "ig", "\$1hm", "").replace(s, counter);
+                s = new Replacement(String.raw`\bsie${Const.gstar}ihn|ihn${Const.gstar}ie\b`, "g", "ihn", "").replace(s, counter);
+                s = new Replacement(String.raw`\bSie${Const.gstar}[Ii]hn|Ihn${Const.gstar}[Ss]ie\b`, "g", "Ihn", "").replace(s, counter);
+                s = new Replacement(String.raw`\bihr${Const.gstar}e\b`, "ig", "ihr", "ihr*e Partner*in").replace(s, counter);
+                s = new Replacement(String.raw`\bihre?[rnms]?${Const.gstar}(seine?[rnms]?)`, "ig", "\$1", "ihr*e Partner*in").replace(s, counter);
+                s = new Replacement(String.raw`(seine?[rnms]?)${Const.gstar}ihre?[rnms]?\b`, "ig", "\$1", "ihr*e Partner*in").replace(s, counter);
+                s = new Replacement(String.raw`\b(z)(um${Const.gstar}zur|ur${Const.gstar}zum)\b`, "ig", "\$1um", "").replace(s, counter);
+                s = new Replacement(String.raw`jede[rnms]?${Const.gstar}(jede[rnms]?)\b`, "ig", "\$1", "").replace(s, counter);
             }
 
             //extra Stuff
             if (/eR\b|(?<![kK]art)(?<![kK]onnt)em?[\/\*_\(-]{1,2}e?[rn]\b|em?\(e?r\)\b/.test(s)) {
-                s = repl.replaceArtikel2(s, counter);
+                s = new Replacement(String.raw`(?<beginning>m\b.{3,30})(?<star>[\/\*_\(-]{1,2})(?<suffix>[rn])\b`, "ig", "\$1\$3", "Dativ: einem progressive*n Staatsoberhaupt").replace(s, counter);
+                s = new Replacement(String.raw`(\b[a-zäöü]+e)([\/\*_\(-]+)(n|e\(n\)|eN\b)`, "g", "\$1s", "jede*n, europäische*n").replace(s, counter);
+                s = new Replacement(String.raw`([\b“ ][A-ZÄÖÜ]\w+)(e[\/\*_\(-]+)(n|e\(n\)|eN[\b“ ])`, "g", "\$1y", "Wehrbeauftragte*n“").replace(s, counter);
+                s = new Replacement(String.raw`e[\/\*_\(-]+r|e\(r\)|eR\b`, "g", "es", "jede/r,jede(r),jedeR").replace(s, counter);
+                s = new Replacement(String.raw`em\(e?r\)|em[\/\*_\(-]+r\b`, "g", "em", "jedem/r").replace(s, counter);
+                s = new Replacement(String.raw`er\(e?s\)|es[\/\*_\(-]+r\b`, "g", "es", "jedes/r").replace(s, counter);
             }
 
             //man
             if (/\/(frau|man|mensch)/.test(s)) {
-                s = repl.replaceArtikel3(s, counter);
+                let repl3 = new Replacement(String.raw`\b(frau|man+|mensch)+[\/\*_\(-](frau|man+|mensch|[\/\*_\(-])*`, "", "man", "");
+                s = repl3.replace(s, counter);
             }
         }
 
@@ -166,12 +197,15 @@ export class BeGone {
 
     private entferneUnregelmaessigeFormen(s: string): string {
         let outer = this;
-        let counter = function() {outer.replacementsb++;};
+        let counter = function () {
+            outer.replacementsb++;
+        };
 
         // Sinti*ze und Rom*nja
         s = new Replacement(String.raw`\bSinti(\/-?|_|\*|:|\.|\x00b7)ze\b`, "g",
             "Sintys", "Sinti*ze und Rom*nja").replace(s, counter);
-        s = new Replacement(String.raw`\bRom(\/-?|_|\*|:|\.|\x00b7)nja\b`, "g", "Romys", "Sinti*ze und Rom*nja").replace(s, counter);;
+        s = new Replacement(String.raw`\bRom(\/-?|_|\*|:|\.|\x00b7)nja\b`, "g", "Romys", "Sinti*ze und Rom*nja").replace(s, counter);
+        ;
 
         s = new Replacement(String.raw`\bMuslim(\/-?|_|\*|:|\.|\xb7)a\b`, "g", "Muslimy", "").replace(s, counter);
 
@@ -182,7 +216,9 @@ export class BeGone {
     private entferneBinnenIs(s: string): string {
         this.log("10000");
         let outer = this;
-        let counter = function() {outer.replacementsb++;};
+        let counter = function () {
+            outer.replacementsb++;
+        };
 
         // entferne *x am Ende
         if (/\*x/.test(s)) {
@@ -214,9 +250,9 @@ export class BeGone {
                 this.log("12200");
                 //Prüfung auf Sonderfälle
                 if (/(chef|fan|gött|verbesser|äur|äs)innen/i.test(s)) {
-                    s = new Replacement(String.raw`(C|c)hefInnen`, "g",  "\$1hefys", "").replace(s, counter);
+                    s = new Replacement(String.raw`(C|c)hefInnen`, "g", "\$1hefys", "").replace(s, counter);
 
-                    s = new Replacement(String.raw`(F|f)anInnen`, "g",  "\$1ans", "").replace(s, counter);
+                    s = new Replacement(String.raw`(F|f)anInnen`, "g", "\$1ans", "").replace(s, counter);
                     s = new Replacement(String.raw`([Gg]ött|verbesser)(?=Innen)`, "g", "\$1ys", "").replace(s, counter);
                     s = new Replacement(String.raw`äue?rInnen`, "g", "auern", "").replace(s, counter);
                     s = new Replacement(String.raw`äsInnen`, "g", "asys", "").replace(s, counter);
@@ -230,8 +266,8 @@ export class BeGone {
                 s = new Replacement(String.raw`((?:von[\s]{1,2}|mit[\s]{1,2})(?:[A-Z][a-zöüä]+\b[,][\s]{1,2}|[A-Z][*I_ïa-zöüä]+\b und[\s]{1,2})[a-zA-Zöäüß]*?)([Aa]nwält|[Ää]rzt|e[iu]nd|rät|amt|äst|würf|äus|[ai(eu)]r|irt)Innen`, "g", "\$1\$2ys", "").replace(s, counter);
 
                 // Markierung 1
-                s = new Replacement(String.raw`([Aa]nwält|[Ää]rzt|e[iu]nd|rät|amt|äst|würf|äus|[ai(eu)]r|irt)Innen`, "g",  "\$1ys", "").replace(s, counter);
-                s = new Replacement(String.raw`([nrtsmdfghpbklvwNRTSMDFGHPBKLVW])Innen`, "g",  "\$1ys", "").replace(s, counter);
+                s = new Replacement(String.raw`([Aa]nwält|[Ää]rzt|e[iu]nd|rät|amt|äst|würf|äus|[ai(eu)]r|irt)Innen`, "g", "\$1ys", "").replace(s, counter);
+                s = new Replacement(String.raw`([nrtsmdfghpbklvwNRTSMDFGHPBKLVW])Innen`, "g", "\$1ys", "").replace(s, counter);
             }
 
             //Singular			
@@ -240,7 +276,7 @@ export class BeGone {
                 //Prüfung auf Sonderfälle
 
                 if (/amtIn|stIn\B|verbesser(?=In)/.test(s)) {
-                    s = new Replacement(String.raw`verbesserIn`, "g",  "verbessy", "").replace(s, counter);
+                    s = new Replacement(String.raw`verbesserIn`, "g", "verbessy", "").replace(s, counter);
                     s = new Replacement(String.raw`amtIn`, "g", "amty", "").replace(s, counter);
                     s = new Replacement(String.raw`stIn\B(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di[ac]|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)`, "g", "sty", "JournalistInfrage").replace(s, counter);
                 }
@@ -255,7 +291,7 @@ export class BeGone {
                 }
                 s = new Replacement(String.raw`\b(([Dd]en|[Aa]us|[Aa]ußer|[Bb]ei|[Dd]ank|[Gg]egenüber|[Ll]aut|[Mm]it(samt)?|[Nn]ach|[Ss]amt|[Uu]nter|[Vv]on|[Zz]u|[Ww]egen|[MmSsDd]?eine[mnrs]) ([ID]?[a-zäöüß]+en)?[A-ZÄÖÜ][a-zäöüß]+)logIn\b`, "g", "logy", "unregelmäßiger Dativ bei eine/n Psycholog/in").replace(s, counter);
 
-                s = new Replacement(String.raw`([skgvwzSKGVWZ]|ert|[Bb]rit|[Kk]und|ach)In(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)`, "g","\$1y", "ExpertIn, BritIn, KundIn, WachIn").replace(s, counter);
+                s = new Replacement(String.raw`([skgvwzSKGVWZ]|ert|[Bb]rit|[Kk]und|ach)In(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)`, "g", "\$1y", "ExpertIn, BritIn, KundIn, WachIn").replace(s, counter);
 
                 s = new Replacement(String.raw`(e[nrtmdbplhfcNRTMDBPLHFC])In(?!(\w{1,2}\b)|[A-Z]|[cf]o|te[gr]|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)`, "g", "y", "").replace(s, counter);
 
@@ -270,14 +306,16 @@ export class BeGone {
     }
 
     private pluraly(s: string): string {
-        if(s.trim().length == 0){
+        if (s.trim().length == 0) {
             return s;
         }
 
         let outer = this;
-        let counter = function() {outer.replacementsb++;};
+        let counter = function () {
+            outer.replacementsb++;
+        };
         s = new Replacement(String.raw`(^[dD]+)(er|as)`, "", "\$1ie", "").replace(s, counter);
-        s = new Replacement(String.raw`(ern|ers|er|en|e)$`,"", "", "").replace(s,counter);
+        s = new Replacement(String.raw`(ern|ers|er|en|e)$`, "", "", "").replace(s, counter);
         s = s + "ys";
         return s;
     }
@@ -287,11 +325,13 @@ export class BeGone {
             return s;
         }
         let outer = this;
-        let counter = function() {outer.replacementsb++;};
+        let counter = function () {
+            outer.replacementsb++;
+        };
 
         s = new Replacement(String.raw`(^[dD]+)(en|er|ie)`, "", "\$1as", "").replace(s, counter);
         if (/(en|ern|er)$/.test(s)) {
-            s = new Replacement(String.raw`(en|ern|er)$`, "","y", "").replace(s, counter);
+            s = new Replacement(String.raw`(en|ern|er)$`, "", "y", "").replace(s, counter);
         } else if (/(ens|erns|ers|es)$/.test(s)) { // Genitiv
             s = new Replacement(String.raw`(es)$`, "", "ys", "eines Arztes").replace(s, counter);
         } else {
@@ -304,8 +344,9 @@ export class BeGone {
     private startsWithCapitalLetter(s: string): boolean {
         return s != null && s.length > 0 && /[A-Z]/.test(s[0]);
     }
+
     private capitalize(s: string): string {
-        if(s == null || s.length < 1) {
+        if (s == null || s.length < 1) {
             return "";
         }
         return s.charAt(0).toUpperCase() + s.slice(1);
@@ -335,15 +376,15 @@ export class BeGone {
                         return p1 + p13 + p6 + p18;
                     } else {
                         this.log("21004");
-                        if(/[Dd]e[sm]/.test(p13)){
+                        if (/[Dd]e[sm]/.test(p13)) {
                             return p13 + this.singulary(p8);
                         }
-                        if(this.startsWithCapitalLetter(p1) && /[Dd]ie |[Dd]er |[Dd]as /.test(p1)){
+                        if (this.startsWithCapitalLetter(p1) && /[Dd]ie |[Dd]er |[Dd]as /.test(p1)) {
                             return "Das " + this.singulary(p8);
                         } else {
                             return "das " + this.singulary(p8);
                         }
-                        return p1  + this.singulary(p8);
+                        return p1 + this.singulary(p8);
 
 
                     }
@@ -352,7 +393,7 @@ export class BeGone {
                     return p13 + p6 + this.pluraly(p18);
                 } else {
                     this.log("21006");
-                    if(this.startsWithCapitalLetter(p2)){
+                    if (this.startsWithCapitalLetter(p2)) {
                         return this.capitalize(this.singulary(p12));
                     }
                     return this.singulary(p8);
@@ -405,13 +446,15 @@ export class BeGone {
     private entfernePartizip(s: string): string {
         if (/(ier|arbeit|orsch|fahr|verdien|nehm|es)ende|(?<!^)(?<!\. )Interessierte/.test(s)) {
             let outer = this;
-            let counter = function() {outer.replacementsp++;};
+            let counter = function () {
+                outer.replacementsp++;
+            };
 
             s = new Replacement(String.raw`der Studierende\b`, "g", "das Studenty", "").replace(s, counter);
             s = s.replace(/(?<!^)(?<!\. )Studierende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Studenty";
-                if(match.endsWith("n") || match.endsWith("e")){
+                if (match.endsWith("n") || match.endsWith("e")) {
                     suffix = suffix + "s"
                 }
                 return suffix;
@@ -419,7 +462,7 @@ export class BeGone {
             s = s.replace(/(?<!^)(?<!\. )Teilnehmende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Teilnehmy";
-                if(match.endsWith("n") || match.endsWith("e")){
+                if (match.endsWith("n") || match.endsWith("e")) {
                     suffix = suffix + "s"
                 }
                 return suffix;
@@ -427,7 +470,7 @@ export class BeGone {
             s = s.replace(/(?<!^)(?<!\. )Dozierende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Dozenty";
-                if(match.endsWith("n") || match.endsWith("e")){
+                if (match.endsWith("n") || match.endsWith("e")) {
                     suffix = suffix + "s"
                 }
                 return suffix;
@@ -435,7 +478,7 @@ export class BeGone {
             s = s.replace(/(?<!^)(?<!\. )Lesende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Lesy";
-                if(match.endsWith("n") || match.endsWith("e")){
+                if (match.endsWith("n") || match.endsWith("e")) {
                     suffix = suffix + "s"
                 }
                 return suffix;
@@ -443,7 +486,7 @@ export class BeGone {
             s = s.replace(/(?<!^)(?<!\. )Assistierende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Assistenty";
-                if(match.endsWith("n") || match.endsWith("e")){
+                if (match.endsWith("n") || match.endsWith("e")) {
                     suffix = suffix + "s"
                 }
                 return suffix;
@@ -451,15 +494,15 @@ export class BeGone {
             s = s.replace(/(?<!^)(?<!\. )Mitarbeitende(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Mitarbeity";
-                if(match.endsWith("n") || match.endsWith("e")){
+                if (match.endsWith("n") || match.endsWith("e")) {
                     suffix = suffix + "s"
                 }
                 return suffix;
             });
             s = s.replace(/(?<!^)(?<!\. )Forschende(r|n?)?/g, (match) => {
                 this.replacementsp++;
-                let suffix =  "Forschy";
-                if(match.endsWith("n") || match.endsWith("e")){
+                let suffix = "Forschy";
+                if (match.endsWith("n") || match.endsWith("e")) {
                     suffix = suffix + "s"
                 }
                 return suffix;
@@ -467,7 +510,7 @@ export class BeGone {
             s = s.replace(/(?<!^)(?<!\. )Interessierte(r|n?)?/g, (match) => {
                 this.replacementsp++;
                 let suffix = "Interessenty";
-                if(match.endsWith("n") || match.endsWith("e")){
+                if (match.endsWith("n") || match.endsWith("e")) {
                     suffix = suffix + "s"
                 }
                 return suffix;
@@ -475,7 +518,7 @@ export class BeGone {
             s = s.replace(/(?<!^)(?<!\. )([A-Z]+[a-zäöü]+)fahrende(r|n?)?/g, (match, p1) => {
                 this.replacementsp++;
                 let suffix = "fahry";
-                if(match.endsWith("n") || match.endsWith("e")){
+                if (match.endsWith("n") || match.endsWith("e")) {
                     suffix = suffix + "s"
                 }
                 return p1 + suffix;
@@ -484,7 +527,7 @@ export class BeGone {
                 this.replacementsp++;
 
                 let suffix = "verdieny"
-                if(match.endsWith("n") || match.endsWith("e")){
+                if (match.endsWith("n") || match.endsWith("e")) {
                     suffix = suffix + "s"
                 }
                 return p1 + suffix;
@@ -497,7 +540,8 @@ export class BeGone {
     private ersetzeGefluechteteDurchFluechtlinge(s: string): string {
         if (/flüch/.test(s)) {
             let outer = this;
-            let counter = function() {};
+            let counter = function () {
+            };
 
 
             s = new Replacement(String.raw`[\u00AD\u200B]`, "g", "", "entfernt soft hyphens").replace(s, counter);
@@ -520,9 +564,9 @@ export class BeGone {
                 if (!den) den = "";
 
                 if (praeposition || den) {
-                    return  praeposition + den + zahlwort + aufzaehlung + "Flüchtlys" + zufolge;
+                    return praeposition + den + zahlwort + aufzaehlung + "Flüchtlys" + zufolge;
                 } else {
-                    return  praeposition + den + zahlwort + aufzaehlung + "Flüchtlys" + zufolge;
+                    return praeposition + den + zahlwort + aufzaehlung + "Flüchtlys" + zufolge;
                 }
             });
 
@@ -574,8 +618,8 @@ export class BeGone {
             probeBinnenI: probeBinnenI,
             probeRedundancy: probeRedundancy,
             probePartizip: probePartizip,
-            probeGefluechtete : probeGefluechtete,
-            probeArtikelUndKontraktionen : probeArtikelUndKontraktionen
+            probeGefluechtete: probeGefluechtete,
+            probeArtikelUndKontraktionen: probeArtikelUndKontraktionen
         }
     }
 
@@ -601,7 +645,8 @@ export class BeGone {
 
     // unfortunately this lead to newlines being removed in tweets on Twitter etc.; TODO: once FireFox supports the dotAll operator we should use this in the regexes instead, or modify the regexes to handle newlines as whitespace
     private replaceLineBreak(s: string) {
-        let counter = function(){};
+        let counter = function () {
+        };
         return new Replacement(String.raw`(\n|\r|\r\n)`, "ig", " ", "").replace(s, counter);
     }
 
@@ -616,7 +661,7 @@ export class BeGone {
             // special treatment of HTML nodes that are only there for formatting; those might tear a word out of it's context which is important for correcting
             if (this.isHTMLFormattingNodeName(parentNodeName)) {
                 // this word needs to be replaced in context
-                var oldTextInContext = (i > 0 ? textnodes[i-1].data : "") + "\f" + oldText + "\f" + (i < textnodes.length - 1 ? textnodes[i+1].data : "");
+                var oldTextInContext = (i > 0 ? textnodes[i - 1].data : "") + "\f" + oldText + "\f" + (i < textnodes.length - 1 ? textnodes[i + 1].data : "");
                 //oldTextInContext = this.replaceLineBreak(oldTextInContext);
                 oldTextInContext = modifyData.call(this, oldTextInContext);
                 var index1 = oldTextInContext.indexOf("\f");
@@ -659,7 +704,7 @@ export class BeGone {
                 this.applyToNodes(this.nodes, this.ersetzeGefluechteteDurchFluechtlinge);
             }
 
-            if (probeResult.probeArtikelUndKontraktionen){
+            if (probeResult.probeArtikelUndKontraktionen) {
                 this.applyToNodes(this.nodes, this.artikelUndKontraktionen);
             }
 
@@ -686,7 +731,7 @@ export class BeGone {
                 s = this.ersetzeGefluechteteDurchFluechtlinge(s);
             }
 
-            if (probeResult.probeArtikelUndKontraktionen){
+            if (probeResult.probeArtikelUndKontraktionen) {
                 s = this.artikelUndKontraktionen(s);
             }
 

@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import Replacements from "../src/replacements";
+import Replacements from "../src/replacement";
 
 
 describe('Kontraktionen und Artikel', () => {
