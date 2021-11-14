@@ -645,6 +645,11 @@ describe('Formulierungen die erhalten bleiben müssen', () => {
         expect(result).to.be.equal("Kreditkarte(n)");
     });
 
+    it('Stunden', () => {
+        const result = beGone.entferneInitialForTesting("2 Probestunde(n) übrig");
+        expect(result).to.be.equal("2 Probestunde(n) übrig");
+    });
+
     it('Fall-Zahlen', () => {
         const result = beGone.entferneInitialForTesting("Die Corona-Zahlen steigen und steigen: Letzte Ausfahrt Lockdown?");
         expect(result).to.be.equal("Die Corona-Zahlen steigen und steigen: Letzte Ausfahrt Lockdown?");
