@@ -176,7 +176,7 @@ export class BeGone {
             }
 
             //extra Stuff
-            if (/eR\b|(?<![kK]art)(?<![kK]onnt)em?[\/\*_\(-]{1,2}e?[rn]\b|em?\(e?r\)\b/.test(s)) {
+            if (/eR\b|(?<![kK]art)(?<![Ss]tund)(?<![kK]onnt)em?[\/\*_\(-]{1,2}e?[rn]\b|em?\(e?r\)\b/.test(s)) {
                 s = new Replacement(String.raw`(?<beginning>m\b.{3,30})(?<star>[\/\*_\(-]{1,2})(?<suffix>[rn])\b`, "ig", "\$1\$3", "Dativ: einem progressive*n Staatsoberhaupt").replace(s, counter);
                 s = new Replacement(String.raw`(\b[a-zäöü]+e)([\/\*_\(-]+)(n|e\(n\)|eN\b)`, "g", "\$1s", "jede*n, europäische*n").replace(s, counter);
                 s = new Replacement(String.raw`([\b“ ][A-ZÄÖÜ]\w+)(e[\/\*_\(-]+)(n|e\(n|eN[\b“ ])(\))?`, "g", "\$1" + Const.y , "Wehrbeauftragte*n“").replace(s, counter);
