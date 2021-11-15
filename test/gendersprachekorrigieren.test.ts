@@ -621,6 +621,11 @@ describe('TODO oder nicht ohne weiteres lösbar', () => {
         const result = beGone.entferneInitialForTesting("Ein/eine Schülersprecher/in");
         expect(result).to.be.equal("Ein Schülersprechy");
     });
+
+    it('Liebe:r', () => {
+        const result = beGone.entferneInitialForTesting("Liebe:r");
+        expect(result).to.be.equal("Liebes");
+    });
 });
 
 describe('Formulierungen die erhalten bleiben müssen', () => {
