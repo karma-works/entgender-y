@@ -626,6 +626,11 @@ describe('TODO oder nicht ohne weiteres lösbar', () => {
         const result = beGone.entferneInitialForTesting("Liebe:r");
         expect(result).to.be.equal("Liebes");
     });
+
+    it('Stellvertrende*r Datenschutzbeauftragte*r', () => {
+        const result = beGone.entferneInitialForTesting("Stellvertrende*r Datenschutzbeauftragte*r");
+        expect(result).to.be.equal("Stellvertrendes Datenschutzbeauftragty");
+    });
 });
 
 describe('Formulierungen die erhalten bleiben müssen', () => {
