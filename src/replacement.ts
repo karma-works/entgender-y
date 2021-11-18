@@ -30,6 +30,12 @@ export class Replacement {
         return outputString;
     }
 
+    public test(inputString: string): boolean {
+        let reg = RegExp(this.regex, this.modifier);
+        return reg.test(inputString);
+    }
+
+
     public regexp(): RegExp {
         return new RegExp(this.regex, this.modifier);
     }

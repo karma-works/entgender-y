@@ -628,8 +628,13 @@ describe('TODO oder nicht ohne weiteres lösbar', () => {
     });
 
     it('Stellvertrende*r Datenschutzbeauftragte*r', () => {
-        const result = beGone.entferneInitialForTesting("Stellvertrende*r Datenschutzbeauftragte*r");
-        expect(result).to.be.equal("Stellvertrendes Datenschutzbeauftragty");
+        const result = beGone.entferneInitialForTesting(". Stellvertrende*r Datenschutzbeauftragte*r");
+        expect(result).to.be.equal(". Stellvertrendes Datenschutzbeauftragty");
+    });
+
+    it('stellvertrende*r Datenschutzbeauftragte*r', () => {
+        const result = beGone.entferneInitialForTesting("stellvertrende*r Datenschutzbeauftragte*r");
+        expect(result).to.be.equal("stellvertrendes Datenschutzbeauftragty");
     });
 });
 

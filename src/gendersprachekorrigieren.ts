@@ -175,22 +175,26 @@ export class BeGone {
                 s = new Replacement(String.raw`jede[rnms]?${Const.gstar}(jede[rnms]?)\b`, "ig", "\$1", "").replace(s, counter);
             }
 
-            //extra Stuff
-            if (/eR\b|(?<![kK]art)(?<![Ss]tund)(?<![kK]onnt)em?[\/\*_\(-]{1,2}e?[rn]\b|em?\(e?r\)\b/.test(s)) {
-                s = new Replacement(String.raw`(?<beginning>m\b.{3,30})(?<star>[\/\*_\(-]{1,2})(?<suffix>[rn])\b`, "ig", "\$1\$3", "Dativ: einem progressive*n Staatsoberhaupt").replace(s, counter);
-                s = new Replacement(String.raw`(\b[a-zäöü]+e)([\/\*_\(-]+)(n|e\(n\)|eN\b)`, "g", "\$1s", "jede*n, europäische*n").replace(s, counter);
-                s = new Replacement(String.raw`([\b“ ][A-ZÄÖÜ]\w+)(e[\/\*_\(-]+)(n|e\(n|eN[\b“ ])(\))?`, "g", "\$1" + Const.y , "Wehrbeauftragte*n“").replace(s, counter);
-                s = new Replacement(String.raw`e[\/\*_\(-]+r|e\(r\)|eR\b`, "g", "es", "jede/r,jede(r),jedeR").replace(s, counter);
-                s = new Replacement(String.raw`em\(e?r\)|em[\/\*_\(-]+r\b`, "g", "em", "jedem/r").replace(s, counter);
-                s = new Replacement(String.raw`er\(e?s\)|es[\/\*_\(-]+r\b`, "g", "es", "jedes/r").replace(s, counter);
-            }
-
             //man
             if (/\/(frau|man|mensch)/.test(s)) {
                 let repl3 = new Replacement(String.raw`\b(frau|man+|mensch)+[\/\*_\(-](frau|man+|mensch|[\/\*_\(-])*`, "", "man", "");
                 s = repl3.replace(s, counter);
             }
         }
+
+        //extra Stuff
+        if (new Replacement(String.raw`eR\b|(?<![kK]art)(?<![Ss]tund)(?<![kK]onnt)em?${Const.gstar}e?[rn]\b|em?\(e?r\)\b/`, "g", "", "").test(s)) {
+            s = new Replacement(String.raw`(?<beginning>m\b.{3,30})(?<star>[\/\*_\(-]{1,2})(?<suffix>[rn])\b`, "ig", "\$1\$3", "Dativ: einem progressive*n Staatsoberhaupt").replace(s, counter);
+            s = new Replacement(String.raw`(\b[a-zäöü]+e)([\/\*_\(-]+)(n|e\(n\)|eN\b)`, "g", "\$1s", "jede*n, europäische*n").replace(s, counter);
+            s = new Replacement(String.raw`([\b“ ][A-ZÄÖÜ]\w+)(e${Const.gstar})(n|e\(n|eN[\b“ ])(\))?`, "g", "\$1" + Const.y , "Wehrbeauftragte*n“").replace(s, counter);
+            s = new Replacement(String.raw`(\b[\w]{1,6}e)${Const.gstar}r|e\(r\)|eR\b`, "g", "\$1s", "jede/r,jede(r),jedeR").replace(s, counter);
+            s = new Replacement(String.raw`(\b[a-zäöü]+e)${Const.gstar}r|e\(r\)|eR\b`, "g", "\$1s", "stellvertretende*r").replace(s, counter);
+            s = new Replacement(String.raw`(\. [\w]+e)${Const.gstar}r|e\(r\)|eR\b(?=[A-ZÄÖÜ])`, "g", "\$1s", "Stellvertretende*r Datenschutzbeauf....").replace(s, counter);
+            s = new Replacement(String.raw`(\b[\w]+)e${Const.gstar}r|e\(r\)|eR\b`, "g", "\$1y", "Datenschutzbeauftragte*r").replace(s, counter);
+            s = new Replacement(String.raw`em\(e?r\)|em[\/\*_\(-]+r\b`, "g", "em", "jedem/r").replace(s, counter);
+            s = new Replacement(String.raw`er\(e?s\)|es[\/\*_\(-]+r\b`, "g", "es", "jedes/r").replace(s, counter);
+        }
+
 
         return s;
     }
