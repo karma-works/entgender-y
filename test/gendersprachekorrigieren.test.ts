@@ -669,6 +669,11 @@ describe('Formulierungen die erhalten bleiben müssen', () => {
         const result = beGone.entferneInitialForTesting("Die Corona-Zahlen steigen und steigen: Letzte Ausfahrt Lockdown?");
         expect(result).to.be.equal("Die Corona-Zahlen steigen und steigen: Letzte Ausfahrt Lockdown?");
     });
+
+    it('Hardware-nähere', () => {
+        const result = beGone.entferneInitialForTesting("in eine Hardware-nähere Sprache");
+        expect(result).to.be.equal("in eine Hardware-nähere Sprache");
+    });
 });
 
 
