@@ -641,6 +641,11 @@ describe('TODO oder nicht ohne weiteres lösbar', () => {
 describe('Formulierungen die erhalten bleiben müssen', () => {
     let beGone = new BeGone();
 
+    it('Absolute*r Topleister*in ', () => {
+        const result = beGone.entferneInitialForTesting("Absolute*r ");
+        expect(result).to.be.equal("Absolutes ");
+    });
+
     it('LinkedIn Links', () => {
         const result = beGone.entferneInitialForTesting(" https://lnkd.in/dummy ");
         expect(result).to.be.equal(" https://lnkd.in/dummy ");

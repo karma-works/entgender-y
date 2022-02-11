@@ -190,6 +190,7 @@ export class BeGone {
             s = new Replacement(String.raw`(\b[\w]{1,6}e)${Const.gstar}r|e\(r\)|eR\b`, "g", "\$1s", "jede/r,jede(r),jedeR").replace(s, counter);
             s = new Replacement(String.raw`(\b[a-zäöü]+e)${Const.gstar}r|e\(r\)|eR\b`, "g", "\$1s", "stellvertretende*r").replace(s, counter);
             s = new Replacement(String.raw`(\. [\w]+e)${Const.gstar}r|e\(r\)|eR\b(?=[A-ZÄÖÜ])`, "g", "\$1s", "Stellvertretende*r Datenschutzbeauf....").replace(s, counter);
+            s = new Replacement(String.raw`([Aa]bsolute)${Const.gstar}r`, "g", "$1s", "Absolute*r").replace(s, counter);
             s = new Replacement(String.raw`(\b[\w]+)e${Const.gstar}r|e\(r\)|eR\b`, "g", "\$1y", "Datenschutzbeauftragte*r").replace(s, counter);
             s = new Replacement(String.raw`em\(e?r\)|em[\/\*_\(-]+r\b`, "g", "em", "jedem/r").replace(s, counter);
             s = new Replacement(String.raw`er\(e?s\)|es[\/\*_\(-]+r\b`, "g", "es", "jedes/r").replace(s, counter);
