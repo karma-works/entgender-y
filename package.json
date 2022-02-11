@@ -2,7 +2,6 @@
   "name": "entgendy",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "start:firefox": "web-ext run --source-dir ./dist/",
     "test": "cross-env TS_NODE_FILES=true mocha --exit --require ts-node/register --colors test/**/*.ts",
@@ -22,11 +21,12 @@
     "npm": "^8.5.0",
     "nyc": "~15.0.1",
     "parcel": "^2.0.0",
-    "parcel-plugin-asset-copier": "1.0.0",
+    "parcel-reporter-static-files-copy": "^1.3.4",
     "ts-node": "^8.8.2",
     "typescript": "3.5.3",
     "web-ext": "^6.7.0"
   },
-  "the-following-property-is-for-package": "parcel-plugin-asset-copier",
-  "assetsPath": "assets"
+  "staticFiles": {
+    "staticPath": "assets"
+  }
 }
