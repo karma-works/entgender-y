@@ -1,12 +1,9 @@
-
-import {Const} from "./const";
-
 export class Replacement {
-    regex: string;
-    modifier: string;
-    replacement: string;
-    description: string | undefined;
-    last: boolean = false;
+    readonly regex: string;
+    readonly modifier: string;
+    readonly replacement: string;
+    readonly description: string | undefined;
+    //readonly last: boolean = false;
 
     constructor(regex: string, modifier: string, replacement: string, description: string | undefined) {
         this.regex = regex;

@@ -1,6 +1,5 @@
 import {Replacement} from './replacement'
-import {Const} from "./const";
-import {Phettberg} from "./phettberg";
+import {Phettberg} from './phettberg';
 
 declare var chrome: any;
 
