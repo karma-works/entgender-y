@@ -1,7 +1,7 @@
 
 // from => to
 // Initial generiert aus gendersprachekorrigieren.test.ts
-export const replacementTestStrings = [
+export const replacementTestStrings: [string, string][] = [
     ["Die Präsidentin oder der Präsident", "Das Präsidenty"],
     ["...muss man kein_e Nahost-Expert_in sein.", "...muss man kein Nahost-Experty sein."],
     ["mit mehr als 50 Sprecher*innen", "mit mehr als 50 Sprechys"],
@@ -123,4 +123,4 @@ export const replacementTestStrings = [
     ["2 Probestunde(n) übrig", "2 Probestunde(n) übrig"],
     ["Die Corona-Zahlen steigen und steigen: Letzte Ausfahrt Lockdown?", "Die Corona-Zahlen steigen und steigen: Letzte Ausfahrt Lockdown?"],
     ["in eine Hardware-nähere Sprache", "in eine Hardware-nähere Sprache"]
-]
+];

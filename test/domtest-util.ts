@@ -1,10 +1,4 @@
-import {expect} from 'chai';
-import {BeGone} from '../src/gendersprachekorrigieren';
-import {JSDOM} from 'jsdom';
-import {replacementTestStrings} from "./testdata";
-
-// Note: MutationObserver is not implemented in JSDOM, so we cannot test the updates in unittests
-// TODO: create a page which fills the testdata using javascript
+import {JSDOM} from "jsdom";
 
 declare global {
     namespace NodeJS {
@@ -16,8 +10,7 @@ declare global {
     }
 }
 
-beforeEach(() => {
-
+export function prepareDocument() {
     const dom = new JSDOM(
         `<html>
        <body>
@@ -40,36 +33,11 @@ beforeEach(() => {
             }
         }
     }
-});
-
-function setDocumentBody(html: string) {
-    document.body.innerHTML = html;
 }
 
-function createParagraph(str: string): HTMLElement {
+export function createParagraph(str: string): HTMLElement {
     const text = document.createTextNode(str);
     const p = document.createElement('p');
     p.appendChild(text);
     return p;
 }
-
-let beGone = new BeGone();
-
-function testFromToInitial(from: string, to: string) {
-    //setDocumentBody(`<div>${from}</div>`);
-    document.body.appendChild(createParagraph(from));
-
-    beGone.entferneInitial();
-
-    expect(document.body.textContent!!.trim()).to.be.equal(`${to}`.trim());
-    console.log(`${from} -> ${to}`);
-}
-
-describe('setzte ins Neutrum', () => {
-
-    for (let [from, to] of replacementTestStrings) {
-        it(`${from} -> ${to}`, () => {
-            testFromToInitial(from, to);
-        });
-    }
-});
