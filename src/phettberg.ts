@@ -21,16 +21,14 @@ export class Phettberg {
     replacementsPartizip = 0;
 
     private log(s: string) {
-        return;
+        return; ///////////////////////////////////
         let sumChange = this.replacementsBinnen + this.replacementsDoppel + this.replacementsPartizip;
-
         console.log("P", s, sumChange, "\n" + stackToBeGone(1).join("\n"));
     }
 
     artikelUndKontraktionen = (s: string): string => {
         var outer = this;
         let counter = function () {
-            // TODO: teilweise falscher counter, da auch Doppelformen ersetzt werden
             outer.replacementsBinnen++;
         };
 
@@ -105,7 +103,6 @@ export class Phettberg {
         s = new Replacement(String.raw`\bSinti(\/-?|_|\*|:|\.|\x00b7)ze\b`, "g",
             "Sint" + Const.ys, "Sinti*ze und Rom*nja").replace(s, counter);
         s = new Replacement(String.raw`\bRom(\/-?|_|\*|:|\.|\x00b7)nja\b`, "g", "Rom" + Const.ys, "Sinti*ze und Rom*nja").replace(s, counter);
-        ;
 
         s = new Replacement(String.raw`\bMuslim(\/-?|_|\*|:|\.|\xb7)a\b`, "g", "Muslim" + Const.y , "").replace(s, counter);
 

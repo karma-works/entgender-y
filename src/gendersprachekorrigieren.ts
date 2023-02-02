@@ -1,5 +1,6 @@
 import {Replacement} from './replacement'
 import {Phettberg} from './phettberg';
+import {stackToBeGone} from "./logUtil";
 
 declare var chrome: any;
 
@@ -40,40 +41,39 @@ export class BeGone {
 
     private readonly replacer: Phettberg = new Phettberg();
 
-    private log(s: string) {
-        return;
-        console.log("BG", s);
+    private log(...s: any[]) {
+        // console.log("BG", ...s, "\n" + stackToBeGone(1).join("\n"));
     }
 
     private textNodesUnder(el: Node): Array<CharacterData> {
-        var n, a = new Array<CharacterData>(),
-            walk = document.createTreeWalker(
-                el,
-                NodeFilter.SHOW_TEXT,
-                {
-                    acceptNode: (node: Node) => {
-                        //Nodes mit weniger als 5 Zeichen nicht filtern
-                        if (!node.textContent || node.textContent.length < 5) {
-                            return NodeFilter.FILTER_REJECT;
-                        } else {
-                            // note about filtering <pre> elements: those elements might contain linebreaks (/r/n etc.) that are removed during filtering to make filtering easier; the easy fix is to ignore those elements
-                            var isUntreatedElement = node.parentNode ? (node.parentNode instanceof HTMLInputElement || node.parentNode instanceof HTMLTextAreaElement || node.parentNode instanceof HTMLScriptElement || node.parentNode instanceof HTMLStyleElement || node.parentNode instanceof HTMLPreElement || node.parentNode.nodeName == "CODE" || node.parentNode.nodeName == "NOSCRIPT") : false;
-                            var isDivTextbox = document.activeElement && (document.activeElement.getAttribute("role") == "textbox" || document.activeElement.getAttribute("contenteditable") == "true") && document.activeElement.contains(node);
+        this.log("textNodesUnder", el);
+        var n, a = new Array<CharacterData>();
+        let acceptNode = (node: Node) => {
+            //Nodes mit weniger als 5 Zeichen nicht filtern
+            if (!node.textContent || node.textContent.length < 5) {
+                this.log("Rejected a", node);
+                return NodeFilter.FILTER_REJECT;
+            } else {
+                // note about filtering <pre> elements: those elements might contain linebreaks (/r/n etc.) that are removed during filtering to make filtering easier; the easy fix is to ignore those elements
+                var isUntreatedElement = node.parentNode ? (node.parentNode instanceof HTMLInputElement || node.parentNode instanceof HTMLTextAreaElement || node.parentNode instanceof HTMLScriptElement || node.parentNode instanceof HTMLStyleElement || node.parentNode instanceof HTMLPreElement || node.parentNode.nodeName == "CODE" || node.parentNode.nodeName == "NOSCRIPT") : false;
+                var isDivTextbox = document.activeElement && (document.activeElement.getAttribute("role") == "textbox" || document.activeElement.getAttribute("contenteditable") == "true") && document.activeElement.contains(node);
 
-                            //Eingabeelemente, <script>, <style>, <code>-Tags nicht filtern
-                            if (isUntreatedElement || isDivTextbox) {
-                                return NodeFilter.FILTER_REJECT;
-                            }
-                            //Nur Nodes erfassen, deren Inhalt ungefähr zur späteren Verarbeitung passt
-                            else if (/\b(und|oder|bzw)|[a-zA-ZäöüßÄÖÜ][\/\*.&_\(]-?[a-zA-ZäöüßÄÖÜ]|[a-zäöüß\(_\*:\.][iI][nN]|nE\b|r[MS]\b|e[NR]\b|fahrende|ierende|Mitarbeitende|Forschende|flüch/.test(node.textContent)) {
-                                return NodeFilter.FILTER_ACCEPT;
-                            }
-                        }
-                        return NodeFilter.FILTER_REJECT;
-                    }
-
-                },
-                false);
+                //Eingabeelemente, <script>, <style>, <code>-Tags nicht filtern
+                if (isUntreatedElement || isDivTextbox) {
+                    return NodeFilter.FILTER_REJECT;
+                }
+                //Nur Nodes erfassen, deren Inhalt ungefähr zur späteren Verarbeitung passt
+                // fahrende|ierende|Mitarbeitende|Forschende
+                else if (/\b(und|oder|bzw)|[a-zA-ZäöüßÄÖÜ][\/\*.&_·:\(]-?[a-zA-ZäöüßÄÖÜ]|[a-zäöüß\(_\*:\.][iI][nN]|nE\b|r[MS]\b|e[NR]\b|ierten?\b|enden?\b|flüch/.test(node.textContent)) {
+                    return NodeFilter.FILTER_ACCEPT;
+                }
+            }
+            //this.log("Rejected b", node, node.textContent);
+            return NodeFilter.FILTER_REJECT;
+        };
+        let walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT,
+            {acceptNode: acceptNode},
+            false);
         while (n = walk.nextNode() as CharacterData) {
             let nodeParent = n.parentNode;
             if (!nodeParent) {
@@ -241,6 +241,7 @@ export class BeGone {
     }
 
     public entferneInitial(): void {
+        this.log("entferneInitial")
         const probeResult = this.probeDocument()
 
         if (probeResult.probeBinnenI || this.settings.doppelformen && probeResult.probeRedundancy || this.settings.partizip && probeResult.probePartizip || probeResult.probeArtikelUndKontraktionen) {

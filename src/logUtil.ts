@@ -5,9 +5,9 @@ interface Logger {
 }
 
 if (typeof window === 'undefined') {
-    console.log("Running in Node.js");
+    //console.log("Running in Node.js");
 } else {
-    console.log("Running in browser");
+    //console.log("Running in browser");
 }
 
 export function getLogger(name?: string): Logger {

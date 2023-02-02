@@ -45,18 +45,28 @@ function setDocumentBody(html: string) {
     document.body.innerHTML = html;
 }
 
+function createParagraph(str: string): HTMLElement {
+    const text = document.createTextNode(str);
+    const p = document.createElement('p');
+    p.appendChild(text);
+    return p;
+}
+
+let beGone = new BeGone();
+
+function testFromTo(from: string, to: string) {
+    //setDocumentBody(`<div>${from}</div>`);
+    document.body.appendChild(createParagraph(from));
+    beGone.entferneInitial();
+    expect(document.body.textContent!!.trim()).to.be.equal(`${to}`.trim());
+    console.log(`${from} -> ${to}`);
+}
+
 describe('setzte ins Neutrum', () => {
 
-    // TODO FIXME: manche tests scheitern
-    return;
-
-    let beGone = new BeGone();
     for (let [from, to] of replacementTestStrings) {
         it(`${from} -> ${to}`, () => {
-            setDocumentBody(`<div>${from}</div>`);
-            beGone.entferneInitial();
-            expect(document.body.textContent).to.be.equal(`${to}`);
-            console.log(`${from} -> ${to}`);
+            testFromTo(from, to);
         });
     }
 });
