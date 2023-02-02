@@ -1,7 +1,12 @@
-import {Replacement} from "./replacement";
-import {Const} from "./const";
-import {stackToBeGone} from "./logUtil";
+import {Replacement} from "../replacement";
+import {stackToBeGone} from "../logUtil";
+import {SchreibAlternative} from "./alternative";
 
+class Const {
+    static readonly gstar = String.raw`[\:\/\*\_\(-]{1,2}`;
+    static readonly y = 'y';
+    static readonly ys = 'ys';
+}
 
 function startsWithCapitalLetter(s: string): boolean {
     return s != null && s.length > 0 && /[A-Z]/.test(s[0]);
@@ -14,7 +19,7 @@ function capitalize(s: string): string {
     return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-export class Phettberg {
+export class Phettberg implements SchreibAlternative {
 
     replacementsBinnen = 0;
     replacementsDoppel = 0;
@@ -27,7 +32,7 @@ export class Phettberg {
     }
 
     artikelUndKontraktionen = (s: string): string => {
-        var outer = this;
+        const outer = this;
         let counter = function () {
             outer.replacementsBinnen++;
         };
@@ -79,7 +84,7 @@ export class Phettberg {
         if (new Replacement(String.raw`eR\b|(?<![kK]art)(?<![Ss]tund)(?<![kK]onnt)em?${Const.gstar}e?[rn]\b|em?\(e?r\)\b/`, "g", "", "").test(s)) {
             s = new Replacement(String.raw`(?<beginning>m\b.{3,30})(?<star>[\/\*_\(-]{1,2})(?<suffix>[rn])\b`, "ig", "\$1\$3", "Dativ: einem progressive*n Staatsoberhaupt").replace(s, counter);
             s = new Replacement(String.raw`(\b[a-zäöü]+e)([\/\*_\(-]+)(n|e\(n\)|eN\b)`, "g", "\$1s", "jede*n, europäische*n").replace(s, counter);
-            s = new Replacement(String.raw`([\b“ ][A-ZÄÖÜ]\w+)(e${Const.gstar})(n|e\(n|eN\))([\b“]+)`, "g", "\$1" + Const.y + "\$4" , "Wehrbeauftragte*n“").replace(s, counter);
+            s = new Replacement(String.raw`([\b“ ][A-ZÄÖÜ]\w+)(e${Const.gstar})(n|e\(n|eN\))([\b“]+)`, "g", "\$1" + Const.y + "\$4", "Wehrbeauftragte*n“").replace(s, counter);
             s = new Replacement(String.raw`(\b[\w]{1,6}e)${Const.gstar}r|e\(r\)|eR\b`, "g", "\$1s", "jede/r,jede(r),jedeR").replace(s, counter);
             s = new Replacement(String.raw`(\b[a-zäöü]+e)${Const.gstar}r|e\(r\)|eR\b`, "g", "\$1s", "stellvertretende*r").replace(s, counter);
             s = new Replacement(String.raw`(\. [\w]+e)${Const.gstar}r|e\(r\)|eR\b(?=[A-ZÄÖÜ])`, "g", "\$1s", "Stellvertretende*r Datenschutzbeauf....").replace(s, counter);

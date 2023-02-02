@@ -1,16 +1,7 @@
 import {Replacement} from './replacement'
-import {Phettberg} from './phettberg';
-
-interface BeGoneSettings {
-    aktiv?: boolean;
-    doppelformen?: boolean;
-    skip_topic?: boolean;
-    partizip?: boolean;
-    whitelist?: string;
-    blacklist?: string;
-    counter?: boolean;
-    filterliste?: "Bei Bedarf" | "Whitelist" | "Blacklist" | undefined;
-}
+import {Phettberg} from './schreibalternativen/phettberg';
+import {BeGoneSettings, CountRequest, ErrorRequest, NeedOptionsRequest} from "./control/control-api";
+import {SchreibAlternative} from "./schreibalternativen/alternative";
 
 class BeGoneSettingsHelper {
     public static isWhitelist(settings: BeGoneSettings): boolean {
@@ -36,7 +27,7 @@ export class BeGone {
     private nodes: Array<CharacterData> = new Array<CharacterData>();
     private mtype: string | undefined = undefined;
 
-    private readonly replacer: Phettberg = new Phettberg();
+    private replacer: SchreibAlternative = new Phettberg();
 
     private log(...s: any[]) {
         // console.log("BG", ...s, "\n" + stackToBeGone(1).join("\n"));
@@ -44,7 +35,7 @@ export class BeGone {
 
     private textNodesUnder(el: Node): Array<CharacterData> {
         this.log("textNodesUnder", el);
-        var n, a = new Array<CharacterData>();
+        let n, a = new Array<CharacterData>();
         let acceptNode = (node: Node) => {
             //Nodes mit weniger als 5 Zeichen nicht filtern
             if (!node.textContent || node.textContent.length < 5) {
@@ -52,8 +43,8 @@ export class BeGone {
                 return NodeFilter.FILTER_REJECT;
             } else {
                 // note about filtering <pre> elements: those elements might contain linebreaks (/r/n etc.) that are removed during filtering to make filtering easier; the easy fix is to ignore those elements
-                var isUntreatedElement = node.parentNode ? (node.parentNode instanceof HTMLInputElement || node.parentNode instanceof HTMLTextAreaElement || node.parentNode instanceof HTMLScriptElement || node.parentNode instanceof HTMLStyleElement || node.parentNode instanceof HTMLPreElement || node.parentNode.nodeName == "CODE" || node.parentNode.nodeName == "NOSCRIPT") : false;
-                var isDivTextbox = document.activeElement && (document.activeElement.getAttribute("role") == "textbox" || document.activeElement.getAttribute("contenteditable") == "true") && document.activeElement.contains(node);
+                const isUntreatedElement = node.parentNode ? (node.parentNode instanceof HTMLInputElement || node.parentNode instanceof HTMLTextAreaElement || node.parentNode instanceof HTMLScriptElement || node.parentNode instanceof HTMLStyleElement || node.parentNode instanceof HTMLPreElement || node.parentNode.nodeName == "CODE" || node.parentNode.nodeName == "NOSCRIPT") : false;
+                const isDivTextbox = document.activeElement && (document.activeElement.getAttribute("role") == "textbox" || document.activeElement.getAttribute("contenteditable") == "true") && document.activeElement.contains(node);
 
                 //Eingabeelemente, <script>, <style>, <code>-Tags nicht filtern
                 if (isUntreatedElement || isDivTextbox) {
@@ -103,10 +94,10 @@ export class BeGone {
 
             //Entfernen bei Seitenänderungen
             try {
-                var observer = new MutationObserver((mutations: any) => {
-                    var insertedNodes = new Array<CharacterData>();
+                const observer = new MutationObserver((mutations: any) => {
+                    let insertedNodes = new Array<CharacterData>();
                     mutations.forEach((mutation: any) => {
-                        for (var i = 0; i < mutation.addedNodes.length; i++) {
+                        for (let i = 0; i < mutation.addedNodes.length; i++) {
                             insertedNodes = insertedNodes.concat(this.textNodesUnder(mutation.addedNodes[i]));
                         }
                     });
@@ -125,7 +116,7 @@ export class BeGone {
                     page: document.location.hostname,
                     source: 'gendersprachekorrigieren.js',
                     error: e
-                });
+                } as ErrorRequest);
             }
         }
     }
@@ -199,22 +190,22 @@ export class BeGone {
     }
 
     private applyToNodes(nodes: Array<CharacterData>, modifyData: (this: void, s: string) => string) {
-        var textnodes = nodes;
-        for (var i = 0; i < textnodes.length; i++) {
-            var node = textnodes[i];
-            var oldText = node.data;
-            var newText = oldText;
+        const textnodes = nodes;
+        for (let i = 0; i < textnodes.length; i++) {
+            const node = textnodes[i];
+            const oldText = node.data;
+            let newText = oldText;
 
-            var parentNodeName = node.parentNode ? node.parentNode.nodeName.toLowerCase() : "";
+            const parentNodeName = node.parentNode ? node.parentNode.nodeName.toLowerCase() : "";
             // special treatment of HTML nodes that are only there for formatting; those might tear a word out of it's context which is important for correcting
             if (this.isHTMLFormattingNodeName(parentNodeName)) {
                 // this word needs to be replaced in context
-                var oldTextInContext = (i > 0 ? textnodes[i - 1].data : "") + "\f" + oldText + "\f" + (i < textnodes.length - 1 ? textnodes[i + 1].data : "");
+                let oldTextInContext = (i > 0 ? textnodes[i - 1].data : "") + "\f" + oldText + "\f" + (i < textnodes.length - 1 ? textnodes[i + 1].data : "");
                 //oldTextInContext = this.replaceLineBreak(oldTextInContext);
                 oldTextInContext = modifyData(oldTextInContext);
-                var index1 = oldTextInContext.indexOf("\f");
-                var index2 = oldTextInContext.indexOf("\f", index1 + 1);
-                var index3 = oldTextInContext.indexOf("\f", index2 + 1);
+                const index1 = oldTextInContext.indexOf("\f");
+                const index2 = oldTextInContext.indexOf("\f", index1 + 1);
+                const index3 = oldTextInContext.indexOf("\f", index2 + 1);
                 if (index1 > -1 && index2 > -2 && index3 === -1) // sanity check - RegEx magic might remove our marker; fall back to old behavior in this case
                 {
                     newText = oldTextInContext.substring(index1 + 1, index2);
@@ -313,7 +304,7 @@ export class BeGone {
     public notifyBackgroundScript() {
         chrome.runtime.sendMessage({
             action: 'needOptions'
-        }, (res: { type?: string, response: string }) => {
+        } as NeedOptionsRequest, (res: { type?: string, response: string }) => {
             this.handleResponse(res);
         });
     }
@@ -324,7 +315,7 @@ export class BeGone {
             countDoppelformreplacements: this.replacer.replacementsDoppel,
             countPartizipreplacements: this.replacer.replacementsPartizip,
             type: "count"
-        });
+        } as CountRequest);
     }
 }
 

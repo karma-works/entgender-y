@@ -1,25 +1,28 @@
+import {FilterType, Settings} from "./control-api";
+
 function querySelector<T extends HTMLElement>(sel: string): T {
     return <T>document.querySelector(sel)!!;
 }
 function saveOptions() {
-    chrome.storage.sync.get(function (res) {
+    chrome.storage.sync.get(function (res: Settings) {
         if (res.filterliste == "Bei Bedarf" && querySelector<HTMLInputElement>("#ondemandstate").checked !== true) {
             configureOndemandInActive();
         }
         if (querySelector<HTMLInputElement>("#ondemandstate").checked) {
             configureOndemandActive();
         }
-        chrome.storage.sync.set({
+        let settings: Settings = {
             aktiv: querySelector<HTMLInputElement>("#aktiv").checked,
             counter: querySelector<HTMLInputElement>("#counter").checked,
             invertiert: querySelector<HTMLInputElement>("#invertiert").checked,
             doppelformen: querySelector<HTMLInputElement>("#doppelformen").checked,
             partizip: querySelector<HTMLInputElement>("#partizip").checked,
             skip_topic: querySelector<HTMLInputElement>("#skip_topic").checked,
-            filterliste: querySelector<HTMLInputElement>('input[name="filterstate"]:checked').value,
+            filterliste: querySelector<HTMLInputElement>('input[name="filterstate"]:checked').value as FilterType,
             whitelist: querySelector<HTMLTextAreaElement>("#whitelist").value.trim(),
             blacklist: querySelector<HTMLTextAreaElement>("#blacklist").value.trim()
-        });
+        };
+        chrome.storage.sync.set(settings);
     });
 }
 
@@ -40,7 +43,7 @@ function configureOndemandActive() {
 }
 
 function restoreOptions() {
-    chrome.storage.sync.get(function (res) {
+    chrome.storage.sync.get(function (res: Required<Settings>) {
         querySelector<HTMLInputElement>("#aktiv").checked = res.aktiv;
         querySelector<HTMLInputElement>("#counter").checked = res.counter;
         querySelector<HTMLInputElement>("#invertiert").checked = res.invertiert;
@@ -65,20 +68,20 @@ function restoreOptions() {
 
 document.addEventListener('DOMContentLoaded', restoreOptions);
 
-var choices = document.querySelectorAll("input");
-for (var i = 0; i < choices.length; i++) {
+const choices = document.querySelectorAll("input");
+for (let i = 0; i < choices.length; i++) {
     choices[i].addEventListener("click", saveOptions);
 }
 
 //Verzögerung bevor Tasteneingabe abgespeichert wird
 querySelector("form").onkeyup = function () {
-    var callcount = 0;
-    var action = function () {
+    let callcount = 0;
+    const action = function () {
         saveOptions();
     };
-    var delayAction = function (action: () => void, time: number) {
-        var expectcallcount = callcount;
-        var delay = function () {
+    const delayAction = function (action: () => void, time: number) {
+        const expectcallcount = callcount;
+        const delay = function () {
             if (callcount == expectcallcount) {
                 action();
             }
@@ -94,7 +97,7 @@ querySelector("form").onkeyup = function () {
 //Chrome-spezifisches Stylesheet für options.html
 if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
 
-    var link = document.createElement("link");
+    const link = document.createElement("link");
     link.href = "./css/chrome.css";
     link.rel = "stylesheet";
 
