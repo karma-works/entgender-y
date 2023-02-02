@@ -38,10 +38,11 @@ export class BeGone {
     private nodes: Array<CharacterData> = new Array<CharacterData>();
     private mtype: string | undefined = undefined;
 
-    private replacer: Phettberg = new Phettberg();
+    private readonly replacer: Phettberg = new Phettberg();
 
     private log(s: string) {
-        //console.log(s);
+        return;
+        console.log("BG", s);
     }
 
     private textNodesUnder(el: Node): Array<CharacterData> {
@@ -200,7 +201,7 @@ export class BeGone {
         return new Replacement(String.raw`(\n|\r|\r\n)`, "ig", " ", "").replace(s, counter);
     }
 
-    private applyToNodes(nodes: Array<CharacterData>, modifyData: (s: string) => string) {
+    private applyToNodes(nodes: Array<CharacterData>, modifyData: (this: void, s: string) => string) {
         var textnodes = nodes;
         for (var i = 0; i < textnodes.length; i++) {
             var node = textnodes[i];
@@ -213,7 +214,7 @@ export class BeGone {
                 // this word needs to be replaced in context
                 var oldTextInContext = (i > 0 ? textnodes[i - 1].data : "") + "\f" + oldText + "\f" + (i < textnodes.length - 1 ? textnodes[i + 1].data : "");
                 //oldTextInContext = this.replaceLineBreak(oldTextInContext);
-                oldTextInContext = modifyData.call(this, oldTextInContext);
+                oldTextInContext = modifyData(oldTextInContext);
                 var index1 = oldTextInContext.indexOf("\f");
                 var index2 = oldTextInContext.indexOf("\f", index1 + 1);
                 var index3 = oldTextInContext.indexOf("\f", index2 + 1);
@@ -222,11 +223,11 @@ export class BeGone {
                     newText = oldTextInContext.substring(index1 + 1, index2);
                 } else {
                     //oldText = this.replaceLineBreak(oldText);
-                    newText = modifyData.call(this, oldText);
+                    newText = modifyData(oldText);
                 }
             } else {
                 //oldText = this.replaceLineBreak(oldText);
-                newText = modifyData.call(this, oldText);
+                newText = modifyData(oldText);
             }
 
             if (node.data !== newText) {
@@ -239,7 +240,7 @@ export class BeGone {
         }
     }
 
-    public entferneInitial() {
+    public entferneInitial(): void {
         const probeResult = this.probeDocument()
 
         if (probeResult.probeBinnenI || this.settings.doppelformen && probeResult.probeRedundancy || this.settings.partizip && probeResult.probePartizip || probeResult.probeArtikelUndKontraktionen) {

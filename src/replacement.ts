@@ -17,11 +17,16 @@ export class Replacement {
         return ret;
     }
 
+    private log(inputString: string, outputString: string) {
+        console.log("R", inputString, "->", outputString);
+    }
+
     public replace(inputString: string, incrementCounter: () => void){
         let outputString = inputString;
         let reg = RegExp(this.regex, this.modifier);
         if (reg.test(outputString)) {
             outputString = outputString.replace(reg, this.replacement);
+            // this.log(inputString, outputString);
             incrementCounter();
         }
         return outputString;

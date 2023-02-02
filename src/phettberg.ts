@@ -1,5 +1,6 @@
 import {Replacement} from "./replacement";
 import {Const} from "./const";
+import {stackToBeGone} from "./logUtil";
 
 
 function startsWithCapitalLetter(s: string): boolean {
@@ -20,10 +21,13 @@ export class Phettberg {
     replacementsPartizip = 0;
 
     private log(s: string) {
-        //console.log(s);
+        return;
+        let sumChange = this.replacementsBinnen + this.replacementsDoppel + this.replacementsPartizip;
+
+        console.log("P", s, sumChange, "\n" + stackToBeGone(1).join("\n"));
     }
 
-    artikelUndKontraktionen(s: string): string {
+    artikelUndKontraktionen = (s: string): string => {
         var outer = this;
         let counter = function () {
             // TODO: teilweise falscher counter, da auch Doppelformen ersetzt werden
@@ -109,7 +113,7 @@ export class Phettberg {
     }
 
 
-    entferneBinnenIs(s: string): string {
+    entferneBinnenIs = (s: string): string => {
         this.log("10000");
         let outer = this;
         let counter = function () {
@@ -237,7 +241,7 @@ export class Phettberg {
         return s;
     }
 
-    entferneDoppelformen(s: string): string {
+    entferneDoppelformen = (s: string) => {
         this.log("20000");
         if (/\b(und|oder|bzw)|[a-zA-ZäöüßÄÖÜ][\/\*&_\(][a-zA-ZäöüßÄÖÜ]/.test(s)) {
             this.log("21000");
@@ -328,7 +332,7 @@ export class Phettberg {
         return s;
     }
 
-    entfernePartizip(s: string): string {
+    entfernePartizip = (s: string) => {
         if (/(ier|arbeit|orsch|fahr|verdien|nehm|es)ende|(?<!^)(?<!\. )Interessierte/.test(s)) {
             let outer = this;
             let counter = function () {
@@ -422,7 +426,7 @@ export class Phettberg {
         return s;
     }
 
-    ersetzeGefluechteteDurchFluechtlinge(s: string): string {
+    ersetzeGefluechteteDurchFluechtlinge = (s: string) => {
         if (/flüch/.test(s)) {
             let outer = this;
             let counter = function () {
