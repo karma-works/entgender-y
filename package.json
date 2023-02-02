@@ -3,30 +3,55 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start:firefox": "web-ext run --source-dir ./dist/",
+    "start:firefox": "web-ext run --browser-console --source-dir ./dist/ --start-url 'https://github.com/chris0385/entgender-y/wiki/Test-Seite'",
     "test": "cross-env TS_NODE_FILES=true mocha --exit --require ts-node/register --colors test/**/*.ts",
     "coverage": "nyc --reporter=lcov --reporter=text-summary ./node_modules/.bin/npm test",
-    "build": "./node_modules/.bin/parcel build ./src/gendersprachekorrigieren.ts",
+    "build:dev": "./node_modules/.bin/parcel watch ./src/gendersprachekorrigieren.ts",
+    "build": "./node_modules/.bin/parcel build --target options --target gendersprachekorrigieren --target background",
+    "build-background": "",
     "bundle": "web-ext build --source-dir ./dist/ --overwrite-dest"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/chai": "^4.2.22",
-    "@types/jest": "^25.1.5",
+    "@types/chrome": "0.0.211",
+    "@types/jsdom": "20.0.1",
+    "@types/jsdom-global": "3.0.4",
+    "@types/mocha": "^10.0.1",
     "@types/node": "13.9.8",
     "chai": "~4.2.0",
     "cross-env": "^7.0.3",
+    "jsdom": "^21.1.0",
+    "jsdom-global": "3.0.2",
     "mocha": "^9.2.2",
+    "mocha-dom": "^1.0.0",
     "npm": "^8.19.3",
     "nyc": "~15.0.1",
     "parcel": "^2.8.3",
     "parcel-reporter-static-files-copy": "^1.5.0",
     "ts-node": "^8.10.2",
-    "typescript": "3.5.3",
+    "typescript": "^3.5.3",
     "web-ext": "^6.8.0"
   },
   "staticFiles": {
     "staticPath": "assets"
+  },
+  "gendersprachekorrigieren": "./dist/gendersprachekorrigieren.js",
+  "options": "dist/options.js",
+  "background": "dist/background.js",
+  "targets": {
+    "options": {
+      "outputFormat": "global",
+      "isLibrary": false,
+      "optimize": true,
+      "source": "./src/control/options.ts"
+    },
+    "gendersprachekorrigieren": {
+      "source": "./src/gendersprachekorrigieren.ts"
+    },
+    "background": {
+      "source": "./src/control/background.ts"
+    }
   }
 }

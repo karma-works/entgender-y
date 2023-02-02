@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { BeGone } from '../src/gendersprachekorrigieren';
+import { BeGone } from '../../src/gendersprachekorrigieren';
 
 describe('setzte ins Neutrum', ()=> {
     let beGone = new BeGone();
