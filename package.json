@@ -15,6 +15,7 @@
   "devDependencies": {
     "@types/chai": "^4.2.22",
     "@types/chrome": "0.0.211",
+    "@types/diff": "^5.0.2",
     "@types/jsdom": "20.0.1",
     "@types/jsdom-global": "3.0.4",
     "@types/mocha": "^10.0.1",
@@ -52,5 +53,8 @@
     "background": {
       "source": "./src/control/background.ts"
     }
+  },
+  "dependencies": {
+    "diff": "^5.1.0"
   }
 }

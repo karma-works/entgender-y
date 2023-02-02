@@ -15,6 +15,7 @@ function saveOptions() {
             aktiv: querySelector<HTMLInputElement>("#aktiv").checked,
             counter: querySelector<HTMLInputElement>("#counter").checked,
             invertiert: querySelector<HTMLInputElement>("#invertiert").checked,
+            hervorheben: querySelector<HTMLInputElement>("#hervorheben").checked,
             doppelformen: querySelector<HTMLInputElement>("#doppelformen").checked,
             partizip: querySelector<HTMLInputElement>("#partizip").checked,
             skip_topic: querySelector<HTMLInputElement>("#skip_topic").checked,
@@ -47,6 +48,7 @@ function restoreOptions() {
         querySelector<HTMLInputElement>("#aktiv").checked = res.aktiv;
         querySelector<HTMLInputElement>("#counter").checked = res.counter;
         querySelector<HTMLInputElement>("#invertiert").checked = res.invertiert;
+        querySelector<HTMLInputElement>("#hervorheben").checked = res.hervorheben;
         querySelector<HTMLInputElement>("#doppelformen").checked = res.doppelformen;
         querySelector<HTMLInputElement>("#partizip").checked = res.partizip;
         querySelector<HTMLInputElement>("#skip_topic").checked = res.skip_topic;

@@ -2,6 +2,7 @@ import {Replacement} from './replacement'
 import {Phettberg} from './schreibalternativen/phettberg';
 import {BeGoneSettings, CountRequest, ErrorRequest, NeedOptionsRequest} from "./control/control-api";
 import {SchreibAlternative} from "./schreibalternativen/alternative";
+import {ChangeHighlighter} from "./ChangeHighlighter";
 
 class BeGoneSettingsHelper {
     public static isWhitelist(settings: BeGoneSettings): boolean {
@@ -28,6 +29,7 @@ export class BeGone {
     private mtype: string | undefined = undefined;
 
     private replacer: SchreibAlternative = new Phettberg();
+    private readonly changeHighlighter = new ChangeHighlighter();
 
     private log(...s: any[]) {
         // console.log("BG", ...s, "\n" + stackToBeGone(1).join("\n"));
@@ -223,7 +225,11 @@ export class BeGone {
                  TODO: consider highlighting the changed words (something like a git diff) with some <span>
                  Maybe https://www.npmjs.com/package/diff with Diff.diffWords
                  */
-                node.data = newText;
+                if (this.settings.hervorheben) {
+                    this.changeHighlighter.apply(node, newText);
+                } else {
+                    node.data = newText;
+                }
             }
         }
     }
