@@ -1,4 +1,5 @@
-var settings = "";
+// TODO: define type
+var settings: any = "";
 
 function updateSettings() {
     chrome.storage.sync.get(function(res) {
@@ -60,7 +61,8 @@ function updateSettings() {
     });
 }
 
-function handleMessage(request, sender, sendResponse) {
+// TODO: types
+function handleMessage(request: any, sender: any, sendResponse: any) {
     if (request.action == "needOptions") {
         sendResponse({
             response: JSON.stringify(settings)
@@ -96,7 +98,8 @@ function handleMessage(request, sender, sendResponse) {
     }
 }
 
-function sendMessageToTabs(tabs) {
+// TODO types
+function sendMessageToTabs(tabs:any) {
     for (let tab of tabs) {
         chrome.tabs.sendMessage(
             tab.id, {

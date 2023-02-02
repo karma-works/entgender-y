@@ -6,14 +6,16 @@
     "start:firefox": "web-ext run --browser-console --source-dir ./dist/ --start-url 'https://github.com/chris0385/entgender-y/wiki/Test-Seite'",
     "test": "cross-env TS_NODE_FILES=true mocha --exit --require ts-node/register --colors test/**/*.ts",
     "coverage": "nyc --reporter=lcov --reporter=text-summary ./node_modules/.bin/npm test",
-    "build:dev": "./node_modules/.bin/parcel build --no-optimize ./src/gendersprachekorrigieren.ts",
-    "build": "./node_modules/.bin/parcel build ./src/gendersprachekorrigieren.ts",
+    "build:dev": "./node_modules/.bin/parcel watch ./src/gendersprachekorrigieren.ts",
+    "build": "./node_modules/.bin/parcel build --target options --target gendersprachekorrigieren --target background",
+    "build-background": "",
     "bundle": "web-ext build --source-dir ./dist/ --overwrite-dest"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/chai": "^4.2.22",
+    "@types/chrome": "0.0.211",
     "@types/jsdom": "20.0.1",
     "@types/jsdom-global": "3.0.4",
     "@types/mocha": "^10.0.1",
@@ -34,5 +36,22 @@
   },
   "staticFiles": {
     "staticPath": "assets"
+  },
+  "gendersprachekorrigieren": "./dist/gendersprachekorrigieren.js",
+  "options": "dist/options.js",
+  "background": "dist/background.js",
+  "targets": {
+    "options": {
+      "outputFormat": "global",
+      "isLibrary": false,
+      "optimize": true,
+      "source": "./src/control/options.ts"
+    },
+    "gendersprachekorrigieren": {
+      "source": "./src/gendersprachekorrigieren.ts"
+    },
+    "background": {
+      "source": "./src/control/background.ts"
+    }
   }
 }

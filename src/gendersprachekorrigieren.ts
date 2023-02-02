@@ -1,8 +1,5 @@
 import {Replacement} from './replacement'
 import {Phettberg} from './phettberg';
-import {stackToBeGone} from "./logUtil";
-
-declare var chrome: any;
 
 interface BeGoneSettings {
     aktiv?: boolean;

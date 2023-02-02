@@ -1,10 +1,10 @@
-/**
- * @jest-environment jsdom
- */
 import {expect} from 'chai';
 import {BeGone} from '../src/gendersprachekorrigieren';
 import {JSDOM} from 'jsdom';
 import {replacementTestStrings} from "./testdata";
+
+// Note: MutationObserver is not implemented in JSDOM, so we cannot test the updates in unittests
+// TODO: create a page which fills the testdata using javascript
 
 declare global {
     namespace NodeJS {
@@ -21,6 +21,7 @@ beforeEach(() => {
     const dom = new JSDOM(
         `<html>
        <body>
+       <main></main>
        </body>
      </html>`,
         {url: 'http://localhost'},
@@ -32,7 +33,7 @@ beforeEach(() => {
     const g = <any>global;
     const w = <any>window;
     if (typeof NodeFilter == 'undefined') {
-        for (let glbl of 'NodeFilter,HTMLPreElement,HTMLInputElement,HTMLTextAreaElement,HTMLScriptElement,HTMLTextAreaElement,HTMLStyleElement,'.split(",")) {
+        for (let glbl of 'MutationObserver,NodeFilter,HTMLPreElement,HTMLInputElement,HTMLTextAreaElement,HTMLScriptElement,HTMLTextAreaElement,HTMLStyleElement,'.split(",")) {
             glbl = glbl.trim();
             if (w[glbl]) {
                 g[glbl] = w[glbl];
@@ -54,10 +55,12 @@ function createParagraph(str: string): HTMLElement {
 
 let beGone = new BeGone();
 
-function testFromTo(from: string, to: string) {
+function testFromToInitial(from: string, to: string) {
     //setDocumentBody(`<div>${from}</div>`);
     document.body.appendChild(createParagraph(from));
+
     beGone.entferneInitial();
+
     expect(document.body.textContent!!.trim()).to.be.equal(`${to}`.trim());
     console.log(`${from} -> ${to}`);
 }
@@ -66,7 +69,7 @@ describe('setzte ins Neutrum', () => {
 
     for (let [from, to] of replacementTestStrings) {
         it(`${from} -> ${to}`, () => {
-            testFromTo(from, to);
+            testFromToInitial(from, to);
         });
     }
 });
