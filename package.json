@@ -6,7 +6,7 @@
     "start:firefox": "web-ext run --browser-console --source-dir ./dist/ --start-url 'https://github.com/chris0385/entgender-y/wiki/Test-Seite'",
     "test": "cross-env TS_NODE_FILES=true mocha --exit --require ts-node/register --colors test/**/*.ts",
     "coverage": "nyc --reporter=lcov --reporter=text-summary ./node_modules/.bin/npm test",
-    "build:dev": "./node_modules/.bin/parcel watch ./src/gendersprachekorrigieren.ts",
+    "build:dev": "./node_modules/.bin/parcel watch --target options --target gendersprachekorrigieren --target background",
     "build": "./node_modules/.bin/parcel build --target options --target gendersprachekorrigieren --target background",
     "build-background": "",
     "bundle": "web-ext build --source-dir ./dist/ --overwrite-dest"
