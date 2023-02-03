@@ -75,6 +75,9 @@ replacementTestStrings.push(
         "SCHÜLER*IN",
         "SCHÜLY"
     ],
+    [
+        "Leser’innen", "Lesys"
+    ],
 ); // end Binnen
 
 // Doppel

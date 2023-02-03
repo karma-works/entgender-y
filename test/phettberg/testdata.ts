@@ -124,3 +124,5 @@ export const replacementTestStrings: [string, string][] = [
     ["Die Corona-Zahlen steigen und steigen: Letzte Ausfahrt Lockdown?", "Die Corona-Zahlen steigen und steigen: Letzte Ausfahrt Lockdown?"],
     ["in eine Hardware-nähere Sprache", "in eine Hardware-nähere Sprache"]
 ];
+
+replacementTestStrings.push()

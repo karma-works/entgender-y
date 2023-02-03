@@ -15,10 +15,13 @@ export class ChangeHighlighter {
     }
 
     apply(node: CharacterData, newText: string, style: string = "") {
+        if ((node.parentNode?.nodeName) === 'TITLE') {
+            node.data = newText;
+            return;
+        }
         let newNodes = new Array<Node>();
         const previous = node.data;
         let changes = Diff.diffWords(previous, newText);
-        console.log(changes);
         let lastRemoved: string | undefined = undefined
         for (let change of changes) {
             if (change.added) {

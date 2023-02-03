@@ -1,10 +1,10 @@
-import {JSDOM} from "jsdom";
+import {DOMWindow, JSDOM} from "jsdom";
 
 declare global {
     namespace NodeJS {
         interface Global {
             document: Document;
-            window: Window;
+            window: DOMWindow;
             navigator: Navigator;
         }
     }
