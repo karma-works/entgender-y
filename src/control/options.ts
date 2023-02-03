@@ -16,6 +16,7 @@ function saveOptions() {
             counter: querySelector<HTMLInputElement>("#counter").checked,
             invertiert: querySelector<HTMLInputElement>("#invertiert").checked,
             hervorheben: querySelector<HTMLInputElement>("#hervorheben").checked,
+            hervorheben_style: querySelector<HTMLInputElement>("#hervorheben_style").value,
             doppelformen: querySelector<HTMLInputElement>("#doppelformen").checked,
             partizip: querySelector<HTMLInputElement>("#partizip").checked,
             skip_topic: querySelector<HTMLInputElement>("#skip_topic").checked,
@@ -49,6 +50,7 @@ function restoreOptions() {
         querySelector<HTMLInputElement>("#counter").checked = res.counter;
         querySelector<HTMLInputElement>("#invertiert").checked = res.invertiert;
         querySelector<HTMLInputElement>("#hervorheben").checked = res.hervorheben;
+        querySelector<HTMLInputElement>("#hervorheben_style").value = res.hervorheben_style;
         querySelector<HTMLInputElement>("#doppelformen").checked = res.doppelformen;
         querySelector<HTMLInputElement>("#partizip").checked = res.partizip;
         querySelector<HTMLInputElement>("#skip_topic").checked = res.skip_topic;
@@ -65,8 +67,28 @@ function restoreOptions() {
         } else {
             querySelector<HTMLInputElement>("#none").checked = true;
         }
+
+        onHighlightChange();
     });
 }
+
+export function onHighlightChange() {
+    let styleInp = querySelector<HTMLInputElement>("#hervorheben_style");
+    for (let e of document.getElementsByClassName('entgendy-change') as any) {
+        e.setAttribute("style", styleInp.value);
+    }
+    verzoegertesSpeichern();
+}
+export function onHighlightExampleChange() {
+    let value = querySelector<HTMLSelectElement>("#hervorheben-beispiele").value;
+    let styleInp = querySelector<HTMLInputElement>("#hervorheben_style");
+    styleInp.value = value;
+    onHighlightChange();
+}
+
+let hervorheben_style = querySelector("#hervorheben_style");
+hervorheben_style.onkeyup = onHighlightChange
+querySelector("#hervorheben-beispiele").onchange = onHighlightExampleChange;
 
 document.addEventListener('DOMContentLoaded', restoreOptions);
 
@@ -75,8 +97,7 @@ for (let i = 0; i < choices.length; i++) {
     choices[i].addEventListener("click", saveOptions);
 }
 
-//Verzögerung bevor Tasteneingabe abgespeichert wird
-querySelector("form").onkeyup = function () {
+const verzoegertesSpeichern = function () {
     let callcount = 0;
     const action = function () {
         saveOptions();
@@ -90,11 +111,14 @@ querySelector("form").onkeyup = function () {
         };
         setTimeout(delay, time);
     };
-    return function (eventtrigger: any) {
+    return function (eventtrigger?: any) {
         ++callcount;
         delayAction(action, 1000);
     };
 }();
+
+//Verzögerung bevor Tasteneingabe abgespeichert wird
+querySelector("form").onkeyup = verzoegertesSpeichern;
 
 //Chrome-spezifisches Stylesheet für options.html
 if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {

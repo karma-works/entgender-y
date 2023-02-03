@@ -5,18 +5,16 @@ function createText(str: string):CharacterData {
 }
 
 export class ChangeHighlighter {
-    createChangeElement(from: string, to: string) {
+    createChangeElement(from: string, to: string, style: string) {
         const span = document.createElement("span");
         span.innerText = to;
         span.setAttribute('title', from);
+        span.setAttribute("style", style);
         span.classList.add("entgendy-change")
-        span.style.cursor = 'help';
-        span.style.position = 'relative';
-        span.style.textDecoration = 'underline wavy blue';
         return span;
     }
 
-    apply(node: CharacterData, newText: string) {
+    apply(node: CharacterData, newText: string, style: string = "") {
         let newNodes = new Array<Node>();
         const previous = node.data;
         let changes = Diff.diffWords(previous, newText);
@@ -29,7 +27,7 @@ export class ChangeHighlighter {
                     newNodes.push(createText(change.value));
                     continue;
                 }
-                newNodes.push(this.createChangeElement(lastRemoved, change.value));
+                newNodes.push(this.createChangeElement(lastRemoved, change.value, style));
                 lastRemoved = undefined;
             } else if (change.removed) {
                 lastRemoved = change.value;

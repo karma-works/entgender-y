@@ -9,6 +9,7 @@ export interface BeGoneSettings {
     blacklist?: string;
     counter?: boolean;
     hervorheben?: boolean;
+    hervorheben_style?: string;
     filterliste?: FilterType;
 }
 

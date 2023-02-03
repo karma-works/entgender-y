@@ -11,6 +11,7 @@
    },
    "content_scripts": [ {
       "js": [ "gendersprachekorrigieren.js" ],
+      "css": [ "css/gendersprachekorrigieren.css" ],
       "matches": [ "http://*/*", "https://*/*" ]
    } ],
    "description": "Vereinheitlicht die gängigsten Sorten von Binnen-Is, Sternen etc. auf Webseiten und entgendert sie nach der Methode von Phettberg.",
@@ -20,7 +21,7 @@
    },
    "manifest_version": 2,
    "name": "entgendy: Entgendern nach Phettberg",
-   "author": "Christian Haegele",
+   "author": "Christian Haegele, Christophe Schmaltz",
    "homepage_url": "https://github.com/karma-works/entgender-y",
    "options_ui": {
       "page": "options.html",

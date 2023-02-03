@@ -226,7 +226,7 @@ export class BeGone {
                  Maybe https://www.npmjs.com/package/diff with Diff.diffWords
                  */
                 if (this.settings.hervorheben) {
-                    this.changeHighlighter.apply(node, newText);
+                    this.changeHighlighter.apply(node, newText, this.settings.hervorheben_style);
                 } else {
                     node.data = newText;
                 }

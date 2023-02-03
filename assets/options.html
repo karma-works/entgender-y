@@ -28,6 +28,22 @@
 		textarea {
 			width: 100%;
 		}
+
+		/* Example entgendy-change highlight */
+		span.entgendy-change  {
+			cursor: help;
+			position: relative;
+		}
+		span.entgendy-change[style*=engendy-mode-nb]::before {
+			content: "";
+			position: absolute;
+			top: 100%;
+			width: 100%;
+			left: 0;
+			height: 5px;
+			border-radius: 2px;
+			background: linear-gradient(111.3deg, #ff3 20%, #fff 40%, #95d 60%, #222 90%); // yellow white purple black
+		}
 	</style>
 </head>
 
@@ -49,10 +65,19 @@
 				<div class="input"><input type="checkbox" id="counter"><label>Zahl der gefilterten Elemente im
 						Toolbar-Icon anzeigen</label></div><br>
 				<div class="input"><input type="checkbox" id="invertiert"><label>Toolbar-Icon für dunkle Themes</label>
+				</div><br>
+				<div class="input"><input type="checkbox" id="hervorheben"><label>Die Veränderungen
+					<span title="Text dass ersetzt wurde als tooltip" class="entgendy-change">im Text hervorheben (unveränderter Text als Tooltip)</span></label></div><br>
+				<div class="input" style="width: 100%; white-space: nowrap; display: inline-flex;">
+					<label for="hervorheben_style" style="vertical-align: center; padding: 7px 0;">Hervorhebungs CSS: &nbsp;</label>
+					<select id="hervorheben-beispiele">
+						<option value="">Beispiel wählen</option>
+						<option value="text-decoration: underline wavy blue;">Blau</option>
+						<option value="text-decoration: underline wavy blue; background-color: yellow;">Blau & GELB</option>
+						<option value="engendy-mode-nb ;">Non-binary</option>
+					</select>
+					<input type="text" id="hervorheben_style" style="padding: 2px 0; width: 100%; display: inline-block;">
 				</div>
-				<div class="input"><input type="checkbox" id="hervorheben"><label>Die Veränderungen im Text
-					<span title="Text davor als tooltip" style="cursor: help; text-decoration: underline wavy blue;">
-						hervorheben (blau unterkringelt, unveränderter Text als Tooltip)</span></label></div><br>
 			</div>
 			<h3>Filtermodus</h3>
 			<div class="controls">
