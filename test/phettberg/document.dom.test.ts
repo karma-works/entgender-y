@@ -2,8 +2,14 @@ import {expect} from 'chai';
 import {BeGone} from '../../src/gendersprachekorrigieren';
 import {replacementTestStrings} from "./testdata";
 import {createParagraph, prepareDocument} from "../domtest-util";
+import {insertDataOfFailingTestsInto} from "./testdata-fehler";
 
-// import './testdata-fehler'
+if (false) {
+    /**
+     * Bekannte Fehler, hier deaktiviert um den build nicht zu brechen
+     */
+    insertDataOfFailingTestsInto(replacementTestStrings);
+}
 
 // Note: MutationObserver is not implemented in JSDOM, so we cannot test the updates in unittests
 // TODO: create a page which fills the testdata using javascript

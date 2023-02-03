@@ -1,5 +1,9 @@
 import {replacementTestStrings} from "../phettberg/testdata";
 import "../phettberg/testdata-fehler"
+import {insertDataOfFailingTestsInto} from "../phettberg/testdata-fehler";
+
+const fullTestData = [...replacementTestStrings];
+insertDataOfFailingTestsInto(fullTestData);
 
 function quoteattr(s: string, preserveCR:boolean=false) {
     let preserveCRS = preserveCR ? '&#13;' : '\n';
@@ -22,7 +26,7 @@ function quoteattr(s: string, preserveCR:boolean=false) {
 export function generateTableRows() {
     let rows = [];
     rows.push(`<tr><td><b>Ausgang</b></td><td><b>Vom Addon zu ändern</b></td><td><b>Ziel-ergebnis</b></td></tr>`);
-    for (let [from, to] of replacementTestStrings) {
+    for (let [from, to] of fullTestData) {
         // was nicht verändert werden soll, wird in <code> blocks gesetzt
         rows.push(`<tr>
                     <td><code>${from}</code></td>

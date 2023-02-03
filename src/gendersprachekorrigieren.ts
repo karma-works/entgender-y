@@ -42,7 +42,7 @@ export class BeGone {
 
     private shouldNotBeChangedChecker(): (node: Node) => boolean {
         // cached query result
-        let editableElements = document.querySelectorAll("[role='textbox'],div[contenteditable='true']");
+        let editableElements = document.querySelectorAll("[role='textbox'],[contenteditable='true']");
         return (node: Node) => {
             // note about filtering <pre> elements: those elements might contain linebreaks (/r/n etc.)
             // that are removed during filtering to make filtering easier; the easy fix is to ignore those elements
