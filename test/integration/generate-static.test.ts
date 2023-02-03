@@ -7,9 +7,10 @@ import {generateTableRows} from "./inject-test-data";
  */
 it('Generate code', () => {
     let indexHtml = fs.readFileSync("test/integration/index.html", "UTF-8");
-    console.log(indexHtml);
+    //console.log(indexHtml);
     prepareDocument(indexHtml);
     generateTableRows();
     let staticPage = `<html>${document.head.outerHTML}${document.body.outerHTML}</html>`;
-    fs.writeFileSync("test/integration/static.html", staticPage);
+    fs.mkdirSync("test/integration/compiled/", {recursive: true})
+    fs.writeFileSync("test/integration/compiled/static.html", staticPage);
 });

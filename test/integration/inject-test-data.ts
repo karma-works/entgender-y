@@ -23,10 +23,11 @@ export function generateTableRows() {
     let rows = [];
     rows.push(`<tr><td><b>Ausgang</b></td><td><b>Vom Addon zu ändern</b></td><td><b>Ziel-ergebnis</b></td></tr>`);
     for (let [from, to] of replacementTestStrings) {
+        // was nicht verändert werden soll, wird in <code> blocks gesetzt
         rows.push(`<tr>
-                    <td><input value="${quoteattr(from)}" disabled="true"></td>
-                    <td x-expected="${quoteattr(to)}" title="${quoteattr(from)}" class="observe-element">${from}</td>
-                    <td>${to}</td>
+                    <td><code>${from}</code></td>
+                    <td x-original="${quoteattr(from)}" x-expected="${quoteattr(to)}" title="${quoteattr(from)}" class="observe-element">${from}</td>
+                    <td><code>${to}</code></td>
                     </tr>`)
     }
     document.getElementById("inject-table-body")!!.innerHTML = rows.join("\n");

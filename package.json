@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start:firefox": "npm run build && npm-run-all --parallel serve:test-pages build:dev internal:firefox",
-    "internal:firefox": "web-ext run --browser-console --source-dir ./dist/ --start-url 'http://localhost:14285/'",
+    "start:firefox": "npm run build && npm-run-all --parallel internal:execute-generate-scripts serve:test-pages build:dev internal:firefox",
+    "internal:firefox": "web-ext run --browser-console --firefox-profile .ff-profile --profile-create-if-missing --source-dir ./dist/ --start-url 'http://localhost:14285/'",
+    "internal:execute-generate-scripts": "mocha --exit --require ts-node/register --colors test/**/generate*.test.ts",
     "test": "cross-env TS_NODE_FILES=true mocha --exit --require ts-node/register --colors test/**/*.test.ts",
     "coverage": "nyc --reporter=lcov --reporter=text-summary ./node_modules/.bin/npm test",
     "build:dev": "./node_modules/.bin/parcel watch --target options --target gendersprachekorrigieren --target background --target testscript",

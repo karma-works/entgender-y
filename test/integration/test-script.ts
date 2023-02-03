@@ -6,19 +6,30 @@ function setClassOk(element:Element) {
     element.classList.remove("wrong");
     element.classList.add("correct");
 }
+
 function setClassWrong(element:Element) {
-    element.classList.remove("correct");
+    element.classList.remove("correct", "wrong-partial-change");
     element.classList.add("wrong");
 }
+
+function setClassChangedWrong(element:Element) {
+    element.classList.remove("correct", "wrong");
+    element.classList.add("wrong-partial-change");
+}
+
 function checkValue() {
     let elementsToCheck = document.querySelectorAll(".observe-element[x-expected]");
     let errorCount = 0;
     for (let element of elementsToCheck) {
         let expected = element.getAttribute("x-expected");
+        let original = element.getAttribute("x-original");
         let actual = element.textContent;
         let success = expected == actual;
         if (success) {
             setClassOk(element);
+        } else if (original != actual) {
+            setClassChangedWrong(element);
+            errorCount++;
         } else {
             setClassWrong(element);
             errorCount++;
