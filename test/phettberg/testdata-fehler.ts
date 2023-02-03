@@ -148,6 +148,10 @@ replacementTestStrings.push(
         "DropIn-replacement",
         "DropIn-replacement"
     ],
+    [
+        'https://blabla.net/in-der-praxis-anwenden',
+        'https://blabla.net/in-der-praxis-anwenden'
+    ]
 );
 /* TODO: was soll es sein?
     [

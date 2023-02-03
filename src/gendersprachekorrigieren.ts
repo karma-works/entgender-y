@@ -1,6 +1,13 @@
 import {Replacement} from './replacement'
 import {Phettberg} from './schreibalternativen/phettberg';
-import {BeGoneSettings, CountRequest, ErrorRequest, NeedOptionsRequest} from "./control/control-api";
+import {
+    BeGoneSettings,
+    CountRequest,
+    ErrorRequest,
+    NeedOptionsRequest,
+    Response,
+    ResponseType
+} from "./control/control-api";
 import {SchreibAlternative} from "./schreibalternativen/alternative";
 
 class BeGoneSettingsHelper {
@@ -25,7 +32,7 @@ export class BeGone {
     public version = 2.7;
     private settings: BeGoneSettings = {aktiv: true, partizip: true, doppelformen: true, skip_topic: false};
     private nodes: Array<CharacterData> = new Array<CharacterData>();
-    private mtype: string | undefined = undefined;
+    private mtype: ResponseType | undefined = undefined;
 
     private replacer: SchreibAlternative = new Phettberg();
 
@@ -82,7 +89,7 @@ export class BeGone {
         return a;
     }
 
-    public handleResponse(message: { type?: string, response: string }) {
+    public handleResponse(message: Response) {
         this.settings = JSON.parse(message.response);
 
         if (!this.settings.aktiv && this.settings.filterliste !== "Bei Bedarf" || this.settings.filterliste == "Bei Bedarf" && message.type !== "ondemand") return;
@@ -304,7 +311,7 @@ export class BeGone {
     public notifyBackgroundScript() {
         chrome.runtime.sendMessage({
             action: 'needOptions'
-        } as NeedOptionsRequest, (res: { type?: string, response: string }) => {
+        } as NeedOptionsRequest, (res: Response) => {
             this.handleResponse(res);
         });
     }
@@ -323,7 +330,7 @@ if (typeof document != "undefined" && document.body.textContent) {
     const beGone = new BeGone();
     //Einstellungen laden
     beGone.notifyBackgroundScript();
-    chrome.runtime.onMessage.addListener((message: { type?: string, response: string }) => {
+    chrome.runtime.onMessage.addListener((message: Response) => {
         beGone.handleResponse(message);
     });
 }
