@@ -40,8 +40,26 @@ export class BeGone {
         // console.log("BG", ...s, "\n" + stackToBeGone(1).join("\n"));
     }
 
+    private shouldNotBeChangedChecker(): (node: Node) => boolean {
+        // cached query result
+        let editableElements = document.querySelectorAll("[role='textbox'],div[contenteditable='true']");
+        return (node: Node) => {
+            // note about filtering <pre> elements: those elements might contain linebreaks (/r/n etc.)
+            // that are removed during filtering to make filtering easier; the easy fix is to ignore those elements
+            const isUntreatedElement = node.parentNode ? (node.parentNode instanceof HTMLInputElement || node.parentNode instanceof HTMLTextAreaElement || node.parentNode instanceof HTMLScriptElement || node.parentNode instanceof HTMLStyleElement || node.parentNode instanceof HTMLPreElement || node.parentNode.nodeName == "CODE" || node.parentNode.nodeName == "NOSCRIPT") : false;
+            if (isUntreatedElement) return true;
+            for (let editableElement of editableElements) {
+                if (editableElement.contains(node)) {
+                    return true;
+                }
+            }
+            return false;
+        };
+    }
+
     private textNodesUnder(el: Node): Array<CharacterData> {
         this.log("textNodesUnder", el);
+        const shouldNotBeChanged = this.shouldNotBeChangedChecker();
         let n, a = new Array<CharacterData>();
         let acceptNode = (node: Node) => {
             //Nodes mit weniger als 5 Zeichen nicht filtern
@@ -49,12 +67,8 @@ export class BeGone {
                 this.log("Rejected a", node);
                 return NodeFilter.FILTER_REJECT;
             } else {
-                // note about filtering <pre> elements: those elements might contain linebreaks (/r/n etc.) that are removed during filtering to make filtering easier; the easy fix is to ignore those elements
-                const isUntreatedElement = node.parentNode ? (node.parentNode instanceof HTMLInputElement || node.parentNode instanceof HTMLTextAreaElement || node.parentNode instanceof HTMLScriptElement || node.parentNode instanceof HTMLStyleElement || node.parentNode instanceof HTMLPreElement || node.parentNode.nodeName == "CODE" || node.parentNode.nodeName == "NOSCRIPT") : false;
-                const isDivTextbox = document.activeElement && (document.activeElement.getAttribute("role") == "textbox" || document.activeElement.getAttribute("contenteditable") == "true") && document.activeElement.contains(node);
-
                 //Eingabeelemente, <script>, <style>, <code>-Tags nicht filtern
-                if (isUntreatedElement || isDivTextbox) {
+                if (shouldNotBeChanged(node)) {
                     return NodeFilter.FILTER_REJECT;
                 }
                 //Nur Nodes erfassen, deren Inhalt ungefähr zur späteren Verarbeitung passt
