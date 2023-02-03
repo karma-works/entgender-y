@@ -302,6 +302,10 @@ export class BeGone {
                 this.applyToNodes(nodes, this.replacer.entfernePartizip);
             }
             this.applyToNodes(nodes, this.replacer.entferneBinnenIs);
+
+            this.applyToNodes(this.nodes, this.replacer.ersetzeGefluechteteDurchFluechtlinge);
+
+            this.applyToNodes(this.nodes, this.replacer.artikelUndKontraktionen);
             if (this.settings.counter) {
                 this.sendCounttoBackgroundScript();
             }

@@ -3,12 +3,16 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start:firefox": "web-ext run --browser-console --source-dir ./dist/ --start-url 'https://github.com/chris0385/entgender-y/wiki/Test-Seite'",
-    "test": "cross-env TS_NODE_FILES=true mocha --exit --require ts-node/register --colors test/**/*.ts",
+    "start:firefox": "npm run build && npm-run-all --parallel serve:test-pages build:dev internal:firefox",
+    "internal:firefox": "web-ext run --browser-console --source-dir ./dist/ --start-url 'http://localhost:14285/'",
+    "test": "cross-env TS_NODE_FILES=true mocha --exit --require ts-node/register --colors test/**/*.test.ts",
     "coverage": "nyc --reporter=lcov --reporter=text-summary ./node_modules/.bin/npm test",
-    "build:dev": "./node_modules/.bin/parcel watch --target options --target gendersprachekorrigieren --target background",
+    "build:dev": "./node_modules/.bin/parcel watch --target options --target gendersprachekorrigieren --target background --target testscript",
     "build": "./node_modules/.bin/parcel build --target options --target gendersprachekorrigieren --target background",
-    "bundle": "web-ext build --source-dir ./dist/ --overwrite-dest"
+    "bundle": "web-ext build --source-dir ./dist/ --overwrite-dest",
+    "clean": "rimraf dist && rimraf test/integration/compiled",
+    "prepare-release": "npm run clean && npm run test && npm run build && npm run bundle",
+    "serve:test-pages": "http-server --port 14285 test/integration/"
   },
   "author": "",
   "license": "ISC",
@@ -21,16 +25,18 @@
     "@types/node": "13.9.8",
     "chai": "~4.2.0",
     "cross-env": "^7.0.3",
+    "http-server": "^14.1.1",
     "jsdom": "^21.1.0",
     "jsdom-global": "3.0.2",
     "mocha": "^9.2.2",
     "mocha-dom": "^1.0.0",
     "npm": "^8.19.3",
+    "npm-run-all": "^4.1.5",
     "nyc": "~15.0.1",
     "parcel": "^2.8.3",
     "parcel-reporter-static-files-copy": "^1.5.0",
     "ts-node": "^8.10.2",
-    "typescript": "^3.5.3",
+    "typescript": "^3.9.10",
     "web-ext": "^6.8.0"
   },
   "staticFiles": {
@@ -39,6 +45,7 @@
   "gendersprachekorrigieren": "./dist/gendersprachekorrigieren.js",
   "options": "dist/options.js",
   "background": "dist/background.js",
+  "testscript": "test/integration/compiled/test-script.js",
   "targets": {
     "options": {
       "outputFormat": "global",
@@ -51,6 +58,12 @@
     },
     "background": {
       "source": "./src/control/background.ts"
+    },
+    "testscript": {
+      "outputFormat": "global",
+      "isLibrary": false,
+      "optimize": false,
+      "source": "./test/integration/test-script.ts"
     }
   }
 }

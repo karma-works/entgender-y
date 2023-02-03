@@ -1,18 +1,18 @@
-import {JSDOM} from "jsdom";
+import {DOMWindow, JSDOM} from "jsdom";
 
 declare global {
     namespace NodeJS {
         interface Global {
             document: Document;
-            window: Window;
+            window: DOMWindow;
             navigator: Navigator;
         }
     }
 }
 
-export function prepareDocument() {
+export function prepareDocument(html?: string) {
     const dom = new JSDOM(
-        `<html>
+        html || `<html>
        <body>
        <main></main>
        </body>
