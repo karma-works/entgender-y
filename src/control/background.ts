@@ -1,56 +1,63 @@
-var settings = "";
+import {Request, Settings} from "./control-api";
+import MessageSender = chrome.runtime.MessageSender;
+
+let settings: Partial<Settings> = {};
+
+function updateSetting(setting: Partial<Settings>) {
+    chrome.storage.sync.set(setting);
+}
 
 function updateSettings() {
-    chrome.storage.sync.get(function(res) {
+    chrome.storage.sync.get(function(res: Settings) {
         //Standardwerte bei der Initialisierung
         if (res.aktiv === undefined || res.invertiert === undefined || res.counter === undefined || res.doppelformen === undefined || res.partizip === undefined || res.skip_topic === undefined || res.filterliste === undefined || res.whitelist === undefined || res.whitelist == "undefined" || res.blacklist === undefined || res.blacklist == "undefined") {
             if (res.aktiv === undefined) {
-                chrome.storage.sync.set({
+                updateSetting({
                     aktiv: true
                 });
             }
             if (res.counter === undefined) {
-                chrome.storage.sync.set({
+                updateSetting({
                     counter: true
                 });
             }
             if (res.invertiert === undefined) {
-                chrome.storage.sync.set({
+                updateSetting({
                     invertiert: false
                 });
             }
             if (res.doppelformen === undefined) {
-                chrome.storage.sync.set({
+                updateSetting({
                     doppelformen: true
                 });
             }
             if (res.partizip === undefined) {
-                chrome.storage.sync.set({
+                updateSetting({
                     partizip: false
                 });
             }
             if (res.skip_topic === undefined) {
-                chrome.storage.sync.set({
+                updateSetting({
                     skip_topic: false
                 });
             }
             if (res.filterliste === undefined) {
-                chrome.storage.sync.set({
+                updateSetting({
                     filterliste: "Blacklist"
                 });
             }
             if (res.whitelist === undefined || res.whitelist == "undefined") {
-                chrome.storage.sync.set({
+                updateSetting({
                     whitelist: ".gv.at\n.ac.at\nderstandard.at\ndiestandard.at\nhttps://ze.tt/"
                 });
             }
             if (res.blacklist === undefined || res.blacklist == "undefined") {
-                chrome.storage.sync.set({
+                updateSetting({
                     blacklist: "stackoverflow.com\ngithub.com\nhttps://developer\nhttps://de.wikipedia.org/wiki/Gendersternchen"
                 });
             }
 
-            chrome.storage.sync.get(function(resagain) {
+            chrome.storage.sync.get(function(resagain:Settings) {
                 settings = resagain;
             });
         } else {
@@ -60,13 +67,13 @@ function updateSettings() {
     });
 }
 
-function handleMessage(request, sender, sendResponse) {
+function handleMessage(request: Request, sender: MessageSender, sendResponse: (response?: any) => void) {
     if (request.action == "needOptions") {
         sendResponse({
             response: JSON.stringify(settings)
         });
-    } else if (request.type == "count" && request.countBinnenIreplacements + request.countDoppelformreplacements + request.countPartizipreplacements > 0) {
-        var displayednumber = request.countBinnenIreplacements + request.countDoppelformreplacements + request.countPartizipreplacements;
+    } else if (sender.tab && request.type == "count" && request.countBinnenIreplacements + request.countDoppelformreplacements + request.countPartizipreplacements > 0) {
+        const displayednumber = request.countBinnenIreplacements + request.countDoppelformreplacements + request.countPartizipreplacements;
         chrome.browserAction.setBadgeText({
             text: "" + displayednumber + "",
             tabId: sender.tab.id
@@ -96,8 +103,11 @@ function handleMessage(request, sender, sendResponse) {
     }
 }
 
-function sendMessageToTabs(tabs) {
+function sendMessageToTabs(tabs:chrome.tabs.Tab[]) {
     for (let tab of tabs) {
+        if (tab.id == null) {
+            continue;
+        }
         chrome.tabs.sendMessage(
             tab.id, {
                 response: JSON.stringify(settings),
@@ -107,7 +117,7 @@ function sendMessageToTabs(tabs) {
 }
 
 function updateIcon() {
-    chrome.storage.sync.get(function(res) {
+    chrome.storage.sync.get(function(res:Settings) {
         if (res.filterliste == "Bei Bedarf") {
             chrome.browserAction.setTitle({
                 title: 'Klick entgendert Binnen-Is auf dieser Seite'
@@ -152,7 +162,7 @@ function updateIcon() {
 }
 
 function ButtonClickHandler() {
-    chrome.storage.sync.get(function(res) {
+    chrome.storage.sync.get(function(res:Settings) {
         if (res.filterliste == "Bei Bedarf") {
             chrome.tabs.query({
                 currentWindow: true,
@@ -172,11 +182,11 @@ function ButtonClickHandler() {
                 }
             });
         } else if (res.aktiv === true) {
-            chrome.storage.sync.set({
+            updateSetting({
                 aktiv: false
             });
         } else {
-            chrome.storage.sync.set({
+            updateSetting({
                 aktiv: true
             });
             settings.aktiv = true;
