@@ -9,8 +9,14 @@ function updateSetting(setting: Partial<Settings>) {
 
 function updateSettings() {
     chrome.storage.sync.get(function(res: Settings) {
+        function isAnyUndefined(...arg: any[]): boolean {
+            for (let s of arg) {
+                if (s === undefined || s === 'undefined') return true;
+            }
+            return false;
+        }
         //Standardwerte bei der Initialisierung
-        if (res.aktiv === undefined || res.invertiert === undefined || res.counter === undefined || res.doppelformen === undefined || res.partizip === undefined || res.skip_topic === undefined || res.filterliste === undefined || res.whitelist === undefined || res.whitelist == "undefined" || res.blacklist === undefined || res.blacklist == "undefined") {
+        if (isAnyUndefined(res.aktiv, res.invertiert, res.counter, res.doppelformen, res.partizip, res.skip_topic, res.filterliste, res.whitelist, res.blacklist, res.hervorheben_style)) {
             if (res.aktiv === undefined) {
                 updateSetting({
                     aktiv: true
@@ -54,6 +60,11 @@ function updateSettings() {
             if (res.blacklist === undefined || res.blacklist == "undefined") {
                 updateSetting({
                     blacklist: "stackoverflow.com\ngithub.com\nhttps://developer\nhttps://de.wikipedia.org/wiki/Gendersternchen"
+                });
+            }
+            if (res.hervorheben_style === undefined || res.hervorheben_style == "undefined") {
+                updateSetting({
+                    hervorheben_style: "text-decoration: underline wavy blue;"
                 });
             }
 
