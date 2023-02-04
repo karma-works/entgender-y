@@ -70,12 +70,40 @@ export function insertDataOfFailingTestsInto(replacementTestStrings: TestDataTyp
             "Chefy"
         ],
         [
-            "Schüler(in)",
-            "Schüly"
-        ],
-        [
             "SCHÜLER*IN",
             "SCHÜLY"
+        ],
+        [
+            'soft hyphens Schüler­Innen auf dem Bürger­steig',
+            'soft hyphens Schülys auf dem Bürger­steig'
+        ],
+        [
+            'Wehrbeauftragte*n“',
+            'Wehrbeauftragtys“'
+        ],
+        [
+            'jede(r),jedeR',
+            'jedes,jedes'
+        ],
+        [
+            "meine*r PsychologIn",
+            "meinem Psychology"
+        ],
+        [
+            "jede_jeder",
+            "jedes" // aktuell jeder
+        ],
+        [
+            "Alle Bürger und -innen",
+            "Alle Bürgys" // aktuell Bürger
+        ],
+        [
+            "ihn:sie",
+            "ihn"
+        ],
+        [
+            "BäuerIn",
+            "Bauy" // aktuell Bauer
         ],
     ); // end Binnen
 

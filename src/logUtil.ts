@@ -4,11 +4,31 @@ interface Logger {
     log(...args: any[]): void;
 }
 
+let _isBrowser = true;
 if (typeof window === 'undefined') {
-    //console.log("Running in Node.js");
+    console.log("Running in Node.js");
+    _isBrowser = false;
 } else {
-    //console.log("Running in browser");
+    console.log("Running in browser");
 }
+
+class ConditionalRunHelper implements Logger {
+    constructor() {
+        // overwrite log to have correct line numbers
+        this.log = console.log.bind(console);
+    }
+
+    log(...args: any[]): void {
+    }
+
+    run<R>(callback: () => R): R {
+        return callback()
+    }
+}
+
+const disableAllLogs = true;
+export const isBrowser = disableAllLogs ? undefined : (_isBrowser ? new ConditionalRunHelper() : undefined);
+export const isNodeJs = disableAllLogs ? undefined : (!_isBrowser ? new ConditionalRunHelper() : undefined);
 
 export function getLogger(name?: string): Logger {
     return console;

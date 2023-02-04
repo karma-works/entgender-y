@@ -124,3 +124,144 @@ export const replacementTestStrings: [string, string][] = [
     ["Die Corona-Zahlen steigen und steigen: Letzte Ausfahrt Lockdown?", "Die Corona-Zahlen steigen und steigen: Letzte Ausfahrt Lockdown?"],
     ["in eine Hardware-nähere Sprache", "in eine Hardware-nähere Sprache"]
 ];
+
+replacementTestStrings.push(
+    [ 'Sinti*ze und Rom*nja', 'Sintys und Romys' ],
+    [ 'Schüler/innen', 'Schülys' ],
+    [ 'Schüler(innen)', 'Schülys' ],
+    [ 'SchülerINNen', 'Schülys' ],
+    //[ 'und -innen', 'und -innen' ],
+    //[ 'Schüler(in)', 'Schüly)' ],
+    [ 'eine:n selbst', 'einen selbst' ],
+    [ 'einer_einem, keiner_keinem', 'einm, keinm' ],
+    [ 'ein/eine', 'ein' ],
+    [ 'ihr*e Partner*in', 'ihr Partny' ],
+    [ 'Schüler/in', 'Schüly' ],
+    [
+        'unregelmäßiger Dativ bei Wörtern auf ...erInnen',
+        'unregelmäßiger Dativ bei Wörtern auf ...ys'
+    ],
+    [
+        'unregelmäßiger Dativ bei eine/n Psycholog/in',
+        'unregelmäßiger Dativ bei ein Psychology'
+    ],
+    [
+        'ExpertIn, BritIn, KundIn, WachIn',
+        'Experty, Brity, Kundy, Wachy'
+    ],
+    [ 'jede*n, europäische*n', 'jedes, europäisches' ],
+    [ 'jede/r', 'jedes' ],
+    [ 'stellvertretende*r', 'stellvertretendes' ],
+    [
+        'Stellvertretende*r Datenschutzbeauftragte*r....',
+        'Stellvertretendy Datenschutzbeauftragty....'
+    ],
+    [ 'Absolute*r', 'Absolutes' ],
+    [ 'Datenschutzbeauftragte*r', 'Datenschutzbeauftragty' ],
+    [ 'jedem/r', 'jedem' ],
+    [ 'jedes/r', 'jedes/r' ],
+    [
+        'Dativ: einem progressive*n Staatsoberhaupt',
+        'Dativ: einem progressiven Staatsoberhaupt'
+    ]
+);
+
+replacementTestStrings.push(
+    [
+        "BenediktIn",
+        "Benedikty"
+    ],
+    [
+        "der Studierende",
+        "das Studenty"
+    ],
+    [
+        "die FanInnen",
+        "die Fans"
+    ],
+    [
+        "die ChefInnen",
+        "die Chefys"
+    ],
+    [
+        "Schüler(in)",
+        "Schüly"
+    ],
+    [
+        "ihrem-seinem",
+        "seinem"
+    ],
+    [
+        "seinem-ihrem",
+        "seinem"
+    ],
+    [
+        "HündIn",
+        "Hund"
+    ],
+    [
+        "GöttIn",
+        "Gotty"
+    ],
+    [
+        "KöchIn",
+        "Kochy"
+    ],
+    [
+        "ÄrztIn",
+        "Arzty"
+    ],
+    [
+        "OberärztIn",
+        "Oberarzty"
+    ],
+    [
+        "RätIn HilfsärztIn AnwältIn",
+        "Raty Hilfsarzty Anwalty"
+    ],
+    [
+        "Ihn*Sie",
+        "Ihn"
+    ],
+    [
+        "Sie/Ihn",
+        "Ihn"
+    ],
+    [
+        "sie_ihn",
+        "ihn"
+    ],
+    [
+        "ihr_ihm",
+        "ihm"
+    ],
+    [
+        "ihr:ihm",
+        "ihm"
+    ],
+    [
+        "diesem:dieser",
+        "diesem"
+    ],
+    [
+        "diesen*diese",
+        "diesen"
+    ],
+    [
+        "dieser_diesem",
+        "diesem"
+    ],
+    [
+        "diese_diesen",
+        "diesen"
+    ],
+    /*
+    [
+        "Gegenüber zwei ÜbertreterInnen",
+        "Gegenüber zwei Übertretys"
+    ],
+    [
+        "Dank 4 ÄgypterInnen",
+        ""
+    ]*/
+)
