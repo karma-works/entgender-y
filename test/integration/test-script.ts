@@ -51,5 +51,6 @@ if (document.location.href.endsWith("static.html")) {
     generateTableRows();
 }
 setTimeout(checkValue, 1000);
+setTimeout(checkValue, 10000);
 
 console.log("Test-script done");

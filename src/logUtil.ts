@@ -9,7 +9,7 @@ if (typeof window === 'undefined') {
     console.log("Running in Node.js");
     _isBrowser = false;
 } else {
-    console.log("Running in browser");
+    // console.log("Running in browser");
 }
 
 class ConditionalRunHelper implements Logger {
@@ -24,11 +24,24 @@ class ConditionalRunHelper implements Logger {
     run<R>(callback: () => R): R {
         return callback()
     }
+
+    tagNodes(tag: string, nodes: Array<CharacterData>) {
+        for (let node of nodes) {
+            let el = node.parentNode;
+            if (el instanceof Element) {
+                el.setAttribute(tag, '1');
+            }
+        }
+    }
 }
 
 const disableAllLogs = true;
 export const isBrowser = disableAllLogs ? undefined : (_isBrowser ? new ConditionalRunHelper() : undefined);
 export const isNodeJs = disableAllLogs ? undefined : (!_isBrowser ? new ConditionalRunHelper() : undefined);
+
+// FIXME TODO ERROR: don't put enableDebugging = true this in release
+const enableDebugging = false;
+export const ifDebugging = enableDebugging ? new ConditionalRunHelper() : undefined;
 
 export function getLogger(name?: string): Logger {
     return console;

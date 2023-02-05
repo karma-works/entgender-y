@@ -12,7 +12,7 @@
     "clean": "rimraf dist && rimraf test/integration/compiled",
     "prepare-release": "npm run clean && npm run test && npm run build && npm run bundle",
     "serve:test-pages": "http-server --port 14285 test/integration/",
-    "internal:firefox": "web-ext run --browser-console --source-dir ./dist/ --start-url 'http://localhost:14285/'",
+    "internal:firefox": "web-ext run --browser-console --source-dir ./dist/ --start-url 'http://localhost:14285/' --start-url 'about:devtools-toolbox?id={30898332-4708-909f-6f1b-54df9c17269a}&type=extension'",
     "internal:execute-generate-scripts": "mocha --exit --require ts-node/register --colors test/**/generate*.ts"
   },
   "author": "",
@@ -38,7 +38,7 @@
     "parcel-reporter-static-files-copy": "^1.5.0",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.10",
-    "web-ext": "^6.8.0"
+    "web-ext": "^7.3.1"
   },
   "staticFiles": {
     "staticPath": "assets"
