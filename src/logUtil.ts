@@ -39,7 +39,7 @@ const disableAllLogs = true;
 export const isBrowser = disableAllLogs ? undefined : (_isBrowser ? new ConditionalRunHelper() : undefined);
 export const isNodeJs = disableAllLogs ? undefined : (!_isBrowser ? new ConditionalRunHelper() : undefined);
 
-// FIXME TODO ERROR: don't put enableDebugging = true this in release
+// Don't ever put enableDebugging = true in a public release
 const enableDebugging = false;
 export const ifDebugging = enableDebugging ? new ConditionalRunHelper() : undefined;
 

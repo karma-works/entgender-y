@@ -312,7 +312,6 @@ export class BeGone {
     private entferneInserted(nodes: Array<CharacterData>) {
         this.log("entferneInserted");
         if (!this.settings.skip_topic || this.settings.skip_topic && this.mtype || this.settings.skip_topic && !/Binnen-I/.test(document.body.textContent ? document.body.textContent : "")) {
-            ifDebugging?.tagNodes("x-entferneInserted", nodes);
             if (this.settings.doppelformen) {
                 this.applyToNodes(nodes, this.replacer.entferneDoppelformen);
             }
