@@ -68,9 +68,7 @@ export class BeGone {
             //this.log("Rejected b", node, node.textContent);
             return NodeFilter.FILTER_REJECT;
         };
-        let walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT,
-            {acceptNode: acceptNode},
-            false);
+        let walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {acceptNode: acceptNode});
         while (n = walk.nextNode() as CharacterData) {
             let nodeParent = n.parentNode;
             if (!nodeParent) {
@@ -269,7 +267,7 @@ export class BeGone {
             if (probeResult.probeBinnenI) {
                 this.applyToNodes(nodes, this.replacer.entferneBinnenIs);
             }
-            if (probeResult.probeGefluechtete) {
+            if (this.settings.partizip && probeResult.probeGefluechtete) {
                 this.applyToNodes(nodes, this.replacer.ersetzeGefluechteteDurchFluechtlinge);
             }
 
@@ -296,7 +294,7 @@ export class BeGone {
             if (probeResult.probeBinnenI) {
                 s = this.replacer.entferneBinnenIs(s);
             }
-            if (probeResult.probeGefluechtete) {
+            if (this.settings.partizip && probeResult.probeGefluechtete) {
                 s = this.replacer.ersetzeGefluechteteDurchFluechtlinge(s);
             }
 
@@ -323,7 +321,9 @@ export class BeGone {
             }
             this.applyToNodes(nodes, this.replacer.entferneBinnenIs);
 
-            this.applyToNodes(nodes, this.replacer.ersetzeGefluechteteDurchFluechtlinge);
+            if (this.settings.partizip) {
+                this.applyToNodes(nodes, this.replacer.ersetzeGefluechteteDurchFluechtlinge);
+            }
 
             this.applyToNodes(nodes, this.replacer.artikelUndKontraktionen);
             if (this.settings.counter) {

@@ -19,7 +19,7 @@ export function prepareDocument(html?: string) {
      </html>`,
         {url: 'http://localhost'},
     );
-    global.window = dom.window;
+    global.window = dom.window as any;
     global.document = dom.window.document;
 
     // Workaround, because stuff which is in the global context in browser isn't when running in node
