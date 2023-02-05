@@ -91,6 +91,7 @@ export class Phettberg implements SchreibAlternative {
             s = new Replacement(String.raw`([Aa]bsolute)${Const.gstar}r`, "g", "$1s", "Absolute*r").replace(s, counter);
             s = new Replacement(String.raw`(\b[\w]+)e${Const.gstar}r|e\(r\)|eR\b`, "g", "\$1y", "Datenschutzbeauftragte*r").replace(s, counter);
             s = new Replacement(String.raw`em\(e?r\)|em[\/\*_\(-]+r\b`, "g", "em", "jedem/r").replace(s, counter);
+            // TODO: jedes/r wird nicht hier geändert. Wozu ist das?
             s = new Replacement(String.raw`er\(e?s\)|es[\/\*_\(-]+r\b`, "g", "es", "jedes/r").replace(s, counter);
         }
 
@@ -142,8 +143,8 @@ export class Phettberg implements SchreibAlternative {
                 s = new Replacement(String.raw`([a-zäöüß])\(inn(en\)|\)en)`, "ig", "\$1Innen", "Schüler(innen)").replace(s, counter);
                 s = new Replacement(String.raw`([a-zäöüß])INNen`, "g", "\$1Innen", "SchülerINNen").replace(s, counter);
                 s = new Replacement(String.raw` und -innen\b`, "ig", "", "und -innen").replace(s, counter);
-                s = new Replacement(String.raw`(?<!https:\/\/lnkd)(er)?(${Const.gstar})in\b`, "ig", Const.y, "Schüler/in").replace(s, counter);
                 s = new Replacement(String.raw`([a-zäöüß])\(in\)`, "ig", "$1In", "Schüler(in)").replace(s, counter);
+                s = new Replacement(String.raw`(?<!https:\/\/lnkd)(er)?(${Const.gstar})in\b`, "ig", Const.y, "Schüler/in").replace(s, counter);
                 this.log(s);
             }
 
@@ -157,7 +158,7 @@ export class Phettberg implements SchreibAlternative {
                     s = new Replacement(String.raw`(F|f)anInnen`, "g", "\$1ans", "").replace(s, counter);
                     s = new Replacement(String.raw`([Gg]ött|verbesser)(?=Innen)`, "g", "\$1" + Const.ys, "").replace(s, counter);
                     s = new Replacement(String.raw`äue?rInnen`, "g", "auern", "").replace(s, counter);
-                    s = new Replacement(String.raw`äsInnen`, "g", "as" + Const.ys, "").replace(s, counter);
+                    s = new Replacement(String.raw`äsInnen`, "g", "as" + Const.ys, "?? Gibt es das??").replace(s, counter);
                 }
                 // statt Leerzeichen kommt [\s]{1,2} zum Einsatz -> Leerzeichen oder Leerzeichen + Markerzeichen für die Kontexterkennung (hacky, aber so what)
                 s = new Replacement(String.raw`\b(([Dd]en|[Aa]us|[Aa]ußer|[Bb]ei|[Dd]ank|[Gg]egenüber|[Ll]aut|[Mm]it(samt)?|[Nn]ach|[Ss]amt|[Vv]on|[Uu]nter|[Zz]u|[Ww]egen|[MmSsDd]?einen)(?: zwei| drei| [0-9]+)?[\s]{1,2}([ID]?[a-zäöüß]+en[\s]{1,2}|[0-9.,]+[\s]{1,2})?[A-ZÄÖÜ][a-zäöüß]+)erInnen\b`, "g", "\$1" + Const.ys, "unregelmäßiger Dativ bei Wörtern auf ...erInnen").replace(s, counter);

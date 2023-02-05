@@ -1,4 +1,4 @@
-import {Request, Settings} from "./control-api";
+import {Request, Response, Settings} from "./control-api";
 import MessageSender = chrome.runtime.MessageSender;
 
 let settings: Partial<Settings> = {};
@@ -114,12 +114,16 @@ function handleMessage(request: Request, sender: MessageSender, sendResponse: (r
     }
 }
 
+function sendMessage(tabId: number, message: Response) {
+    chrome.tabs.sendMessage(tabId, message);
+}
+
 function sendMessageToTabs(tabs:chrome.tabs.Tab[]) {
     for (let tab of tabs) {
         if (tab.id == null) {
             continue;
         }
-        chrome.tabs.sendMessage(
+        sendMessage(
             tab.id, {
                 response: JSON.stringify(settings),
                 type: "ondemand"

@@ -1,0 +1,106 @@
+<html>
+<head>
+    <script type="text/javascript">
+        window.addEventListener('load', () => {
+            // Load script, but bypass browser cache by appending time
+            let URL = 'compiled/test-script.js?no-cache=' + (new Date().getTime());
+            let script = document.createElement("script")
+            script.src = URL;
+            script.type = "text/javascript";
+            document.head.appendChild(script);
+            return true;
+        });
+    </script>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: center;
+            padding-top: 2em;
+            padding-bottom: 1em;
+        }
+
+        td {
+            border: 1px solid gray;
+            font-family: monospace;
+            padding: 0.2em;
+            vertical-align: top;
+        }
+
+        .wrong {
+            background-color: coral;
+        }
+
+        .wrong-partial-change {
+            background-color: bisque;
+        }
+
+        .correct {
+            background-color: chartreuse;
+        }
+
+        #error-count {
+            font-size: 30px;
+        }
+    </style>
+</head>
+<body>
+Hallo welt*innen<br/>
+
+<a href="index.html">Test von dynamischen laden (mittels javascript)</a><br>
+<a href="static.html">Test von statischen html (beim öffnen der Seite konvertiert)</a>
+
+<div id="error-count"></div>
+<br>
+<span class="correct">Richtig</span> <span class="wrong">Falsch, unverändert</span> <span class="wrong-partial-change">Falsch, wurde verändert</span>
+
+<hr/>
+<table style="font-size: 100%;">
+    <tbody id="inject-table-body">
+    </tbody>
+</table>
+<hr/>
+
+<p>Das folgende div ist editierbar, und sollte demnach nicht vom addon angefasst werden</p>
+<div id=":64" class="Am Al editable LW-avf tS-tW" hidefocus="true" aria-label="Corps du message" g_editable="true"
+     role="textbox" aria-multiline="true"
+     style="direction: ltr; min-height: 210px; border: solid; border-width: 3px; background: aliceblue;"
+     tabindex="1" itacorner="6,7:1,1,0,0" spellcheck="false" aria-owns=":v7" aria-controls=":v7" contenteditable="true">
+
+    <div>&nbsp;Unbezahlt mithelfende*r Familienangehörige/-r im familieneigenen Betrieb<br>&nbsp;Beamtin, Beamter,
+        Richter*in, (ohne Anwärter*in)<br>&nbsp;Angestellte/-r (ohne Auszubildende)<br>&nbsp;Arbeiter/-in
+        (ohne Auszubildende), Heimarbeiter<br>&nbsp;Volontär/-in, Trainee, Person im bezahlten Praktikum<br>&nbsp;Zeit-,
+        Berufssoldat/-in<br>Sonstige/-r <span zeum4c2="PR_166_0" data-ddnwab="PR_166_0" aria-invalid="grammar"
+                                              class="Lm ng">Beschäftige*r</span> mit kleinem Job
+    </div>
+    <div><br></div>
+    <div><span zeum4c2="PR_231_0" data-ddnwab="PR_231_0" aria-invalid="spelling"
+               class="LI ng">Postverwalter/in</span><br><span zeum4c2="PR_232_0" data-ddnwab="PR_232_0"
+                                                              aria-invalid="spelling" class="LI ng">Badverwalter</span>/in<br>Kühlhausverwalter/in<br>Bachelor
+        of Arts - International Hospitality and Tourism<br>Master of Science - Global Management <br></div>
+    <div><br></div>
+    <div>&nbsp;In Elternzeit und derzeit Angestellte/-r, Arbeiter/-in, Beamtin/Beamter, (auch Zeit-, Berufssoldat/-in,
+        Auszubildende/-r)<br>&nbsp;In Altersteilzeit und derzeit Angestellte/-r, Arbeiter/-in, Beamtin/Beamter, (auch
+        Zeit-, Berufssoldat/-in, Auszubildende/-r)<br>&nbsp;In vollständiger oder teilweiser Freistellung nach dem
+        Pflegezeitgesetz in Altersteilzeit und derzeit Angestellte/-r, Arbeiter/-in, Beamtin/Beamter, (auch Zeit-,
+        Berufssoldat/-in, Auszubildende/-r)<br>&nbsp;In teilweiser Freistellung nach dem Familienpflegezeitgesetz und
+        derzeit Angestellte/-r, Arbeiter/-in, Beamtin/Beamter, (auch Zeit-, Berufssoldat/-in, Auszubildende/-r)<br>&nbsp;Angestellte/-r,
+        Arbeiter/-in, Beamtin/Beamter (auch Zeit-, Berufssoldat/-in, Auszubildende/-r) nicht in
+        Elternzeit/Altersteilzeit/
+        <div>
+            <wbr>
+            Freistellung<br>&nbsp;Selbstständige/-r, Freiberufler/-in ohne Beschäftigte<br>&nbsp;Selbstständige/-r,
+            Freiberufler/-in mit Beschäftigten<br>&nbsp;Unbezahlt mithelfende/-r Familienangehörige/-r im
+            familieneigenen
+            Betrieb<br>&nbsp;Im Bundesfreiwilligendienst (auch soziales, ökologisches oder kulturelles Jahr), im
+            freiwilligen Wehrdienst<br>&nbsp;Schüler/-in, Student/-in<br>&nbsp;Im Ruhestand oder im Vorruhestand<br>&nbsp;Arbeitslos<br>&nbsp;Hausfrau/Hausmann,
+            Betreuung von Kindern oder pflegebedürftigen Personen
+        </div>
+    </div>
+    <div><br></div>
+</div>
+
+</body>
+</html>

@@ -4,11 +4,44 @@ interface Logger {
     log(...args: any[]): void;
 }
 
+let _isBrowser = true;
 if (typeof window === 'undefined') {
-    //console.log("Running in Node.js");
+    console.log("Running in Node.js");
+    _isBrowser = false;
 } else {
-    //console.log("Running in browser");
+    // console.log("Running in browser");
 }
+
+class ConditionalRunHelper implements Logger {
+    constructor() {
+        // overwrite log to have correct line numbers
+        this.log = console.log.bind(console);
+    }
+
+    log(...args: any[]): void {
+    }
+
+    run<R>(callback: () => R): R {
+        return callback()
+    }
+
+    tagNodes(tag: string, nodes: Array<CharacterData>) {
+        for (let node of nodes) {
+            let el = node.parentNode;
+            if (el instanceof Element) {
+                el.setAttribute(tag, '1');
+            }
+        }
+    }
+}
+
+const disableAllLogs = true;
+export const isBrowser = disableAllLogs ? undefined : (_isBrowser ? new ConditionalRunHelper() : undefined);
+export const isNodeJs = disableAllLogs ? undefined : (!_isBrowser ? new ConditionalRunHelper() : undefined);
+
+// Don't ever put enableDebugging = true in a public release
+const enableDebugging = false;
+export const ifDebugging = enableDebugging ? new ConditionalRunHelper() : undefined;
 
 export function getLogger(name?: string): Logger {
     return console;
