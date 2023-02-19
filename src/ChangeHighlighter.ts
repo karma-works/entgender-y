@@ -44,6 +44,8 @@ export class ChangeHighlighter {
                             changeId = changeId2;
                             foundMore = maybeMoreDeleted;
                         }
+                    } else {
+                        break;
                     }
                 }
                 let [_, word, space] = foundMore.match(/^(.*?)(\s*)$/)!!;
