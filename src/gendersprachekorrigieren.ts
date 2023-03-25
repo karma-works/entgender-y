@@ -1,7 +1,16 @@
 import {Replacement} from './replacement'
 import {Phettberg} from './schreibalternativen/phettberg';
-import {BeGoneSettings, CountRequest, ErrorRequest, NeedOptionsRequest} from "./control/control-api";
+import {
+    BeGoneSettings,
+    CountRequest,
+    ErrorRequest,
+    NeedOptionsRequest,
+    Response,
+    ResponseType
+} from "./control/control-api";
 import {SchreibAlternative} from "./schreibalternativen/alternative";
+import {ChangeAllowedChecker} from "./changeAllowedChecker";
+import {ifDebugging, stackToBeGone} from "./logUtil";
 
 class BeGoneSettingsHelper {
     public static isWhitelist(settings: BeGoneSettings): boolean {
@@ -22,32 +31,32 @@ class BeGoneSettingsHelper {
 }
 
 export class BeGone {
-    public version = 2.7;
+    public version = 2.7; // TODO: warum ist hier ein version?
     private settings: BeGoneSettings = {aktiv: true, partizip: true, doppelformen: true, skip_topic: false};
-    private nodes: Array<CharacterData> = new Array<CharacterData>();
-    private mtype: string | undefined = undefined;
+
+    // Info / TODO: mtype kann wohl nur = "ondemand" sein, und anscheinend wird dieses Feld auch als "isOndemand" Feld genutzt.
+    // TODO: umbauen, dies sollte ein boolean sein, sonst geht es kaputt wenn jemand ein neues ResponseType einführt
+    private mtype: ResponseType | undefined = undefined;
 
     private replacer: SchreibAlternative = new Phettberg();
+    private readonly changeAllowedChecker = new ChangeAllowedChecker();
 
     private log(...s: any[]) {
-        // console.log("BG", ...s, "\n" + stackToBeGone(1).join("\n"));
+        ifDebugging && console.log("BG", ...s, "\n" + stackToBeGone(1).join("\n"));
     }
 
     private textNodesUnder(el: Node): Array<CharacterData> {
         this.log("textNodesUnder", el);
         let n, a = new Array<CharacterData>();
+        let shouldNotBeChanged = this.changeAllowedChecker.shouldNotBeChanged;
         let acceptNode = (node: Node) => {
             //Nodes mit weniger als 5 Zeichen nicht filtern
             if (!node.textContent || node.textContent.length < 5) {
-                this.log("Rejected a", node);
+                // this.log("Rejected a", node);
                 return NodeFilter.FILTER_REJECT;
             } else {
-                // note about filtering <pre> elements: those elements might contain linebreaks (/r/n etc.) that are removed during filtering to make filtering easier; the easy fix is to ignore those elements
-                const isUntreatedElement = node.parentNode ? (node.parentNode instanceof HTMLInputElement || node.parentNode instanceof HTMLTextAreaElement || node.parentNode instanceof HTMLScriptElement || node.parentNode instanceof HTMLStyleElement || node.parentNode instanceof HTMLPreElement || node.parentNode.nodeName == "CODE" || node.parentNode.nodeName == "NOSCRIPT") : false;
-                const isDivTextbox = document.activeElement && (document.activeElement.getAttribute("role") == "textbox" || document.activeElement.getAttribute("contenteditable") == "true") && document.activeElement.contains(node);
-
                 //Eingabeelemente, <script>, <style>, <code>-Tags nicht filtern
-                if (isUntreatedElement || isDivTextbox) {
+                if (shouldNotBeChanged(node)) {
                     return NodeFilter.FILTER_REJECT;
                 }
                 //Nur Nodes erfassen, deren Inhalt ungefähr zur späteren Verarbeitung passt
@@ -59,9 +68,7 @@ export class BeGone {
             //this.log("Rejected b", node, node.textContent);
             return NodeFilter.FILTER_REJECT;
         };
-        let walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT,
-            {acceptNode: acceptNode},
-            false);
+        let walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {acceptNode: acceptNode});
         while (n = walk.nextNode() as CharacterData) {
             let nodeParent = n.parentNode;
             if (!nodeParent) {
@@ -82,21 +89,24 @@ export class BeGone {
         return a;
     }
 
-    public handleResponse(message: { type?: string, response: string }) {
+    public handleResponse(message: Response) {
         this.settings = JSON.parse(message.response);
 
         if (!this.settings.aktiv && this.settings.filterliste !== "Bei Bedarf" || this.settings.filterliste == "Bei Bedarf" && message.type !== "ondemand") return;
 
         this.mtype = message.type;
-        if (!BeGoneSettingsHelper.isWhitelist(this.settings) && !BeGoneSettingsHelper.isBlacklist(this.settings) || BeGoneSettingsHelper.isWhitelist(this.settings) && RegExp(BeGoneSettingsHelper.whiteliststring(this.settings)).test(document.URL) || BeGoneSettingsHelper.isBlacklist(this.settings) && !RegExp(BeGoneSettingsHelper.blackliststring(this.settings)).test(document.URL)) {
+        if (this.currentPageNotExcludedByWhitelistOrBlackList()) {
             //Entfernen bei erstem Laden der Seite
             this.entferneInitial();
 
             //Entfernen bei Seitenänderungen
             try {
-                const observer = new MutationObserver((mutations: any) => {
+                const observer = new MutationObserver((mutations: MutationRecord[]) => {
+                    // Der changeAllowedChecker muss geupdated werden bevor entferneInserted(.) aufgerufen wird
+                    this.changeAllowedChecker.handleMutations(mutations);
+
                     let insertedNodes = new Array<CharacterData>();
-                    mutations.forEach((mutation: any) => {
+                    mutations.forEach((mutation: MutationRecord) => {
                         for (let i = 0; i < mutation.addedNodes.length; i++) {
                             insertedNodes = insertedNodes.concat(this.textNodesUnder(mutation.addedNodes[i]));
                         }
@@ -106,7 +116,8 @@ export class BeGone {
                 observer.observe(document, {
                     childList: true,
                     subtree: true,
-                    attributes: false,
+                    // attributes needed for changeAllowedChecker
+                    attributes: true,
                     characterData: false
                 });
             } catch (e) {
@@ -121,6 +132,18 @@ export class BeGone {
         }
     }
 
+
+    private currentPageNotExcludedByWhitelistOrBlackList() {
+        if (!BeGoneSettingsHelper.isWhitelist(this.settings) && !BeGoneSettingsHelper.isBlacklist(this.settings)) {
+            // no filtering
+            return true;
+        }
+        if (BeGoneSettingsHelper.isWhitelist(this.settings) && RegExp(BeGoneSettingsHelper.whiteliststring(this.settings)).test(document.URL)) {
+            // White listed
+            return true;
+        }
+        return BeGoneSettingsHelper.isBlacklist(this.settings) && !RegExp(BeGoneSettingsHelper.blackliststring(this.settings)).test(document.URL);
+    }
 
     private probeDocument(bodyTextContent: string = document.body.textContent ? document.body.textContent : ""):
         {
@@ -233,23 +256,23 @@ export class BeGone {
         const probeResult = this.probeDocument()
 
         if (probeResult.probeBinnenI || this.settings.doppelformen && probeResult.probeRedundancy || this.settings.partizip && probeResult.probePartizip || probeResult.probeArtikelUndKontraktionen) {
-            this.nodes = this.textNodesUnder(document)
+            let nodes = this.textNodesUnder(document)
 
             if (this.settings.doppelformen && probeResult.probeRedundancy) {
-                this.applyToNodes(this.nodes, this.replacer.entferneDoppelformen);
+                this.applyToNodes(nodes, this.replacer.entferneDoppelformen);
             }
             if (this.settings.partizip && probeResult.probePartizip) {
-                this.applyToNodes(this.nodes, this.replacer.entfernePartizip);
+                this.applyToNodes(nodes, this.replacer.entfernePartizip);
             }
             if (probeResult.probeBinnenI) {
-                this.applyToNodes(this.nodes, this.replacer.entferneBinnenIs);
+                this.applyToNodes(nodes, this.replacer.entferneBinnenIs);
             }
-            if (probeResult.probeGefluechtete) {
-                this.applyToNodes(this.nodes, this.replacer.ersetzeGefluechteteDurchFluechtlinge);
+            if (this.settings.partizip && probeResult.probeGefluechtete) {
+                this.applyToNodes(nodes, this.replacer.ersetzeGefluechteteDurchFluechtlinge);
             }
 
             if (probeResult.probeArtikelUndKontraktionen) {
-                this.applyToNodes(this.nodes, this.replacer.artikelUndKontraktionen);
+                this.applyToNodes(nodes, this.replacer.artikelUndKontraktionen);
             }
 
             if (this.settings.counter) {
@@ -271,7 +294,7 @@ export class BeGone {
             if (probeResult.probeBinnenI) {
                 s = this.replacer.entferneBinnenIs(s);
             }
-            if (probeResult.probeGefluechtete) {
+            if (this.settings.partizip && probeResult.probeGefluechtete) {
                 s = this.replacer.ersetzeGefluechteteDurchFluechtlinge(s);
             }
 
@@ -287,6 +310,7 @@ export class BeGone {
     }
 
     private entferneInserted(nodes: Array<CharacterData>) {
+        this.log("entferneInserted");
         if (!this.settings.skip_topic || this.settings.skip_topic && this.mtype || this.settings.skip_topic && !/Binnen-I/.test(document.body.textContent ? document.body.textContent : "")) {
             if (this.settings.doppelformen) {
                 this.applyToNodes(nodes, this.replacer.entferneDoppelformen);
@@ -295,6 +319,12 @@ export class BeGone {
                 this.applyToNodes(nodes, this.replacer.entfernePartizip);
             }
             this.applyToNodes(nodes, this.replacer.entferneBinnenIs);
+
+            if (this.settings.partizip) {
+                this.applyToNodes(nodes, this.replacer.ersetzeGefluechteteDurchFluechtlinge);
+            }
+
+            this.applyToNodes(nodes, this.replacer.artikelUndKontraktionen);
             if (this.settings.counter) {
                 this.sendCounttoBackgroundScript();
             }
@@ -304,7 +334,7 @@ export class BeGone {
     public notifyBackgroundScript() {
         chrome.runtime.sendMessage({
             action: 'needOptions'
-        } as NeedOptionsRequest, (res: { type?: string, response: string }) => {
+        } as NeedOptionsRequest, (res: Response) => {
             this.handleResponse(res);
         });
     }
@@ -323,7 +353,7 @@ if (typeof document != "undefined" && document.body.textContent) {
     const beGone = new BeGone();
     //Einstellungen laden
     beGone.notifyBackgroundScript();
-    chrome.runtime.onMessage.addListener((message: { type?: string, response: string }) => {
+    chrome.runtime.onMessage.addListener((message: Response) => {
         beGone.handleResponse(message);
     });
 }

@@ -22,6 +22,8 @@ export interface CountRequest  {
     countDoppelformreplacements: number;
     countPartizipreplacements: number;
 }
+
+
 export interface NeedOptionsRequest {
     action: "needOptions";
 }
@@ -35,3 +37,9 @@ export interface ErrorRequest {
 }
 
 export type Request = CountRequest & NeedOptionsRequest
+
+export type ResponseType = "ondemand"
+export interface Response  {
+    type?: ResponseType,
+    response: string
+}
