@@ -7,4 +7,5 @@ export interface SchreibAlternative {
     entferneDoppelformen: (s: string) => string;
     entfernePartizip: (s: string) => string;
     ersetzeGefluechteteDurchFluechtlinge: (s: string) => (string);
+    ersetzeMaskulinum?: (s: string) => (string);
 }

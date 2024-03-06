@@ -31,5 +31,20 @@ describe('Doppelnennung', () => {
         expect(div.innerHTML).to.be.equal(`Nach intensiven Coachings durch <span title="Expert*innen" style="style-foo" class="entgendy-change">Expertys</span> haben die Zehntklässler einen Beratungsraum geschaffen. Unter dem Motto „von <span title="Schüler*innen" style="style-foo" class="entgendy-change">Schülys</span> für <span title="Schüler*innen" style="style-foo" class="entgendy-change">Schülys</span>“ bieten sie Unterstützung für <span title="Mitschüler*innen" style="style-foo" class="entgendy-change">Mitschülys</span> an, die Rassismus erfahren haben.`);
     });
 
+    it('Highlight für sich folgende wörter', () => {
+        let div = textBefore("der/die Bürgerinnen und Bürgern jugendliche*r Professor*in");
+        highlighter.apply(div.firstChild as CharacterData, "das Bürgys jugendliche Professory", "style-foo");
+
+        console.log(div.innerHTML);
+        expect(div.innerHTML).to.be.equal(`<span title="der/die Bürgerinnen und Bürgern jugendliche*r Professor*in" style="style-foo" class="entgendy-change">das Bürgys jugendliche Professory</span>`);
+    });
+
+    it('Highlight für sich nicht folgende wörter', () => {
+        let div = textBefore("der/die wort Bürgerinnen und Bürgern wort hort jugendliche*r wort Professor*in");
+        highlighter.apply(div.firstChild as CharacterData, "das wort Bürgys wort hort jugendliche wort Professory", "style-foo");
+
+        console.log(div.innerHTML);
+        expect(div.innerHTML).to.be.equal(`<span title="der/die" style="style-foo" class="entgendy-change">das</span> wort <span title="Bürgerinnen und Bürgern" style="style-foo" class="entgendy-change">Bürgys</span> wort hort <span title="jugendliche*r" style="style-foo" class="entgendy-change">jugendliche</span> wort <span title="Professor*in" style="style-foo" class="entgendy-change">Professory</span>`);
+    });
 
 });

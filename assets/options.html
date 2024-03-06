@@ -44,6 +44,11 @@
 			border-radius: 2px;
 			background: linear-gradient(111.3deg, #ff3 20%, #fff 40%, #95d 60%, #222 90%); // yellow white purple black
 		}
+
+		.error-info {
+			color: red;
+			font-weight: bold;
+		}
 	</style>
 </head>
 
@@ -96,10 +101,10 @@
 			</div>
 			<h3>Blacklist</h3>
 			<p>Domains, auf denen die Erweiterung nicht aktiv sein soll (Eine Adresse pro Zeile):</p>
-			<textarea id="blacklist" placeholder="z.B.: github.com" rows="5"></textarea><br>
+			<textarea id="blacklist" placeholder="z.B.: github.com" rows="5"></textarea><span class="error-info" id="blacklist-error"></span><br>
 			<h3>Whitelist</h3>
 			<p>Domains, auf denen die Erweiterung ausschließlich aktiv sein soll (Eine Adresse pro Zeile):</p>
-			<textarea id="whitelist" placeholder="z.B.: .gv.at" rows="5"></textarea>
+			<textarea id="whitelist" placeholder="z.B.: .gv.at" rows="5"></textarea><span class="error-info" id="whitelist-error"></span>
 		</fieldset>
 	</form>
 	<script type="module" src="options.js"></script>

@@ -1,9 +1,19 @@
 import {FilterType, Settings} from "./control-api";
+import {urlFilterListToRegex} from "../gendersprachekorrigieren";
 
 function querySelector<T extends HTMLElement>(sel: string): T {
     return <T>document.querySelector(sel)!!;
 }
+
 function saveOptions() {
+    function getRegExpErrors(re: string) {
+        try {
+            urlFilterListToRegex(re).test("blabla");
+        } catch (e) {
+            return `${e}`
+        }
+    }
+
     chrome.storage.sync.get(function (res: Settings) {
         if (res.filterliste == "Bei Bedarf" && querySelector<HTMLInputElement>("#ondemandstate").checked !== true) {
             configureOndemandInActive();
@@ -11,6 +21,13 @@ function saveOptions() {
         if (querySelector<HTMLInputElement>("#ondemandstate").checked) {
             configureOndemandActive();
         }
+        let whitelist = querySelector<HTMLTextAreaElement>("#whitelist").value.trim();
+        let blacklist = querySelector<HTMLTextAreaElement>("#blacklist").value.trim();
+
+        let err = getRegExpErrors(whitelist);
+        querySelector<HTMLSpanElement>("#whitelist-error").innerText = err || "";
+        err = getRegExpErrors(blacklist);
+        querySelector<HTMLSpanElement>("#blacklist-error").innerText = err || "";
         let settings: Settings = {
             aktiv: querySelector<HTMLInputElement>("#aktiv").checked,
             counter: querySelector<HTMLInputElement>("#counter").checked,
@@ -21,8 +38,8 @@ function saveOptions() {
             partizip: querySelector<HTMLInputElement>("#partizip").checked,
             skip_topic: querySelector<HTMLInputElement>("#skip_topic").checked,
             filterliste: querySelector<HTMLInputElement>('input[name="filterstate"]:checked').value as FilterType,
-            whitelist: querySelector<HTMLTextAreaElement>("#whitelist").value.trim(),
-            blacklist: querySelector<HTMLTextAreaElement>("#blacklist").value.trim()
+            whitelist: whitelist,
+            blacklist: blacklist,
         };
         chrome.storage.sync.set(settings);
     });
@@ -79,6 +96,7 @@ export function onHighlightChange() {
     }
     verzoegertesSpeichern();
 }
+
 export function onHighlightExampleChange() {
     let value = querySelector<HTMLSelectElement>("#hervorheben-beispiele").value;
     let styleInp = querySelector<HTMLInputElement>("#hervorheben_style");

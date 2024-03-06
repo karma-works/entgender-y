@@ -148,6 +148,10 @@ export function insertDataOfFailingTestsInto(replacementTestStrings: TestDataTyp
             "Bürgermeisterinnen o. Bürgermeister",
             "Bürgermeistys"
         ],
+        [
+            "gemeinsam mit einer Trägerin oder einem Träger",
+            "gemeinsam mit einem Trägy" // Falsch "gemeinsam das Trägy"
+        ],
     ); // End doppel
 
 // Unnötig gegendert

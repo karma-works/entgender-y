@@ -474,4 +474,8 @@ export class Phettberg implements SchreibAlternative {
         }
         return s;
     }
+
+    ersetzeMaskulinum = (s: string) => {
+        return s;
+    }
 }
