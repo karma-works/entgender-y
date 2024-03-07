@@ -13,6 +13,10 @@ import {ChangeHighlighter} from "./ChangeHighlighter";
 import {ChangeAllowedChecker} from "./changeAllowedChecker";
 import {ifDebugging, stackToBeGone} from "./logUtil";
 
+export function urlFilterListToRegex(list: string | undefined): RegExp {
+    return RegExp(list ? list.replace(/(\r\n|\n|\r)/gm, "|") : "");
+}
+
 class BeGoneSettingsHelper {
     public static isWhitelist(settings: BeGoneSettings): boolean {
         return settings.filterliste === "Whitelist";
