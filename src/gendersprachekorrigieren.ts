@@ -248,11 +248,8 @@ export class BeGone {
             }
 
             if (node.data !== newText) {
-                /*
-                 TODO: consider highlighting the changed words (something like a git diff) with some <span>
-                 Maybe https://www.npmjs.com/package/diff with Diff.diffWords
-                 */
                 if (this.settings.hervorheben) {
+                    // highlight the changed words with some <span>
                     this.changeHighlighter.apply(node, newText, this.settings.hervorheben_style);
                 } else {
                     node.data = newText;
