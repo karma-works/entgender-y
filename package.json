@@ -11,6 +11,7 @@
     "bundle": "web-ext build --source-dir ./dist/ --overwrite-dest",
     "clean": "rimraf dist && rimraf test/integration/compiled",
     "prepare-release": "npm run clean && npm run test && npm run build && npm run bundle",
+    "unlisted-firefox-release": "npm run clean && npm run prepare-release && dotenv -e .env -- web-ext sign --use-submission-api --channel unlisted --source-dir dist",
     "serve:test-pages": "http-server --port 14285 test/integration/",
     "internal:firefox": "web-ext run --browser-console --source-dir ./dist/ --start-url 'http://localhost:14285/' --start-url 'about:devtools-toolbox?id={30898332-4708-909f-6f1b-54df9c17269a}&type=extension'",
     "internal:execute-generate-scripts": "mocha --exit --require ts-node/register --colors test/**/generate*.ts"
@@ -27,6 +28,7 @@
     "@types/node": "18.11.19",
     "chai": "~4.3.7",
     "cross-env": "^7.0.3",
+    "dotenv": "^16.4.5",
     "http-server": "^14.1.1",
     "jsdom": "^17.0.0",
     "jsdom-global": "3.0.2",

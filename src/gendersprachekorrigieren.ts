@@ -12,6 +12,7 @@ import {SchreibAlternative} from "./schreibalternativen/alternative";
 import {ChangeHighlighter} from "./ChangeHighlighter";
 import {ChangeAllowedChecker} from "./changeAllowedChecker";
 import {ifDebugging, stackToBeGone} from "./logUtil";
+import {SuperPowerfulMutationObserver, SuperPowerfulTreeWalker} from "./superPowerfulDOMSearcher";
 
 export function urlFilterListToRegex(list: string | undefined): RegExp {
     return RegExp(list ? list.replace(/(\r\n|\n|\r)/gm, "|") : "");
@@ -100,8 +101,11 @@ export class BeGone {
             //this.log("Rejected b", node, node.textContent);
             return NodeFilter.FILTER_REJECT;
         };
-        let walk = (el.ownerDocument || (el as Document)).createTreeWalker(el, NodeFilter.SHOW_TEXT, {acceptNode: acceptNode});
-        while (n = walk.nextNode() as CharacterData) {
+
+        let walk = new SuperPowerfulTreeWalker<CharacterData>(el, NodeFilter.SHOW_TEXT, {acceptNode: acceptNode});
+        let nodes = walk.toArray();
+        console.log("Walkedd nodes", nodes);
+        for (let n of nodes) {
             let nodeParent = n.parentNode;
             if (!nodeParent) {
                 a.push(n);
@@ -119,36 +123,6 @@ export class BeGone {
             }
         }
 
-        let iframeTexts = this.textNodesInIframes(el);
-        if (iframeTexts.length > 0) {
-            a = a.concat(iframeTexts);
-        }
-
-        return a;
-    }
-
-    private textNodesInIframes(el: Node) {
-        let a = new Array<CharacterData>();
-        if (el.nodeType == Node.ELEMENT_NODE || el.nodeType == Node.DOCUMENT_NODE) {
-            // Check for and handle iframes - assume same-origin or permissions granted
-            let frames = (el as Element).getElementsByTagName('iframe');
-            for (let i = 0; i < frames.length; i++) {
-                try {
-                    let iframe = frames[i];
-                    // Recursively process the contentDocument of each iframe
-                    let frameDocument = getFrameDocument(iframe);
-                    if (frameDocument) {
-                        this.installMutationObserver(frameDocument);
-                        a = a.concat(this.textNodesUnder.call(this, frameDocument));
-                    }
-                } catch (error) {
-                    this.log("Error accessing iframe content:", error);
-                }
-            }
-        }
-        if (a.length > 0) {
-            this.log("iframe texgts", a)
-        }
         return a;
     }
 
@@ -170,6 +144,41 @@ export class BeGone {
 
     private installMutationObserver(doc: Document) {
         try {
+            let callback = (mutations: MutationRecord[]) => {
+                // Der changeAllowedChecker muss geupdated werden bevor entferneInserted(.) aufgerufen wird
+                this.changeAllowedChecker.handleMutations(mutations);
+
+                let insertedNodes = new Array<CharacterData>();
+                mutations.forEach((mutation: MutationRecord) => {
+                    for (let i = 0; i < mutation.addedNodes.length; i++) {
+                        let node = mutation.addedNodes[i];
+                        insertedNodes = insertedNodes.concat(this.textNodesUnder(node));
+
+
+                        // if (node.nodeType === Node.ELEMENT_NODE) {
+                        //     let shadowRoot = (node as Element).shadowRoot;
+                        //     if (shadowRoot) {
+                        //         console.log("Shadowroot", shadowRoot);
+                        //         insertedNodes.concat(this.textNodesUnder(shadowRoot));
+                        //     }
+                        // }
+
+                    }
+                });
+                this.entferneInserted(insertedNodes);
+            };
+            const observer = new MutationObserver(callback);
+
+            let superObserver = new SuperPowerfulMutationObserver(callback, {
+                childList: true,
+                subtree: true,
+                // attributes needed for changeAllowedChecker
+                attributes: true,
+                characterData: false,
+            });
+            superObserver.observe(doc);
+            return;
+
             if (doc.readyState !== "complete") {
                 // readystatechange counts as mutation, but we actually install a MutationObserver only after full load.
                 doc.addEventListener('readystatechange', () => {
@@ -190,27 +199,7 @@ export class BeGone {
             doc.documentElement.dataset['entgendyinstalled'] = "true";
 
 
-            const observer = new MutationObserver((mutations: MutationRecord[]) => {
-                // Der changeAllowedChecker muss geupdated werden bevor entferneInserted(.) aufgerufen wird
-                this.changeAllowedChecker.handleMutations(mutations);
 
-                let insertedNodes = new Array<CharacterData>();
-                mutations.forEach((mutation: MutationRecord) => {
-                    for (let i = 0; i < mutation.addedNodes.length; i++) {
-                        let node = mutation.addedNodes[i];
-                        insertedNodes = insertedNodes.concat(this.textNodesUnder(node));
-                        if (node.nodeType === Node.ELEMENT_NODE) {
-                            let shadowRoot = (node as Element).shadowRoot;
-                            if (shadowRoot) {
-                                console.log("Shadowroot", shadowRoot);
-                                insertedNodes.concat(this.textNodesUnder(shadowRoot));
-                            }
-                        }
-
-                    }
-                });
-                this.entferneInserted(insertedNodes);
-            });
             observer.observe(doc, {
                 childList: true,
                 subtree: true,
@@ -484,6 +473,8 @@ export class BeGone {
     }
 
     private observeShadowDom() {
+        return;
+
         function injectScript() {
             // The mutation-observer cannot see shadow-root-creations.
             // It sees attribute-creations, though. We wrap attachShadow, to create an attribute on shadowRoot creation.
