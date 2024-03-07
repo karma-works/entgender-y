@@ -6,6 +6,7 @@ declare global {
             document: Document;
             window: DOMWindow;
             navigator: Navigator;
+            Node: Node;
         }
     }
 }
@@ -21,6 +22,10 @@ export function prepareDocument(html?: string) {
     );
     global.window = dom.window as any;
     global.document = dom.window.document;
+    global.Node = {
+        ELEMENT_NODE: 1,
+        DOCUMENT_NODE: 9,
+    } as any;
 
     // Workaround, because stuff which is in the global context in browser isn't when running in node
     const g = <any>global;

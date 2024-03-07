@@ -171,6 +171,7 @@ export class BeGone {
     private installMutationObserver(doc: Document) {
         try {
             if (doc.readyState !== "complete") {
+                // readystatechange counts as mutation, but we actually install a MutationObserver only after full load.
                 doc.addEventListener('readystatechange', () => {
                     if (doc.readyState !== "complete") {
                         return;
@@ -196,7 +197,16 @@ export class BeGone {
                 let insertedNodes = new Array<CharacterData>();
                 mutations.forEach((mutation: MutationRecord) => {
                     for (let i = 0; i < mutation.addedNodes.length; i++) {
-                        insertedNodes = insertedNodes.concat(this.textNodesUnder(mutation.addedNodes[i]));
+                        let node = mutation.addedNodes[i];
+                        insertedNodes = insertedNodes.concat(this.textNodesUnder(node));
+                        if (node.nodeType === Node.ELEMENT_NODE) {
+                            let shadowRoot = (node as Element).shadowRoot;
+                            if (shadowRoot) {
+                                console.log("Shadowroot", shadowRoot);
+                                insertedNodes.concat(this.textNodesUnder(shadowRoot));
+                            }
+                        }
+
                     }
                 });
                 this.entferneInserted(insertedNodes);
@@ -206,7 +216,7 @@ export class BeGone {
                 subtree: true,
                 // attributes needed for changeAllowedChecker
                 attributes: true,
-                characterData: false
+                characterData: false,
             });
         } catch (e) {
             console.error(e);
@@ -234,8 +244,13 @@ export class BeGone {
     /**
      * Supports iframes
      */
-    private textContentOf(doc: Document): string {
-        let bodyTextContent = doc.body.textContent ? doc.body.textContent : "";
+    private textContentOf(doc: Document | Element): string {
+        let bodyTextContent;
+        if (doc.nodeType == Node.DOCUMENT_NODE) {
+            bodyTextContent = (<Document>doc).body.textContent ? (<Document>doc).body.textContent : "";
+        } else {
+            bodyTextContent = doc.textContent || "";
+        }
         let iframes = Array.from(doc.getElementsByTagName("iframe")).map(getFrameDocument);
 
         let iframeDocs = iframes
@@ -244,12 +259,12 @@ export class BeGone {
         return bodyTextContent + iframeDocs;
     }
 
-    private probeDocument(doc: Document) {
+    private probeDocument(doc: Document | Element) {
         return this.probeDocumentContent(this.textContentOf(doc))
     }
 
 
-    private probeDocumentContent(bodyTextContent: string = this.textContentOf(document)):
+    private probeDocumentContent(bodyTextContent: string):
         {
             probeBinnenI: boolean,
             probeRedundancy: boolean,
@@ -358,7 +373,7 @@ export class BeGone {
         }
     }
 
-    public entferneInitial(doc: Document = document): void {
+    public entferneInitial(doc: Document | Element = document): void {
         this.log("entferneInitial")
         const probeResult = this.probeDocument(doc)
 
@@ -386,6 +401,15 @@ export class BeGone {
                 this.sendCounttoBackgroundScript();
             }
         }
+
+        for (let iframe of doc.getElementsByTagName("iframe")) {
+            this.entferneInitial(getFrameDocument(iframe));
+        }
+
+        /*******************************************************************************
+         */
+        this.observeShadowDom()
+
     }
 
     public entferneInitialForTesting(s: string): string {
@@ -457,6 +481,55 @@ export class BeGone {
             countPartizipreplacements: this.replacer.replacementsPartizip,
             type: "count"
         } as CountRequest);
+    }
+
+    private observeShadowDom() {
+        function injectScript() {
+            // The mutation-observer cannot see shadow-root-creations.
+            // It sees attribute-creations, though. We wrap attachShadow, to create an attribute on shadowRoot creation.
+            // Then, we can watch for this attribute.
+            const scriptContent = `
+        (function() {
+            const originalAttachShadow = Element.prototype.attachShadow;
+            Element.prototype.attachShadow = function(init) {
+                this.setAttribute("shadow-root-attached", "true");
+                console.log('Shadow root attached to', this);
+                return originalAttachShadow.apply(this, arguments);
+            };
+        })();
+    `;
+
+            const script = document.createElement('script');
+            script.textContent = scriptContent;
+            (document.head || document.documentElement).appendChild(script);
+            script.remove();
+        }
+
+        // Call the injection function
+        injectScript(); // TODO: shadow dom inside iframes, need an injeci in eaxh
+
+        // Now we can observe attribute changes in our content script
+        const observer = new MutationObserver((mutationsList, observer) => {
+            for (const mutation of mutationsList) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'shadow-root-attached') {
+                    let el = mutation.target;
+                    if ((el as any).shadowRoot) {
+                        let s = (el as Element).shadowRoot!!;
+                        console.log('Shadow root attached detected:', s, this.textNodesUnder(s));
+                        this.entferneInserted(this.textNodesUnder(s));
+
+                        // TODO: iframes inside shadow-dom...
+                    }
+
+                }
+            }
+        });
+
+        observer.observe(document.body, {
+            attributes: true,
+            subtree: true,
+            attributeFilter: ['shadow-root-attached']
+        });
     }
 }
 

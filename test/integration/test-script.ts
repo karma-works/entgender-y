@@ -1,4 +1,4 @@
-import {generateTableRows} from "./inject-test-data";
+import {generateTableRows, generateTableRowsUsingShadowDom} from "./inject-test-data";
 
 console.log("Test-script start..");
 
@@ -24,6 +24,9 @@ function checkValue() {
         let expected = element.getAttribute("x-expected");
         let original = element.getAttribute("x-original");
         let actual = element.textContent;
+        if ((element.firstChild as Element)?.shadowRoot) {
+            actual = (element.firstChild as Element)?.shadowRoot!!.textContent;
+        }
         let success = expected == actual;
         if (success) {
             setClassOk(element);
@@ -47,6 +50,8 @@ function checkValue() {
 
 if (document.location.href.endsWith("static.html")) {
     console.log("Static html test");
+} else if (new URLSearchParams(window.location.search).get("useShadow")){
+    generateTableRowsUsingShadowDom();
 } else {
     generateTableRows();
 }
