@@ -28,7 +28,7 @@
       "browser_style": true
    },
    "permissions": [ "storage" ],
-   "version": "2024.3.6",
+   "version": "2024.3.7",
    "browser_specific_settings": {
       "gecko": {
           "id": "{30898332-4708-909f-6f1b-54df9c17269a}"

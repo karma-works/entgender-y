@@ -26,13 +26,29 @@ class BeGoneSettingsHelper {
         return settings.filterliste === "Blacklist";
     }
 
-    public static whiteliststring(settings: BeGoneSettings): string {
-        return settings.whitelist ? settings.whitelist.replace(/(\r\n|\n|\r)/gm, "|") : "";
+    public static whitelistRegexp(settings: BeGoneSettings): RegExp {
+        try {
+            let res = urlFilterListToRegex(settings.whitelist);
+            res.test("test");
+            return res;
+        } catch (e) {
+            return RegExp("");
+        }
     }
 
-    public static blackliststring(settings: BeGoneSettings): string {
-        return settings.blacklist ? settings.blacklist.replace(/(\r\n|\n|\r)/gm, "|") : "";
+    public static blacklistRegexp(settings: BeGoneSettings): RegExp {
+        try {
+            let res = urlFilterListToRegex(settings.blacklist);
+            res.test("test");
+            return res;
+        } catch (e) {
+            return RegExp("^_matches_nothing_$");
+        }
     }
+}
+
+function getFrameDocument(iframe: HTMLIFrameElement) {
+    return iframe.contentDocument || iframe.contentWindow?.document;
 }
 
 export class BeGone {
@@ -43,14 +59,24 @@ export class BeGone {
     // TODO: umbauen, dies sollte ein boolean sein, sonst geht es kaputt wenn jemand ein neues ResponseType einführt
     private mtype: ResponseType | undefined = undefined;
 
-    private replacer: SchreibAlternative = new Phettberg();
+    private replacer: SchreibAlternative;
     private readonly changeHighlighter = new ChangeHighlighter();
     private readonly changeAllowedChecker = new ChangeAllowedChecker();
+
+    constructor(replacer: SchreibAlternative = new Phettberg(), settings?: BeGoneSettings) {
+        this.replacer = replacer;
+        if (settings) {
+            this.settings = settings;
+        }
+    }
 
     private log(...s: any[]) {
         ifDebugging && console.log("BG", ...s, "\n" + stackToBeGone(1).join("\n"));
     }
 
+    /**
+     * supports iframes
+     */
     private textNodesUnder(el: Node): Array<CharacterData> {
         this.log("textNodesUnder", el);
         let n, a = new Array<CharacterData>();
@@ -65,7 +91,7 @@ export class BeGone {
                 if (shouldNotBeChanged(node)) {
                     return NodeFilter.FILTER_REJECT;
                 }
-                //Nur Nodes erfassen, deren Inhalt ungefähr zur späteren Verarbeitung passt
+                    //Nur Nodes erfassen, deren Inhalt ungefähr zur späteren Verarbeitung passt
                 // fahrende|ierende|Mitarbeitende|Forschende
                 else if (/\b(und|oder|bzw)|[a-zA-ZäöüßÄÖÜ][\/\*.&_·:\(]-?[a-zA-ZäöüßÄÖÜ]|[a-zäöüß\(_\*:\.][iI][nN]|nE\b|r[MS]\b|e[NR]\b|ierten?\b|enden?\b|flüch/.test(node.textContent)) {
                     return NodeFilter.FILTER_ACCEPT;
@@ -74,7 +100,7 @@ export class BeGone {
             //this.log("Rejected b", node, node.textContent);
             return NodeFilter.FILTER_REJECT;
         };
-        let walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {acceptNode: acceptNode});
+        let walk = (el.ownerDocument || (el as Document)).createTreeWalker(el, NodeFilter.SHOW_TEXT, {acceptNode: acceptNode});
         while (n = walk.nextNode() as CharacterData) {
             let nodeParent = n.parentNode;
             if (!nodeParent) {
@@ -92,6 +118,37 @@ export class BeGone {
                 }
             }
         }
+
+        let iframeTexts = this.textNodesInIframes(el);
+        if (iframeTexts.length > 0) {
+            a = a.concat(iframeTexts);
+        }
+
+        return a;
+    }
+
+    private textNodesInIframes(el: Node) {
+        let a = new Array<CharacterData>();
+        if (el.nodeType == Node.ELEMENT_NODE || el.nodeType == Node.DOCUMENT_NODE) {
+            // Check for and handle iframes - assume same-origin or permissions granted
+            let frames = (el as Element).getElementsByTagName('iframe');
+            for (let i = 0; i < frames.length; i++) {
+                try {
+                    let iframe = frames[i];
+                    // Recursively process the contentDocument of each iframe
+                    let frameDocument = getFrameDocument(iframe);
+                    if (frameDocument) {
+                        this.installMutationObserver(frameDocument);
+                        a = a.concat(this.textNodesUnder.call(this, frameDocument));
+                    }
+                } catch (error) {
+                    this.log("Error accessing iframe content:", error);
+                }
+            }
+        }
+        if (a.length > 0) {
+            this.log("iframe texgts", a)
+        }
         return a;
     }
 
@@ -103,55 +160,96 @@ export class BeGone {
         this.mtype = message.type;
         if (this.currentPageNotExcludedByWhitelistOrBlackList()) {
             //Entfernen bei erstem Laden der Seite
-            this.entferneInitial();
+            this.entferneInitial(document);
 
             //Entfernen bei Seitenänderungen
-            try {
-                const observer = new MutationObserver((mutations: MutationRecord[]) => {
-                    // Der changeAllowedChecker muss geupdated werden bevor entferneInserted(.) aufgerufen wird
-                    this.changeAllowedChecker.handleMutations(mutations);
-
-                    let insertedNodes = new Array<CharacterData>();
-                    mutations.forEach((mutation: MutationRecord) => {
-                        for (let i = 0; i < mutation.addedNodes.length; i++) {
-                            insertedNodes = insertedNodes.concat(this.textNodesUnder(mutation.addedNodes[i]));
-                        }
-                    });
-                    this.entferneInserted(insertedNodes);
-                });
-                observer.observe(document, {
-                    childList: true,
-                    subtree: true,
-                    // attributes needed for changeAllowedChecker
-                    attributes: true,
-                    characterData: false
-                });
-            } catch (e) {
-                console.error(e);
-                chrome.runtime.sendMessage({
-                    action: 'error',
-                    page: document.location.hostname,
-                    source: 'gendersprachekorrigieren.js',
-                    error: e
-                } as ErrorRequest);
-            }
+            this.installMutationObserver(document);
         }
     }
 
+
+    private installMutationObserver(doc: Document) {
+        try {
+            if (doc.readyState !== "complete") {
+                doc.addEventListener('readystatechange', () => {
+                    if (doc.readyState !== "complete") {
+                        return;
+                    }
+                    this.log('doc is fully loaded.', doc, doc.readyState);
+                    this.entferneInitial(doc);
+                    this.installMutationObserver(doc);
+                });
+                this.log("Incomplete load", doc, doc.readyState);
+                return;
+            }
+
+            if (doc.documentElement.dataset['entgendyinstalled']) {
+                return;
+            }
+            doc.documentElement.dataset['entgendyinstalled'] = "true";
+
+
+            const observer = new MutationObserver((mutations: MutationRecord[]) => {
+                // Der changeAllowedChecker muss geupdated werden bevor entferneInserted(.) aufgerufen wird
+                this.changeAllowedChecker.handleMutations(mutations);
+
+                let insertedNodes = new Array<CharacterData>();
+                mutations.forEach((mutation: MutationRecord) => {
+                    for (let i = 0; i < mutation.addedNodes.length; i++) {
+                        insertedNodes = insertedNodes.concat(this.textNodesUnder(mutation.addedNodes[i]));
+                    }
+                });
+                this.entferneInserted(insertedNodes);
+            });
+            observer.observe(doc, {
+                childList: true,
+                subtree: true,
+                // attributes needed for changeAllowedChecker
+                attributes: true,
+                characterData: false
+            });
+        } catch (e) {
+            console.error(e);
+            chrome.runtime.sendMessage({
+                action: 'error',
+                page: doc.location.hostname,
+                source: 'gendersprachekorrigieren.js',
+                error: e
+            } as ErrorRequest);
+        }
+    }
 
     private currentPageNotExcludedByWhitelistOrBlackList() {
         if (!BeGoneSettingsHelper.isWhitelist(this.settings) && !BeGoneSettingsHelper.isBlacklist(this.settings)) {
             // no filtering
             return true;
         }
-        if (BeGoneSettingsHelper.isWhitelist(this.settings) && RegExp(BeGoneSettingsHelper.whiteliststring(this.settings)).test(document.URL)) {
+        if (BeGoneSettingsHelper.isWhitelist(this.settings) && BeGoneSettingsHelper.whitelistRegexp(this.settings).test(document.URL)) {
             // White listed
             return true;
         }
-        return BeGoneSettingsHelper.isBlacklist(this.settings) && !RegExp(BeGoneSettingsHelper.blackliststring(this.settings)).test(document.URL);
+        return BeGoneSettingsHelper.isBlacklist(this.settings) && !BeGoneSettingsHelper.blacklistRegexp(this.settings).test(document.URL);
     }
 
-    private probeDocument(bodyTextContent: string = document.body.textContent ? document.body.textContent : ""):
+    /**
+     * Supports iframes
+     */
+    private textContentOf(doc: Document): string {
+        let bodyTextContent = doc.body.textContent ? doc.body.textContent : "";
+        let iframes = Array.from(doc.getElementsByTagName("iframe")).map(getFrameDocument);
+
+        let iframeDocs = iframes
+            .map(doc => doc && this.textContentOf(doc)).join(" -- ")
+        this.log("tco.iframes", iframes, iframeDocs, "#");
+        return bodyTextContent + iframeDocs;
+    }
+
+    private probeDocument(doc: Document) {
+        return this.probeDocumentContent(this.textContentOf(doc))
+    }
+
+
+    private probeDocumentContent(bodyTextContent: string = this.textContentOf(document)):
         {
             probeBinnenI: boolean,
             probeRedundancy: boolean,
@@ -160,6 +258,7 @@ export class BeGone {
             probeArtikelUndKontraktionen: boolean;
 
         } {
+        this.log("probeDocumentContent.bodyTextContent=", bodyTextContent);
         let probeBinnenI = false;
         let probeRedundancy = false;
         let probePartizip = false;
@@ -247,6 +346,7 @@ export class BeGone {
                 newText = modifyData(oldText);
             }
 
+            // this.log(node.data ,"!== ??", newText);
             if (node.data !== newText) {
                 if (this.settings.hervorheben) {
                     // highlight the changed words with some <span>
@@ -258,12 +358,12 @@ export class BeGone {
         }
     }
 
-    public entferneInitial(): void {
+    public entferneInitial(doc: Document = document): void {
         this.log("entferneInitial")
-        const probeResult = this.probeDocument()
+        const probeResult = this.probeDocument(doc)
 
         if (probeResult.probeBinnenI || this.settings.doppelformen && probeResult.probeRedundancy || this.settings.partizip && probeResult.probePartizip || probeResult.probeArtikelUndKontraktionen) {
-            let nodes = this.textNodesUnder(document)
+            let nodes = this.textNodesUnder(doc);
 
             if (this.settings.doppelformen && probeResult.probeRedundancy) {
                 this.applyToNodes(nodes, this.replacer.entferneDoppelformen);
@@ -289,7 +389,7 @@ export class BeGone {
     }
 
     public entferneInitialForTesting(s: string): string {
-        const probeResult = this.probeDocument(s)
+        const probeResult = this.probeDocumentContent(s)
 
         if (probeResult.probeBinnenI || this.settings.doppelformen && probeResult.probeRedundancy || this.settings.partizip && probeResult.probePartizip || this.settings.partizip && probeResult.probeGefluechtete || probeResult.probeArtikelUndKontraktionen) {
             if (this.settings.doppelformen && probeResult.probeRedundancy) {
@@ -329,6 +429,10 @@ export class BeGone {
 
             if (this.settings.partizip) {
                 this.applyToNodes(nodes, this.replacer.ersetzeGefluechteteDurchFluechtlinge);
+            }
+
+            if (true && this.replacer.ersetzeMaskulinum) { // TODO: config this.settings.maskulinum
+                this.applyToNodes(nodes, this.replacer.ersetzeMaskulinum);
             }
 
             this.applyToNodes(nodes, this.replacer.artikelUndKontraktionen);
