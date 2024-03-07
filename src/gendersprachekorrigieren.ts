@@ -18,10 +18,6 @@ export function urlFilterListToRegex(list: string | undefined): RegExp {
     return RegExp(list ? list.replace(/(\r\n|\n|\r)/gm, "|") : "");
 }
 
-export function urlFilterListToRegex(list: string | undefined): RegExp {
-    return RegExp(list ? list.replace(/(\r\n|\n|\r)/gm, "|") : "");
-}
-
 class BeGoneSettingsHelper {
     public static isWhitelist(settings: BeGoneSettings): boolean {
         return settings.filterliste === "Whitelist";
