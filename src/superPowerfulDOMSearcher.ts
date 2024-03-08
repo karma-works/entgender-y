@@ -1,7 +1,7 @@
 import {ifDebugging} from "./logUtil";
 
 /**
- * This package provides tool to traverse / observe all iframes and the shadowDom,
+ * This package provides tool to traverse / observe all iframes, objects, embed and the shadowDom,
  * which are otherwise not traversed by MutationObserver, querySelectorAll, createTreeWalker()...
  */
 export class SuperPowerfulMutationObserver {
@@ -42,36 +42,36 @@ export class SuperPowerfulMutationObserver {
         this.observeNestedElements(shadowRoot);
     }
 
-    private observeIframeContent(iframe: HTMLIFrameElement) {
+    private observeExternalContent(extContent: HTMLIFrameElement | HTMLObjectElement | HTMLEmbedElement) {
         try {
-            const documentElement = iframe.contentWindow?.document;
+            const documentElement = innerElementContentDocument(extContent);
             if (documentElement) {
                 this.observeDocumentElement(documentElement);
             }
             const observeOnLoad = () => {
                 try {
-                    const documentElement = iframe.contentDocument;
+                    const documentElement = innerElementContentDocument(extContent);
                     if (documentElement) {
                         this.observeDocumentElement(documentElement);
                         this.emitCustomMutationRecord([documentElement]);
-                        console.info("iframe onload triggered", documentElement)
+                        console.info("extContent onload triggered", documentElement)
                     } else {
-                        console.warn("iframe onload without document")
+                        console.warn("extContent onload without document")
                     }
                 } catch (e) {
-                    console.warn("Can't access iframe content:", e);
+                    console.warn("Can't access extContent content:", e);
                 }
             };
 
-            // Listen to 'load' events on the iframe to handle navigation/reloads.
-            iframe.addEventListener('load', observeOnLoad);
+            // Listen to 'load' events on the extContent to handle navigation/reloads.
+            extContent.addEventListener('load', observeOnLoad);
         } catch (e) {
-            console.warn("Can't access iframe content:", e);
+            console.warn("Can't access extContent content:", e);
         }
     }
 
     /**
-     * Used for iframes an root document
+     * Used for iframes, objects and root document
      */
     private observeDocumentElement(documentElement: Document) {
         if (documentElement.readyState !== "complete") {
@@ -102,7 +102,7 @@ export class SuperPowerfulMutationObserver {
         this.observeShadowAttributeChanges(documentElement);
     }
 
-    private emitCustomMutationRecord(nodes: Array<ShadowRoot|Document>) {
+    private emitCustomMutationRecord(nodes: Array<ShadowRoot | Document>) {
         if (!(this.config.childList && this.config.subtree)) {
             console.log("emitCustomMutationRecord.Ignore shadow roots")
             return;
@@ -129,8 +129,8 @@ export class SuperPowerfulMutationObserver {
     }
 
     private observeNestedElements(root: Document | ShadowRoot) {
-        root.querySelectorAll('iframe').forEach((iframe) => {
-            this.observeIframeContent(iframe);
+        root.querySelectorAll('iframe, object, embed').forEach((extContent) => {
+            this.observeExternalContent(extContent as (HTMLObjectElement | HTMLIFrameElement | HTMLEmbedElement));
         });
 
         //let walker = new SuperPowerfulTreeWalker<Element>(root, NodeFilter.SHOW_ELEMENT);
@@ -176,6 +176,24 @@ export class SuperPowerfulMutationObserver {
 
 }
 
+function innerElementContentDocument(n: Element) {
+    let innerContent: Document | null = null;
+    try {
+        switch (n.nodeName) {
+            case "IFRAME":
+            case "OBJECT":
+                innerContent = (n as HTMLIFrameElement).contentDocument;
+                break;
+            case  "EMBED":
+                innerContent = (n as HTMLEmbedElement).getSVGDocument();
+                break;
+        }
+    } catch (e) {
+        console.warn("Access to inner content failed:", e);
+    }
+    return innerContent;
+}
+
 export class SuperPowerfulTreeWalker<T extends Node> {
     private readonly root: Node;
     private readonly whatToShow: number;
@@ -211,17 +229,10 @@ export class SuperPowerfulTreeWalker<T extends Node> {
             if (n.shadowRoot) {
                 yield* this.internalWalk(n.shadowRoot!!);
             }
-
-            if (n.nodeName === "IFRAME") {
-                try {
-                    const iframeContent = (n as HTMLIFrameElement).contentDocument;
-                    if (iframeContent) {
-                        console.log("Walking iframeContent", iframeContent);
-                        yield* this.internalWalk(iframeContent);
-                    }
-                } catch (e) {
-                    console.warn("Access to iframe content failed:", e);
-                }
+            let innerContent = innerElementContentDocument(n);
+            if (innerContent) {
+                console.log("Walking innerContent", innerContent);
+                yield* this.internalWalk(innerContent);
             }
         }
     }

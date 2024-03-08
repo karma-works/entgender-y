@@ -72,7 +72,7 @@ export class BeGone {
     }
 
     /**
-     * supports iframes
+     * Supports iframes and shadowRoots (using SuperPowerfulTreeWalker)
      */
     private textNodesUnder(el: Node): Array<CharacterData> {
         this.log("textNodesUnder", el);
