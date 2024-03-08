@@ -54,7 +54,7 @@ export class ChangeHighlighter {
             }
         };
 
-        ifDebugging && ifDebugging.log("changes=" + newText, changes);
+        ifDebugging?.log("changes=" + newText, changes);
 
         // Process each change to construct new nodes reflecting the text updates.
         for (let changeId = 0; changeId < changes.length; changeId++) {

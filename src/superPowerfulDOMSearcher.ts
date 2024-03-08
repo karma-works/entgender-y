@@ -1,5 +1,8 @@
+import {ifDebugging} from "./logUtil";
+
 /**
- * This mutation observer wrapper is intended to observe all nested iframes and the shadowDom
+ * This package provides tool to traverse / observe all iframes and the shadowDom,
+ * which are otherwise not traversed by MutationObserver, querySelectorAll, createTreeWalker()...
  */
 export class SuperPowerfulMutationObserver {
     private readonly callback: MutationCallback;
@@ -12,6 +15,11 @@ export class SuperPowerfulMutationObserver {
         this.config = config;
     }
 
+    /**
+     * Because we can't put a MutationObserver on shadowRoot creation,
+     *   we override attachShadow(), to let it add an attribute 'data-shadowrootattached' as a side-effect.
+     * This is a mutation that we can observe using a regular MutationObserver, see observeShadowAttributeChanges()
+     */
     private injectShadowRootObserverScript(targetDocument: Document) {
         const scriptContent = `
             (function() {
@@ -80,7 +88,7 @@ export class SuperPowerfulMutationObserver {
                 this.injectShadowRootObserverScript(documentElement);
                 this.observeShadowAttributeChanges(documentElement);
 
-                // We assume the content was unknown before, and trigger a custom MutationRecord
+                // We assume the content was unknown before completion, and trigger a custom MutationRecord
                 this.emitCustomMutationRecord([documentElement]);
             });
             return;
@@ -94,13 +102,13 @@ export class SuperPowerfulMutationObserver {
         this.observeShadowAttributeChanges(documentElement);
     }
 
-    private emitCustomMutationRecord(shadowRoots: Array<ShadowRoot|Document>) {
+    private emitCustomMutationRecord(nodes: Array<ShadowRoot|Document>) {
         if (!(this.config.childList && this.config.subtree)) {
             console.log("emitCustomMutationRecord.Ignore shadow roots")
             return;
         }
 
-        const mutationRecordArray: MutationRecord[] = shadowRoots.map(root => {
+        const mutationRecordArray: MutationRecord[] = nodes.map(root => {
             return {
                 type: 'childList',
                 target: root,
@@ -114,7 +122,7 @@ export class SuperPowerfulMutationObserver {
             };
         }) as unknown[] as MutationRecord[]
 
-        console.log("emitCustomMutationRecord.mutationRecordArray=", mutationRecordArray);
+        ifDebugging?.log("emitCustomMutationRecord.mutationRecordArray=", mutationRecordArray);
 
         // Emit the event with the virtual mutation record
         this.callback(mutationRecordArray, this.observer);

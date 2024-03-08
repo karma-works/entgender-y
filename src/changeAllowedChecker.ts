@@ -1,3 +1,5 @@
+import {ifDebugging} from "./logUtil";
+
 /**
  * Klasse zur prüfung of ein Element vom Nutzer editierbar ist.
  * Editierbare elemente sollen nicht vom Addon verändert werden.
@@ -43,10 +45,10 @@ export class ChangeAllowedChecker {
                     let node = mutation.target;
                     if (this.isEditable(node)) {
                         this.editableElements.add(node)
-                        console.log("Added.a", node, this.editableElements);
+                        ifDebugging?.log("Added.a", node, this.editableElements);
                     } else {
                         if (this.editableElements.delete(node)) {
-                            console.log("Removed.a", node, this.editableElements);
+                            ifDebugging?.log("Removed.a", node, this.editableElements);
                         }
                     }
                 }
