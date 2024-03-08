@@ -9,8 +9,13 @@ import {
     ResponseType
 } from "./control/control-api";
 import {SchreibAlternative} from "./schreibalternativen/alternative";
+import {ChangeHighlighter} from "./ChangeHighlighter";
 import {ChangeAllowedChecker} from "./changeAllowedChecker";
 import {ifDebugging, stackToBeGone} from "./logUtil";
+
+export function urlFilterListToRegex(list: string | undefined): RegExp {
+    return RegExp(list ? list.replace(/(\r\n|\n|\r)/gm, "|") : "");
+}
 
 class BeGoneSettingsHelper {
     public static isWhitelist(settings: BeGoneSettings): boolean {
@@ -39,6 +44,7 @@ export class BeGone {
     private mtype: ResponseType | undefined = undefined;
 
     private replacer: SchreibAlternative = new Phettberg();
+    private readonly changeHighlighter = new ChangeHighlighter();
     private readonly changeAllowedChecker = new ChangeAllowedChecker();
 
     private log(...s: any[]) {
@@ -242,11 +248,12 @@ export class BeGone {
             }
 
             if (node.data !== newText) {
-                /*
-                 TODO: consider highlighting the changed words (something like a git diff) with some <span>
-                 Maybe https://www.npmjs.com/package/diff with Diff.diffWords
-                 */
-                node.data = newText;
+                if (this.settings.hervorheben) {
+                    // highlight the changed words with some <span>
+                    this.changeHighlighter.apply(node, newText, this.settings.hervorheben_style);
+                } else {
+                    node.data = newText;
+                }
             }
         }
     }

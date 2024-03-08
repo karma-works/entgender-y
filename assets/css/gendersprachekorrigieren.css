@@ -1,0 +1,15 @@
+
+span.entgendy-change  {
+    cursor: help;
+    position: relative;
+}
+span.entgendy-change[style*=engendy-mode-nb]::before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    left: 0;
+    height: 5px;
+    border-radius: 2px;
+    background: linear-gradient(111.3deg, #ff3 20%, #fff 40%, #95d 60%, #222 90%); /* yellow white purple black */
+}

@@ -7,4 +7,6 @@ export interface SchreibAlternative {
     entferneDoppelformen: (s: string) => string;
     entfernePartizip: (s: string) => string;
     ersetzeGefluechteteDurchFluechtlinge: (s: string) => (string);
+    // Ziel potenziell irgendwann auch das normale Maskulinum zu ersetzen in der bevorzugten Schreibweise.
+    ersetzeMaskulinum?: (s: string) => (string);
 }

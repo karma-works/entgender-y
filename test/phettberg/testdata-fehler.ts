@@ -74,6 +74,9 @@ export function insertDataOfFailingTestsInto(replacementTestStrings: TestDataTyp
             "SCHÜLY"
         ],
         [
+            "Leser’innen", "Lesys"
+        ],
+        [
             'soft hyphens Schüler­Innen auf dem Bürger­steig',
             'soft hyphens Schülys auf dem Bürger­steig'
         ],
@@ -144,6 +147,10 @@ export function insertDataOfFailingTestsInto(replacementTestStrings: TestDataTyp
         [
             "Bürgermeisterinnen o. Bürgermeister",
             "Bürgermeistys"
+        ],
+        [
+            "gemeinsam mit einer Trägerin oder einem Träger",
+            "gemeinsam mit einem Trägy" // Falsch "gemeinsam das Trägy"
         ],
     ); // End doppel
 

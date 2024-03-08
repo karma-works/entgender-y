@@ -255,6 +255,10 @@ replacementTestStrings.push(
         "diese_diesen",
         "diesen"
     ],
+    [
+        "von Migrant*innenselbstorganisationen",
+        "von Migrantysselbstorganisationen"
+    ]
     /*
     [
         "Gegenüber zwei ÜbertreterInnen",

@@ -8,11 +8,13 @@ export interface BeGoneSettings {
     whitelist?: string;
     blacklist?: string;
     counter?: boolean;
+    hervorheben?: boolean;
+    hervorheben_style?: string;
     filterliste?: FilterType;
 }
 
 export interface Settings extends BeGoneSettings {
-    // TODO: wieso wird das nur in options benutzt?
+    // Wird nur in options benutzt (ist für Icons)
     invertiert: boolean,
 }
 
