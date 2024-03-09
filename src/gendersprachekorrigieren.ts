@@ -76,7 +76,7 @@ export class BeGone {
      */
     private textNodesUnder(el: Node): Array<CharacterData> {
         this.log("textNodesUnder", el);
-        let n, a = new Array<CharacterData>();
+        let resultArray = new Array<CharacterData>();
         let shouldNotBeChanged = this.changeAllowedChecker.shouldNotBeChanged;
         let acceptNode = (node: Node) => {
             //Nodes mit weniger als 5 Zeichen nicht filtern
@@ -90,7 +90,7 @@ export class BeGone {
                 }
                 // Nur Nodes erfassen, deren Inhalt ungefähr zur späteren Verarbeitung passt
                 // fahrende|ierende|Mitarbeitende|Forschende
-                else if (/\b(und|oder|bzw)|[a-zA-ZäöüßÄÖÜ][\/\*.&_·:\(]-?[a-zA-ZäöüßÄÖÜ]|[a-zäöüß\(_\*:\.][iI][nN]|nE\b|r[MS]\b|e[NR]\b|ierten?\b|enden?\b|flüch/.test(node.textContent)) {
+                else if (/\b(und|oder|bzw)|[a-zA-ZäöüßÄÖÜ][\/*.&_·:(]-?[a-zA-ZäöüßÄÖÜ]|[a-zäöüß(_*:.][iI][nN]|nE\b|r[MS]\b|e[NR]\b|ierten?\b|enden?\b|flüch/.test(node.textContent)) {
                     return NodeFilter.FILTER_ACCEPT;
                 }
             }
@@ -98,32 +98,32 @@ export class BeGone {
             return NodeFilter.FILTER_REJECT;
         };
 
-        let walk = new SuperPowerfulTreeWalker<CharacterData>(el, NodeFilter.SHOW_TEXT, acceptNode,
+        const walker = new SuperPowerfulTreeWalker<CharacterData>(el, NodeFilter.SHOW_TEXT, acceptNode,
             (node) => {
                 if (shouldNotBeChanged(node)) {
                     return NodeFilter.FILTER_REJECT;
                 }
                 return NodeFilter.FILTER_ACCEPT;
             });
-        for (let n of walk) {
-            let nodeParent = n.parentNode;
+        for (let charData of walker) {
+            let nodeParent = charData.parentNode;
             if (!nodeParent) {
-                a.push(n);
+                resultArray.push(charData);
             } else if (!this.isHTMLFormattingNodeName(nodeParent.nodeName)) {
-                a.push(n);
+                resultArray.push(charData);
             } else {
-                // we've got a text node that will probably need context to be analyzed (like an word highlighted with a <mark> tag) - save the context nodes as well
+                // we've got a text node that will probably need context to be analyzed (like a word highlighted with a <mark> tag) - save the context nodes as well
                 if (nodeParent.previousSibling && nodeParent.previousSibling.nodeType === 3) {
-                    a.push(nodeParent.previousSibling as CharacterData);
+                    resultArray.push(nodeParent.previousSibling as CharacterData);
                 }
-                a.push(n);
+                resultArray.push(charData);
                 if (nodeParent.nextSibling && nodeParent.nextSibling.nodeType === 3) {
-                    a.push(nodeParent.nextSibling as CharacterData);
+                    resultArray.push(nodeParent.nextSibling as CharacterData);
                 }
             }
         }
 
-        return a;
+        return resultArray;
     }
 
     public handleResponse(message: Response) {
@@ -157,9 +157,7 @@ export class BeGone {
                 });
                 this.entferneInserted(insertedNodes);
             };
-            const observer = new MutationObserver(callback);
-
-            let superObserver = new SuperPowerfulMutationObserver(callback, {
+            const superObserver = new SuperPowerfulMutationObserver(callback, {
                 childList: true,
                 subtree: true,
                 // attributes needed for changeAllowedChecker
@@ -229,8 +227,9 @@ export class BeGone {
         let probeArtikelUndKontraktionen = false;
 
         if (!this.settings.skip_topic || this.settings.skip_topic && this.mtype || this.settings.skip_topic && !/Binnen-I|Geflüchtete/.test(bodyTextContent)) {
-            probeBinnenI = /[a-zäöüß]{2}((\/-?|_|\*|:|\.|\u00b7| und -)?In|(\/-?|_|\*|:|\.|\u00b7| und -)in(n[\*|\.]en)?|(\/-?|_|\*|:|\.|\u00b7)ze||(\/-?|_|\*|:|\.|\u00b7)a|(\/-?|_|\*|:|\.|\u00b7)nja|INNen|\([Ii]n+(en\)|\)en)?|\/inne?)(?!(\w{1,2}\b)|[A-Z]|[cf]o|t|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)|[A-ZÄÖÜß]{3}(\/-?|_|\*|:|\.)IN\b|(der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(])/.test(bodyTextContent);
-            probeArtikelUndKontraktionen = /[a-zA-ZäöüßÄÖÜ][\/\*.&_\(]-?[a-zA-ZäöüßÄÖÜ]/.test(bodyTextContent) || /der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(]-?e?r\b|em?\(e?r\)\b/.test(bodyTextContent);
+            // TODO: bug probeBinnenI enthält "||", was alles matcht. Wenn man es entfernt, gehen paar tests nicht mehr
+            probeBinnenI = /[a-zäöüß]{2}((\/-?|_|\*|:|\.|\u00b7| und -)?In|(\/-?|_|\*|:|\.|\u00b7| und -)in(n[*|.]en)?|(\/-?|_|\*|:|\.|\u00b7)ze||(\/-?|_|\*|:|\.|\u00b7)a|(\/-?|_|\*|:|\.|\u00b7)nja|INNen|\([Ii]n+(en\)|\)en)?|\/inne?)(?!(\w{1,2}\b)|[A-Z]|[cf]o|t|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)|[A-ZÄÖÜß]{3}(\/-?|_|\*|:|\.)IN\b|(der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/*.&_(])/.test(bodyTextContent);
+            probeArtikelUndKontraktionen = /[a-zA-ZäöüßÄÖÜ][\/*.&_(]-?[a-zA-ZäöüßÄÖÜ]/.test(bodyTextContent) || /der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/*.&_(]-?e?r\b|em?\(e?r\)\b/.test(bodyTextContent);
 
             if (this.settings.doppelformen) {
                 probeRedundancy = /\b(und|oder|bzw)\b/.test(bodyTextContent);
@@ -288,7 +287,7 @@ export class BeGone {
             let newText = oldText;
 
             const parentNodeName = node.parentNode ? node.parentNode.nodeName.toLowerCase() : "";
-            // special treatment of HTML nodes that are only there for formatting; those might tear a word out of it's context which is important for correcting
+            // special treatment of HTML nodes that are only there for formatting; those might tear a word out of its context which is important for correcting
             if (this.isHTMLFormattingNodeName(parentNodeName)) {
                 // this word needs to be replaced in context
                 let oldTextInContext = (i > 0 ? textnodes[i - 1].data : "") + "\f" + oldText + "\f" + (i < textnodes.length - 1 ? textnodes[i + 1].data : "");

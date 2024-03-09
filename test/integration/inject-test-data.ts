@@ -20,7 +20,6 @@ function quoteattr(s: string, preserveCR: boolean = false) {
         */
         .replace(/\r\n/g, preserveCRS) /* Must be before the next replacement. */
         .replace(/[\r\n]/g, preserveCRS);
-    ;
 }
 
 export function generateTableRows() {
@@ -52,7 +51,7 @@ export function generateTableRowsUsingShadowDom() {
     setTimeout(() => {
         // Now, for each .observe-element, create a shadow root and append the content
         document.querySelectorAll('.observe-element > div').forEach((element) => {
-            let shadow = element.attachShadow({mode: 'open'});
+            let shadow = element.attachShadow({mode: 'closed'});
             let content = element.parentElement!!.getAttribute('x-original');
 
             shadow.innerHTML = `<span>${content}</span>`;

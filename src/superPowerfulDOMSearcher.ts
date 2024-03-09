@@ -1,11 +1,15 @@
-import {ifDebugging} from "./logUtil";
+import {ifDebugging, isBrowser} from "./logUtil";
 
 
-type ShadowRootListener = (root: ShadowRoot) => void;
+function shadowRoot(element: Element): ShadowRoot | null {
+    return (element as any).openOrClosedShadowRoot || element.shadowRoot
+}
+
+export type ShadowRootListener = (root: ShadowRoot) => void;
 
 /**
  * Listens to shadom dom. Does NOT recurse into inner frames/object/embed.
- * Does recurse into nested ShadowRoots.
+ * Does recurse into nested ShadowRoots within the document.
  */
 export class ShadowDomList implements Iterable<ShadowRoot> {
     private nodesContainingShadowRoot: Set<Element> = new Set();
@@ -22,19 +26,21 @@ export class ShadowDomList implements Iterable<ShadowRoot> {
     }
 
     private constructor(root: Document) {
-        const attributeObserver = new MutationObserver((mutationsList) => {
+        this.observer = new MutationObserver((mutationsList) => {
             for (let mutation of mutationsList) {
-                if (mutation.type === 'attributes' && mutation.attributeName === 'data-shadowrootattached') {
+                if (mutation.type === 'attributes' &&
+                    mutation.attributeName === 'data-shadowrootattached' &&
+                    mutation.oldValue !== 'true') {
                     const targetElem = mutation.target as Element;
                     if (targetElem.shadowRoot) {
                         this.addElement(targetElem);
                     } else {
                         // should be impossible
                     }
+                    targetElem.removeAttribute('data-shadowrootattached');
                 }
             }
         });
-        this.observer = attributeObserver;
 
         this.crawlAndObserve(root);
         this.injectShadowRootObserverScript(root);
@@ -45,9 +51,11 @@ export class ShadowDomList implements Iterable<ShadowRoot> {
         this.listeners.forEach(l => l(el.shadowRoot!!))
     }
 
-    public addListener(listener: ShadowRootListener) {
-        this.nodesContainingShadowRoot.forEach(elem => listener(elem.shadowRoot!!));
+    public addListener(listener: ShadowRootListener, emitInitial: boolean = true) {
         this.listeners.add(listener);
+        if (emitInitial) {
+            this.nodesContainingShadowRoot.forEach(elem => listener(elem.shadowRoot!!));
+        }
     }
 
     public removeListener(listener: ShadowRootListener) {
@@ -60,7 +68,7 @@ export class ShadowDomList implements Iterable<ShadowRoot> {
         }
     }
 
-    private crawlAndObserve(root: Document | ShadowRoot) {
+    private crawlAndObserve(root: Document | DocumentFragment) {
         // Initial crawl to find existing shadow roots.
         const allElements = root.querySelectorAll('*');
         allElements.forEach(elem => {
@@ -76,29 +84,32 @@ export class ShadowDomList implements Iterable<ShadowRoot> {
 
     /**
      * Because we can't put a MutationObserver on shadowRoot creation,
-     *   we override attachShadow(), to let it add an attribute 'data-shadowrootattached' as a side-effect.
+     *   we override attachShadow(), to let it add an attribute 'data-shadowrootattached' as a side effect.
      * This is a mutation that we can observe using a regular MutationObserver, see observeShadowAttributeChanges()
      */
     private injectShadowRootObserverScript(targetDocument: Document) {
+        // Note: we also force the attachShadow() to be in open mode
         const scriptContent = `
             (function() {
                 const originalAttachShadow = Element.prototype.attachShadow;
                 Element.prototype.attachShadow = function(init) {
+                    init.mode = 'open';
                     const shadowRoot = originalAttachShadow.apply(this, arguments);
                     this.setAttribute('data-shadowrootattached', 'true');
                     return shadowRoot;
                 };
             })();
         `;
-        const script = targetDocument.createElement('script');
+        const script = targetDocument.createElement('script');#
         script.textContent = scriptContent;
         (targetDocument.head || targetDocument.documentElement).appendChild(script);
         script.remove();
     }
 
-    private observeShadowAttributeChanges(root: Document | ShadowRoot) {
+    private observeShadowAttributeChanges(root: Document | DocumentFragment) {
         this.observer.observe(root, {
             attributes: true,
+            attributeOldValue: true,
             subtree: true,
             attributeFilter: ['data-shadowrootattached']
         });
