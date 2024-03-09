@@ -19,7 +19,7 @@ In IntelliJ kann es unter "Extra mocha options" gesetzt werden.
 
 # Infos zur package-json
 `web-ext run` (starten von firefox) hat ein `--devtools` parameter, dass das gleiche tut wie
-`--start-url 'about:devtools-toolbox?id={30898332-4708-909f-6f1b-54df9c17269a}&type=extension'`, außer dass es in einem extra fenster öffnet.
+`--start-url 'about:devtools-toolbox?id={6f98cc7a-c54e-11eb-9294-274a647be4e6}&type=extension'`, außer dass es in einem extra fenster öffnet.
 
 # web-ext
 npm install --global web-ext

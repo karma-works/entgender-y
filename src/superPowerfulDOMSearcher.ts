@@ -2,11 +2,15 @@ import {ifDebugging} from "./logUtil";
 
 // Same as element.shadowRootOf, but works for closed shadowDom
 const shadowRootOf: ((e: Element) => ShadowRoot | null) = (() => {
-    if (chrome?.dom?.openOrClosedShadowRoot) {
-        // Chrome version
-        return function shadowRoot(element: Element): ShadowRoot | null {
-            return chrome.dom.openOrClosedShadowRoot(element as HTMLElement);
+    try {
+        // @ts-ignore
+        if (window?.chrome?.dom?.openOrClosedShadowRoot) {
+            // Chrome version
+            return function shadowRoot(element: Element): ShadowRoot | null {
+                return chrome.dom.openOrClosedShadowRoot(element as HTMLElement);
+            }
         }
+    } catch (e) {
     }
     // firefox version
     return function shadowRoot(element: Element): ShadowRoot | null {
