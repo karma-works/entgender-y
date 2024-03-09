@@ -1,9 +1,18 @@
-import {ifDebugging, isBrowser} from "./logUtil";
+import {ifDebugging} from "./logUtil";
 
-
-function shadowRoot(element: Element): ShadowRoot | null {
-    return (element as any).openOrClosedShadowRoot || element.shadowRoot
-}
+// Same as element.shadowRootOf, but works for closed shadowDom
+const shadowRootOf: ((e: Element) => ShadowRoot | null) = (() => {
+    if (chrome?.dom?.openOrClosedShadowRoot) {
+        // Chrome version
+        return function shadowRoot(element: Element): ShadowRoot | null {
+            return chrome.dom.openOrClosedShadowRoot(element as HTMLElement);
+        }
+    }
+    // firefox version
+    return function shadowRoot(element: Element): ShadowRoot | null {
+        return (element as any).openOrClosedShadowRoot || element.shadowRoot;
+    }
+})();
 
 export type ShadowRootListener = (root: ShadowRoot) => void;
 
@@ -32,7 +41,7 @@ export class ShadowDomList implements Iterable<ShadowRoot> {
                     mutation.attributeName === 'data-shadowrootattached' &&
                     mutation.oldValue !== 'true') {
                     const targetElem = mutation.target as Element;
-                    if (targetElem.shadowRoot) {
+                    if (shadowRootOf(targetElem)) {
                         this.addElement(targetElem);
                     } else {
                         // should be impossible
@@ -48,13 +57,13 @@ export class ShadowDomList implements Iterable<ShadowRoot> {
 
     private addElement(el: Element) {
         this.nodesContainingShadowRoot.add(el);
-        this.listeners.forEach(l => l(el.shadowRoot!!))
+        this.listeners.forEach(l => l(shadowRootOf(el)!!))
     }
 
     public addListener(listener: ShadowRootListener, emitInitial: boolean = true) {
         this.listeners.add(listener);
         if (emitInitial) {
-            this.nodesContainingShadowRoot.forEach(elem => listener(elem.shadowRoot!!));
+            this.nodesContainingShadowRoot.forEach(elem => listener(shadowRootOf(elem)!!));
         }
     }
 
@@ -64,7 +73,7 @@ export class ShadowDomList implements Iterable<ShadowRoot> {
 
     * [Symbol.iterator](): Iterator<ShadowRoot> {
         for (let elem of this.nodesContainingShadowRoot) {
-            yield elem.shadowRoot!!;
+            yield shadowRootOf(elem)!!;
         }
     }
 
@@ -72,9 +81,10 @@ export class ShadowDomList implements Iterable<ShadowRoot> {
         // Initial crawl to find existing shadow roots.
         const allElements = root.querySelectorAll('*');
         allElements.forEach(elem => {
-            if (elem.shadowRoot) {
+            let shadowRoot = shadowRootOf(elem);
+            if (shadowRoot) {
                 this.addElement(elem);
-                this.crawlAndObserve(elem.shadowRoot);
+                this.crawlAndObserve(shadowRoot);
             }
         });
 
@@ -83,7 +93,7 @@ export class ShadowDomList implements Iterable<ShadowRoot> {
     }
 
     /**
-     * Because we can't put a MutationObserver on shadowRoot creation,
+     * Because we can't put a MutationObserver on shadowRootOf creation,
      *   we override attachShadow(), to let it add an attribute 'data-shadowrootattached' as a side effect.
      * This is a mutation that we can observe using a regular MutationObserver, see observeShadowAttributeChanges()
      */
@@ -93,14 +103,13 @@ export class ShadowDomList implements Iterable<ShadowRoot> {
             (function() {
                 const originalAttachShadow = Element.prototype.attachShadow;
                 Element.prototype.attachShadow = function(init) {
-                    init.mode = 'open';
                     const shadowRoot = originalAttachShadow.apply(this, arguments);
                     this.setAttribute('data-shadowrootattached', 'true');
                     return shadowRoot;
                 };
             })();
         `;
-        const script = targetDocument.createElement('script');#
+        const script = targetDocument.createElement('script');
         script.textContent = scriptContent;
         (targetDocument.head || targetDocument.documentElement).appendChild(script);
         script.remove();
@@ -293,8 +302,9 @@ export class SuperPowerfulTreeWalker<T extends Node> {
 
         let n: Element;
         while (n = walkerEl.nextNode() as Element) {
-            if (n.shadowRoot) {
-                yield* this.internalWalk(n.shadowRoot!!);
+            let shadowRoot = shadowRootOf(n);
+            if (shadowRoot) {
+                yield* this.internalWalk(shadowRoot);
             }
             let innerContent = innerElementContentDocument(n);
             if (innerContent) {
@@ -356,8 +366,9 @@ export function superPowerfulQuerySelectorAll(
         // Search within shadow roots
         const shadowRoots = el.querySelectorAll('*:not(script):not(style)');
         for (const potentialShadowHost of shadowRoots) {
-            if (potentialShadowHost.shadowRoot) {
-                yield* superPowerfulQuerySelectorAll(potentialShadowHost.shadowRoot!!, selector);
+            let shadowRoot = shadowRootOf(potentialShadowHost);
+            if (shadowRoot) {
+                yield* superPowerfulQuerySelectorAll(shadowRoot, selector);
             }
         }
 

@@ -41,8 +41,8 @@ function checkValue() {
         let expected = element.getAttribute("x-expected");
         let original = element.getAttribute("x-original");
         let actual = element.textContent;
-        if ((element.firstChild as Element)?.shadowRoot) {
-            actual = (element.firstChild as Element)?.shadowRoot!!.textContent;
+        if ((element.firstChild as any)?.closedShadowRootForTesting) {
+            actual = (element.firstChild as any)?.closedShadowRootForTesting!!.textContent;
         }
         let success = expected == actual;
         if (success) {

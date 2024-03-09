@@ -4,15 +4,17 @@
   "description": "",
   "scripts": {
     "start:firefox": "npm run build && npm-run-all --parallel internal:execute-generate-scripts serve:test-pages build:dev internal:firefox",
+    "start:chrome": "npm run build && npm-run-all --parallel internal:execute-generate-scripts serve:test-pages build:dev internal:chrome",
     "test": "cross-env TS_NODE_FILES=true mocha --exit --require ts-node/register --colors test/**/*.test.ts",
     "coverage": "nyc --reporter=lcov --reporter=text-summary ./node_modules/.bin/npm test",
     "build": "./node_modules/.bin/parcel build --target options --target gendersprachekorrigieren --target background",
-    "build:dev": "./node_modules/.bin/parcel watch --target options --target gendersprachekorrigieren --target background --target testscript",
+    "build:dev": "./node_modules/.bin/parcel watch --target options --target gendersprachekorrigieren-dev --target background --target testscript",
     "bundle": "web-ext build --source-dir ./dist/ --overwrite-dest",
     "clean": "rimraf dist && rimraf test/integration/compiled",
     "prepare-release": "npm run clean && npm run test && npm run build && npm run bundle",
     "unlisted-firefox-release": "npm run clean && npm run prepare-release && dotenv -e .env -- web-ext sign --use-submission-api --channel unlisted --source-dir dist",
     "serve:test-pages": "http-server --port 14285 test/integration/",
+    "internal:chrome": "web-ext run --target chromium --browser-console --source-dir ./dist/ --start-url 'http://localhost:14285/' --start-url 'about:devtools-toolbox?id={30898332-4708-909f-6f1b-54df9c17269a}&type=extension'",
     "internal:firefox": "web-ext run --browser-console --source-dir ./dist/ --start-url 'http://localhost:14285/' --start-url 'about:devtools-toolbox?id={30898332-4708-909f-6f1b-54df9c17269a}&type=extension'",
     "internal:execute-generate-scripts": "mocha --exit --require ts-node/register --colors test/**/generate*.ts"
   },
@@ -20,7 +22,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/chai": "^4.3.12",
-    "@types/chrome": "0.0.262",
+    "@types/chrome": "^0.0.262",
     "@types/diff": "^5.0.9",
     "@types/jsdom": "^21.1.6",
     "@types/jsdom-global": "3.0.7",
@@ -63,10 +65,16 @@
       "source": "./src/control/options.ts"
     },
     "gendersprachekorrigieren": {
-      "source": "./src/gendersprachekorrigieren.ts"
+      "source": "./src/gendersprachekorrigieren.ts",
+      "optimize": true
+    },
+    "gendersprachekorrigieren-dev": {
+      "source": "./src/gendersprachekorrigieren.ts",
+      "optimize": false
     },
     "background": {
-      "source": "./src/control/background.ts"
+      "source": "./src/control/background.ts",
+      "optimize": true
     },
     "testscript": {
       "outputFormat": "global",

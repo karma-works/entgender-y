@@ -54,6 +54,9 @@ export function generateTableRowsUsingShadowDom() {
             let shadow = element.attachShadow({mode: 'closed'});
             let content = element.parentElement!!.getAttribute('x-original');
 
+            // Test-script needs access for testing
+            (element as any).closedShadowRootForTesting = shadow;
+
             shadow.innerHTML = `<span>${content}</span>`;
         });
     }, 100);
