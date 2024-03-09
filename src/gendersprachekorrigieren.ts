@@ -98,7 +98,13 @@ export class BeGone {
             return NodeFilter.FILTER_REJECT;
         };
 
-        let walk = new SuperPowerfulTreeWalker<CharacterData>(el, NodeFilter.SHOW_TEXT, {acceptNode: acceptNode});
+        let walk = new SuperPowerfulTreeWalker<CharacterData>(el, NodeFilter.SHOW_TEXT, acceptNode,
+            (node) => {
+                if (shouldNotBeChanged(node)) {
+                    return NodeFilter.FILTER_REJECT;
+                }
+                return NodeFilter.FILTER_ACCEPT;
+            });
         for (let n of walk) {
             let nodeParent = n.parentNode;
             if (!nodeParent) {

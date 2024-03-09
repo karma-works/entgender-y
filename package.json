@@ -28,7 +28,7 @@
     "@types/node": "20.11.25",
     "chai": "~4.4.1",
     "cross-env": "^7.0.3",
-    "dotenv": "^16.4.5",
+    "dotenv-cli": "^7.4.0",
     "http-server": "^14.1.1",
     "jsdom": "^24.0.0",
     "jsdom-global": "3.0.2",

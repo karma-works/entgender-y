@@ -1,18 +1,77 @@
 import {ifDebugging} from "./logUtil";
 
-/**
- * This package provides tool to traverse / observe all iframes, objects, embed and the shadowDom,
- * which are otherwise not traversed by MutationObserver, querySelectorAll, createTreeWalker()...
- */
-export class SuperPowerfulMutationObserver {
-    private readonly callback: MutationCallback;
-    private readonly observer: MutationObserver;
-    private readonly config: MutationObserverInit;
 
-    constructor(callback: MutationCallback, config: MutationObserverInit) {
-        this.callback = callback;
-        this.observer = new MutationObserver(callback);
-        this.config = config;
+type ShadowRootListener = (root: ShadowRoot) => void;
+
+/**
+ * Listens to shadom dom. Does NOT recurse into inner frames/object/embed.
+ * Does recurse into nested ShadowRoots.
+ */
+export class ShadowDomList implements Iterable<ShadowRoot> {
+    private nodesContainingShadowRoot: Set<Element> = new Set();
+    private observer: MutationObserver;
+    private listeners: Set<ShadowRootListener> = new Set();
+
+    private static FIELD_NAME = '__ShadowDomList';
+
+    static of(root: Document) {
+        if (!(root as any)[this.FIELD_NAME]) {
+            (root as any)[this.FIELD_NAME] = new ShadowDomList(root);
+        }
+        return (root as any)[this.FIELD_NAME] as ShadowDomList;
+    }
+
+    private constructor(root: Document) {
+        const attributeObserver = new MutationObserver((mutationsList) => {
+            for (let mutation of mutationsList) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'data-shadowrootattached') {
+                    const targetElem = mutation.target as Element;
+                    if (targetElem.shadowRoot) {
+                        this.addElement(targetElem);
+                    } else {
+                        // should be impossible
+                    }
+                }
+            }
+        });
+        this.observer = attributeObserver;
+
+        this.crawlAndObserve(root);
+        this.injectShadowRootObserverScript(root);
+    }
+
+    private addElement(el: Element) {
+        this.nodesContainingShadowRoot.add(el);
+        this.listeners.forEach(l => l(el.shadowRoot!!))
+    }
+
+    public addListener(listener: ShadowRootListener) {
+        this.nodesContainingShadowRoot.forEach(elem => listener(elem.shadowRoot!!));
+        this.listeners.add(listener);
+    }
+
+    public removeListener(listener: ShadowRootListener) {
+        this.listeners.delete(listener);
+    }
+
+    * [Symbol.iterator](): Iterator<ShadowRoot> {
+        for (let elem of this.nodesContainingShadowRoot) {
+            yield elem.shadowRoot!!;
+        }
+    }
+
+    private crawlAndObserve(root: Document | ShadowRoot) {
+        // Initial crawl to find existing shadow roots.
+        const allElements = root.querySelectorAll('*');
+        allElements.forEach(elem => {
+            if (elem.shadowRoot) {
+                this.addElement(elem);
+                this.crawlAndObserve(elem.shadowRoot);
+            }
+        });
+
+        // start listening for shadow DOM attachments.
+        this.observeShadowAttributeChanges(root);
     }
 
     /**
@@ -35,6 +94,33 @@ export class SuperPowerfulMutationObserver {
         script.textContent = scriptContent;
         (targetDocument.head || targetDocument.documentElement).appendChild(script);
         script.remove();
+    }
+
+    private observeShadowAttributeChanges(root: Document | ShadowRoot) {
+        this.observer.observe(root, {
+            attributes: true,
+            subtree: true,
+            attributeFilter: ['data-shadowrootattached']
+        });
+    }
+}
+
+
+/**
+ * This package provides tool to traverse / observe all iframes, objects, embed and the shadowDom,
+ * which are otherwise not traversed by MutationObserver, querySelectorAll, createTreeWalker()...
+ *
+ * TODO: what happens if an <iframe> is added via javascript? Won't be caught.
+ */
+export class SuperPowerfulMutationObserver {
+    private readonly callback: MutationCallback;
+    private readonly observer: MutationObserver;
+    private readonly config: MutationObserverInit;
+
+    constructor(callback: MutationCallback, config: MutationObserverInit) {
+        this.callback = callback;
+        this.observer = new MutationObserver(callback);
+        this.config = config;
     }
 
     private observeShadowRoot(shadowRoot: ShadowRoot) {
@@ -85,8 +171,7 @@ export class SuperPowerfulMutationObserver {
                 this.observeNestedElements(documentElement);
 
                 // Handle dynamically created shadow roots
-                this.injectShadowRootObserverScript(documentElement);
-                this.observeShadowAttributeChanges(documentElement);
+                this.observeShadowRootsOfDoc(documentElement);
 
                 // We assume the content was unknown before completion, and trigger a custom MutationRecord
                 this.emitCustomMutationRecord([documentElement]);
@@ -98,8 +183,7 @@ export class SuperPowerfulMutationObserver {
         this.observeNestedElements(documentElement);
 
         // Handle dynamically created shadow roots
-        this.injectShadowRootObserverScript(documentElement);
-        this.observeShadowAttributeChanges(documentElement);
+        this.observeShadowRootsOfDoc(documentElement);
     }
 
     private emitCustomMutationRecord(nodes: Array<ShadowRoot | Document>) {
@@ -132,41 +216,13 @@ export class SuperPowerfulMutationObserver {
         root.querySelectorAll('iframe, object, embed').forEach((extContent) => {
             this.observeExternalContent(extContent as (HTMLObjectElement | HTMLIFrameElement | HTMLEmbedElement));
         });
-
-        //let walker = new SuperPowerfulTreeWalker<Element>(root, NodeFilter.SHOW_ELEMENT);
-        root.querySelectorAll('*').forEach((elem) => {
-            if (elem.shadowRoot) {
-                this.observeShadowRoot(elem.shadowRoot);
-            }
-        });
     }
 
-    private observeShadowAttributeChanges(targetDocument: Document) {
-        const attributeObserver = new MutationObserver((mutationsList) => {
-            console.log("observeShadowAttributeChanges", mutationsList);
-            let shadowRoots: Array<ShadowRoot> = [];
-            for (let mutation of mutationsList) {
-                if (mutation.type === 'attributes') {
-                    const targetElem = mutation.target as Element;
-                    if (targetElem.shadowRoot) {
-                        this.observeShadowRoot(targetElem.shadowRoot);
-                        shadowRoots.push(targetElem.shadowRoot);
-                    } else {
-                        console.warn("No shadow root on", targetElem);
-                    }
-                }
-            }
-            if (shadowRoots.length > 0) {
-                // Changes to the shadow-dom need to be forwarded manually to the callback
-                this.emitCustomMutationRecord(shadowRoots);
-            }
-        });
-
-        attributeObserver.observe(targetDocument.body, {
-            attributes: true,
-            subtree: true,
-            attributeFilter: ['data-shadowrootattached']
-        });
+    private observeShadowRootsOfDoc(targetDocument: Document) {
+        ShadowDomList.of(targetDocument).addListener(shadowRoot => {
+            this.observeShadowRoot(shadowRoot);
+            this.emitCustomMutationRecord([shadowRoot]);
+        })
     }
 
     public observe(doc: Document = document) {
@@ -194,19 +250,26 @@ function innerElementContentDocument(n: Element) {
     return innerContent;
 }
 
+/**
+ * Suports iframe, object, embed
+ */
 export class SuperPowerfulTreeWalker<T extends Node> {
     private readonly root: Node;
     private readonly whatToShow: number;
-    private readonly filter: NodeFilter | null;
+    private readonly filter: ((node: T) => number) | null;
+    private readonly filterForInnerObjects: ((node: Element) => number) | null;
 
-    constructor(root: Node, whatToShow: number = NodeFilter.SHOW_ALL, filter: NodeFilter | null = null) {
+    constructor(root: Node, whatToShow: number = NodeFilter.SHOW_ALL,
+                filter: ((node: T) => number) | null = null,
+                filterForInnerObjects: ((node: Element) => number) | null = null) {
         this.root = root;
         this.whatToShow = whatToShow;
         this.filter = filter;
+        this.filterForInnerObjects = filterForInnerObjects;
     }
 
     private* internalWalk(node: Node): IterableIterator<T> {
-        const walker = (node.ownerDocument || (node as Document)).createTreeWalker(node, this.whatToShow, this.filter);
+        const walker = (node.ownerDocument || (node as Document)).createTreeWalker(node, this.whatToShow, this.filter as NodeFilter);
         let currentNode: Node | null = walker.nextNode();
 
         while (currentNode) {
@@ -215,14 +278,7 @@ export class SuperPowerfulTreeWalker<T extends Node> {
             currentNode = walker.nextNode();
         }
 
-        const walkerEl = (node.ownerDocument || (node as Document)).createTreeWalker(node, NodeFilter.SHOW_ELEMENT,
-            {
-                acceptNode: () => {
-                    return NodeFilter.FILTER_ACCEPT;
-                }
-            }
-        );
-
+        const walkerEl = (node.ownerDocument || (node as Document)).createTreeWalker(node, NodeFilter.SHOW_ELEMENT, this.filterForInnerObjects as NodeFilter);
 
         let n: Element;
         while (n = walkerEl.nextNode() as Element) {
@@ -252,3 +308,61 @@ export class SuperPowerfulTreeWalker<T extends Node> {
     }
 }
 
+// TODO: unused code
+function superPowerfulQuerySelectorAll_using_SuperPowerfulTreeWalker(
+    el: Element | Document | ShadowRoot,
+    selector: string
+): Iterable<Element> {
+    function* generator() {
+        let walker = new SuperPowerfulTreeWalker<Element>(el, NodeFilter.SHOW_ELEMENT);
+        for (let el of walker) {
+            if (el.matches(selector)) {
+                yield el;
+            }
+        }
+    }
+
+    return {
+        [Symbol.iterator](): Iterator<Element> {
+            return generator();
+        }
+    };
+}
+
+/**
+ * Also finds elements in frames, object, embed and shadowRoots
+ */
+export function superPowerfulQuerySelectorAll(
+    el: Element | Document | ShadowRoot,
+    selector: string
+): Iterable<Element> {
+    function* generator() {
+        const elements = el.querySelectorAll(selector);
+        for (const element of elements) {
+            yield element;
+        }
+
+        // Search within shadow roots
+        const shadowRoots = el.querySelectorAll('*:not(script):not(style)');
+        for (const potentialShadowHost of shadowRoots) {
+            if (potentialShadowHost.shadowRoot) {
+                yield* superPowerfulQuerySelectorAll(potentialShadowHost.shadowRoot!!, selector);
+            }
+        }
+
+        // Special handling for certain elements that can contain nested documents
+        const frameElements = el.querySelectorAll('iframe, object, embed');
+        for (const frameEl of frameElements) {
+            let innerContent = innerElementContentDocument(frameEl);
+            if (innerContent) {
+                yield* superPowerfulQuerySelectorAll(innerContent, selector);
+            }
+        }
+    }
+
+    return {
+        [Symbol.iterator](): Iterator<Element> {
+            return generator();
+        }
+    };
+}
