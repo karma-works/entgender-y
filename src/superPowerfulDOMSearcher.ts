@@ -47,16 +47,14 @@ export class ShadowDomList implements Iterable<ShadowRoot> {
                     const targetElem = mutation.target as Element;
                     if (shadowRootOf(targetElem)) {
                         this.addElement(targetElem);
-                    } else {
-                        // should be impossible
                     }
                     targetElem.removeAttribute('data-shadowrootattached');
                 } else if (mutation.type === "childList") {
                     if (mutation.removedNodes.length > 0) {
                         for (let removed of mutation.removedNodes) {
                             // Need to cleanup for garbage collection
-                            if (removed instanceof Element) {
-                                removed.querySelectorAll('*').forEach(
+                            if (removed.nodeType === Node.ELEMENT_NODE) {
+                                (removed as Element).querySelectorAll('*').forEach(
                                     el => {
                                         if (this.nodesContainingShadowRoot.delete(el)) {
                                             ifDebugging?.log("childList.removedNodes: detected unattached", el);
@@ -70,9 +68,9 @@ export class ShadowDomList implements Iterable<ShadowRoot> {
                         for (let added of mutation.addedNodes) {
                             // if an element was removed, then added again, we would lose it
                             // if we don't crawl again (because we remove the 'removedNodes').
-                            if (added instanceof Element) {
-                                this.checkElement(added);
-                                this.crawl(added);
+                            if (added.nodeType === Node.ELEMENT_NODE) {
+                                this.checkElement(added as Element);
+                                this.crawl(added as Element);
                             }
                         }
                     }
@@ -137,6 +135,8 @@ export class ShadowDomList implements Iterable<ShadowRoot> {
      * Because we can't put a MutationObserver on shadowRootOf creation,
      *   we override attachShadow(), to let it add an attribute 'data-shadowrootattached' as a side effect.
      * This is a mutation that we can observe using a regular MutationObserver, see observeShadowAttributeChanges()
+     *
+     * TODO: check if CSP can block this.
      */
     private injectShadowRootObserverScript(targetDocument: Document) {
         // Note: we also force the attachShadow() to be in open mode
