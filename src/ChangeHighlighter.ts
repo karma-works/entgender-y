@@ -6,7 +6,7 @@ function createText(doc: Document, str: string): CharacterData {
     return doc.createTextNode(str);
 }
 
-const NOT_SUPPORTING_SPAN = ["TITLE", "OPTION"];
+const ELEMENTS_NOT_SUPPORTING_SPAN = ["TITLE", "OPTION"];
 
 export class ChangeHighlighter {
     // Create a span element that visually represents the change.
@@ -17,13 +17,15 @@ export class ChangeHighlighter {
         span.setAttribute('title', from);
         span.setAttribute("style", style);
         span.classList.add("entgendy-change");
+        SVGTextElement
         return span;
     }
 
     // Apply changes from newText to the specified node, highlighting differences.
     apply(node: CharacterData, newText: string, style: string = "") {
         // @ts-ignore
-        if (node.parentNode?.nodeName in NOT_SUPPORTING_SPAN) {
+        if (node.parentNode?.nodeName in ELEMENTS_NOT_SUPPORTING_SPAN || !(node.namespaceURI === null || node.namespaceURI === "http://www.w3.org/1999/xhtml")) {
+            // This skips some html nodes, and all non-html (svg...)
             node.data = newText;
             return;
         }

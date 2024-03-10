@@ -12,9 +12,16 @@ const shadowRootOf: ((e: Element) => ShadowRoot | null) = (() => {
         }
     } catch (e) {
     }
-    // firefox version
+    // firefox version. openOrClosedShadowRoot will return either a shadowRoot, or 'none' if supported.
+    // undefined means the property doesn't exist at all.
+    if ((document.body as any).openOrClosedShadowRoot !== undefined) {
+        return function shadowRoot(element: Element): ShadowRoot | null {
+            return (element as any).openOrClosedShadowRoot;
+        }
+    }
+    // backup version, but doesn't work for closed shadowDom
     return function shadowRoot(element: Element): ShadowRoot | null {
-        return (element as any).openOrClosedShadowRoot || element.shadowRoot;
+        return element.shadowRoot;
     }
 })();
 
@@ -43,6 +50,7 @@ export class ShadowDomList implements Iterable<ShadowRoot> {
             for (let mutation of mutationsList) {
                 if (mutation.type === 'attributes' &&
                     mutation.attributeName === 'data-shadowrootattached' &&
+                    // mutation.oldValue == 'true' means the attribute was removed (by us), not added
                     mutation.oldValue !== 'true') {
                     const targetElem = mutation.target as Element;
                     if (shadowRootOf(targetElem)) {
@@ -52,7 +60,7 @@ export class ShadowDomList implements Iterable<ShadowRoot> {
                 } else if (mutation.type === "childList") {
                     if (mutation.removedNodes.length > 0) {
                         for (let removed of mutation.removedNodes) {
-                            // Need to cleanup for garbage collection
+                            // Need to cleanup for garbage collection of unused elements
                             if (removed.nodeType === Node.ELEMENT_NODE) {
                                 (removed as Element).querySelectorAll('*').forEach(
                                     el => {
@@ -84,7 +92,7 @@ export class ShadowDomList implements Iterable<ShadowRoot> {
 
     private addElement(el: Element) {
         this.nodesContainingShadowRoot.add(el);
-        this.listeners.forEach(l => l(shadowRootOf(el)!!))
+        this.listeners.forEach(listener => listener(shadowRootOf(el)!!))
     }
 
     public addListener(listener: ShadowRootListener, emitInitial: boolean = true) {
@@ -308,7 +316,6 @@ export class SuperPowerfulMutationObserver {
     }
 
     public observe(doc: Document = document) {
-        // Observe the main document
         this.observeDocumentElement(doc);
     }
 
