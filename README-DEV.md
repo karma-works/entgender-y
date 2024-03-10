@@ -23,31 +23,31 @@ In IntelliJ kann es unter "Extra mocha options" gesetzt werden.
 
 # Task: unlisted-firefox-release
 
-This task is designed to create and submit an unlisted version of the Firefox extension for signing through Mozilla's Add-ons Developer Hub. 
-The unlisted extension will not appear in the public search on the Firefox Add-ons website but will be downloaded into the `web-ext-artifacts` folder (name `<some hash>-<version>.xpi`)
+Dieser task ist darauf ausgelegt, eine nicht gelistete Version der Firefox-Erweiterung zu erstellen und zur Signierung über das Add-ons Developer Hub von Mozilla einzureichen.
+Die nicht gelistete Erweiterung wird nicht in der öffentlichen Suche auf der Firefox Add-ons-Webseite erscheinen, sondern wird in den Ordner `web-ext-artifacts` heruntergeladen (Name `<some hash>-<version>.xpi`).
 
-**Prerequisites:**
-1. You need to have a Mozilla Developer account and generate your API credentials (`API Key` and `API Secret`) to automate the submission and signing process.
+**Voraussetzungen:**
+- Sie müssen ein [Mozilla-Entwicklerkonto](https://addons.mozilla.org/en-US/developers/) besitzen und Ihre API-Zugangsdaten (`API Key` und `API Secret`) generieren, um den Einreichungs- und Signaturprozess zu automatisieren. 
 
-**Environment Variables:**
-- Set up your environment variables by creating a `.env` file at the root of your project with the following content:
+**Umgebungsvariablen:**
+- Richten Sie Ihre Umgebungsvariablen ein, indem Sie eine `.env`-Datei im Wurzelverzeichnis Ihres Projekts erstellen und folgenden Inhalt hinzufügen:
 
     ```
-    WEB_EXT_API_KEY=<your-api-key>
-    WEB_EXT_API_SECRET=<your-api-secret>
+    WEB_EXT_API_KEY=<Ihr-API-Schlüssel>
+    WEB_EXT_API_SECRET=<Ihr-API-Geheimnis>
     GECKO_ID={6f98cc7a-c54e-11eb-9294-274a647be4e6}
     ```
 
-  Replace `<your-api-key>` and `<your-api-secret>` with your actual credentials.
-  Replace the `GECKO_ID` by your own if needed.
+  Ersetzen Sie `<Ihr-API-Schlüssel>` und `<Ihr-API-Geheimnis>` mit Ihren tatsächlichen Anmeldeinformationen.
+  Ersetzen Sie die `GECKO_ID` durch Ihre eigene, falls vorhanden.
 
-**Running the Task:**
-- Execute the release process by running the following command in your terminal:
+**Aufgabe ausführen:**
+- Starten Sie den Veröffentlichungsprozess, indem Sie den folgenden Befehl in Ihrem Terminal ausführen:
 
     ```
     npm run unlisted-firefox-release
     ```
 
-- Upon completion, the command will output a URL to download the signed extension or provide details if there are any issues with the submission.
+- Nach Abschluss gibt der Befehl eine URL zum Herunterladen der signierten Erweiterung aus oder liefert Details, falls es Probleme bei der Einreichung gab.
 
-**Note:** This process is specifically for Firefox extensions. 
+**Hinweis:** Dieser Prozess ist speziell für Firefox-Erweiterungen.
