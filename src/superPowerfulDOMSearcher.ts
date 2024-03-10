@@ -51,6 +51,31 @@ export class ShadowDomList implements Iterable<ShadowRoot> {
                         // should be impossible
                     }
                     targetElem.removeAttribute('data-shadowrootattached');
+                } else if (mutation.type === "childList") {
+                    if (mutation.removedNodes.length > 0) {
+                        for (let removed of mutation.removedNodes) {
+                            // Need to cleanup for garbage collection
+                            if (removed instanceof Element) {
+                                removed.querySelectorAll('*').forEach(
+                                    el => {
+                                        if (this.nodesContainingShadowRoot.delete(el)) {
+                                            ifDebugging?.log("childList.removedNodes: detected unattached", el);
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    if (mutation.addedNodes.length > 0) {
+                        for (let added of mutation.addedNodes) {
+                            // if an element was removed, then added again, we would lose it
+                            // if we don't crawl again (because we remove the 'removedNodes').
+                            if (added instanceof Element) {
+                                this.checkElement(added);
+                                this.crawl(added);
+                            }
+                        }
+                    }
                 }
             }
         });
@@ -87,17 +112,25 @@ export class ShadowDomList implements Iterable<ShadowRoot> {
 
     private crawlAndObserve(root: Document | DocumentFragment) {
         // Initial crawl to find existing shadow roots.
-        const allElements = root.querySelectorAll('*');
-        allElements.forEach(elem => {
-            let shadowRoot = shadowRootOf(elem);
-            if (shadowRoot) {
-                this.addElement(elem);
-                this.crawlAndObserve(shadowRoot);
-            }
-        });
+        this.crawl(root);
 
         // start listening for shadow DOM attachments.
         this.observeShadowAttributeChanges(root);
+    }
+
+    private crawl(root: Document | DocumentFragment | Element) {
+        const allElements = root.querySelectorAll('*');
+        allElements.forEach(elem => {
+            this.checkElement(elem);
+        });
+    }
+
+    private checkElement(elem: Element) {
+        let shadowRoot = shadowRootOf(elem);
+        if (shadowRoot) {
+            this.addElement(elem);
+            this.crawlAndObserve(shadowRoot);
+        }
     }
 
     /**
@@ -127,6 +160,7 @@ export class ShadowDomList implements Iterable<ShadowRoot> {
         this.observer.observe(root, {
             attributes: true,
             attributeOldValue: true,
+            childList: true,
             subtree: true,
             attributeFilter: ['data-shadowrootattached']
         });
