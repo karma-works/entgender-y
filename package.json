@@ -5,14 +5,15 @@
   "scripts": {
     "start:firefox": "npm run build && npm-run-all --parallel internal:execute-generate-scripts serve:test-pages build:dev internal:firefox",
     "start:chrome": "npm run build && npm-run-all --parallel internal:execute-generate-scripts serve:test-pages build:dev internal:chrome",
-    "test": "cross-env TS_NODE_FILES=true mocha --exit --require ts-node/register --colors test/**/*.test.ts",
-    "coverage": "nyc --reporter=lcov --reporter=text-summary ./node_modules/.bin/npm test",
     "build": "./node_modules/.bin/parcel build --target options --target gendersprachekorrigieren --target background",
-    "build:dev": "./node_modules/.bin/parcel watch --target options --target gendersprachekorrigieren-dev --target background --target testscript",
     "bundle": "web-ext build --source-dir ./dist/ --overwrite-dest",
     "clean": "rimraf dist && rimraf test/integration/compiled",
     "prepare-release": "npm run clean && npm run test && npm run build && npm run bundle",
     "unlisted-firefox-release": "npm run clean && npm run prepare-release && dotenv -e .env -- web-ext sign --use-submission-api --channel unlisted --source-dir dist --id=\"$(dotenv -e .env -p GECKO_ID)\"",
+    "//": "=====  Test jobs below  =====",
+    "test": "cross-env TS_NODE_FILES=true mocha --exit --require ts-node/register --colors test/**/*.test.ts",
+    "coverage": "nyc --reporter=lcov --reporter=text-summary ./node_modules/.bin/npm test",
+    "build:dev": "./node_modules/.bin/parcel watch --target options --target gendersprachekorrigieren-dev --target background --target testscript",
     "serve:test-pages": "http-server --port 14285 test/integration/",
     "internal:firefox": "web-ext run --browser-console --source-dir ./dist/ --start-url 'http://localhost:14285/' --start-url 'about:devtools-toolbox?id='{6f98cc7a-c54e-11eb-9294-274a647be4e6}'&type=extension'",
     "internal:chrome": "web-ext run --target chromium --browser-console --source-dir ./dist/ --start-url 'http://localhost:14285/' --start-url 'about:devtools-toolbox?id={6f98cc7a-c54e-11eb-9294-274a647be4e6}&type=extension'",
@@ -45,11 +46,14 @@
     "typescript": "^5.4.2",
     "web-ext": "^7.11.0"
   },
+
+  "//": "mocha-dom officially doesn't support newer jsdom version... but it actually works",
   "overrides": {
     "mocha-dom": {
       "jsdom": "^21 || ^24"
     }
   },
+
   "staticFiles": {
     "staticPath": "assets"
   },
@@ -57,6 +61,8 @@
   "options": "dist/options.js",
   "background": "dist/background.js",
   "testscript": "test/integration/compiled/test-script.js",
+
+  "//": "gendersprachekorrigieren-dev is same as gendersprachekorrigieren, but with optimize false to have readable code in browser",
   "targets": {
     "options": {
       "outputFormat": "global",
@@ -84,6 +90,6 @@
     }
   },
   "dependencies": {
-    "diff": "^5.2.0"
+    "diff": "^5.2.0 || used-at-runtime-by-ChangeHighlighter"
   }
 }

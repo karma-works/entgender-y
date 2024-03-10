@@ -1,9 +1,9 @@
 # Wartung
-Einmalig: `npm i npm-check-updates -g`
+Einmalig, um `npm-check-updates` zu installieren:  `npm i npm-check-updates -g`
 ```
 # Schaue was es an updates gibt
 npm-check-updates
-# update package.json
+# update von package.json
 npm-check-updates -u
 # lösche alte packages und installiere neue packages
 npm prune && npm install
@@ -12,7 +12,7 @@ npm run prepare-release
 ```
 
 # Known issues
-Wenn beim starten der Tests folgender Fehler auftritt: 
+Wenn beim Starten der Tests folgender Fehler auftritt: 
 `TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".ts"`
 fehlt der parameter `--require ts-node/register `
 In IntelliJ kann es unter "Extra mocha options" gesetzt werden.
@@ -20,9 +20,6 @@ In IntelliJ kann es unter "Extra mocha options" gesetzt werden.
 # Infos zur package-json
 `web-ext run` (starten von firefox) hat ein `--devtools` parameter, dass das gleiche tut wie
 `--start-url 'about:devtools-toolbox?id={6f98cc7a-c54e-11eb-9294-274a647be4e6}&type=extension'`, außer dass es in einem extra fenster öffnet.
-
-# web-ext
-npm install --global web-ext
 
 # Task: unlisted-firefox-release
 
@@ -38,9 +35,11 @@ The unlisted extension will not appear in the public search on the Firefox Add-o
     ```
     WEB_EXT_API_KEY=<your-api-key>
     WEB_EXT_API_SECRET=<your-api-secret>
+    GECKO_ID={6f98cc7a-c54e-11eb-9294-274a647be4e6}
     ```
 
   Replace `<your-api-key>` and `<your-api-secret>` with your actual credentials.
+  Replace the `GECKO_ID` by your own if needed.
 
 **Running the Task:**
 - Execute the release process by running the following command in your terminal:

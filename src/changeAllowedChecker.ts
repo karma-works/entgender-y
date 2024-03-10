@@ -80,17 +80,14 @@ export class ChangeAllowedChecker {
 
     private checkAddedNode(node: Element) {
         if (this.isEditable(node)) {
-            // Node: There is no "descendent-or-self" in querySelectorAll, so we need to check the 'self' ourselves
+            // Note: There is no "descendent-or-self" in querySelectorAll, so we need to check the 'self' ourselves
             this.editableElements.add(node);
-            // console.log("Added", node, this.editableElements);
             return;
         }
         let editables = superPowerfulQuerySelectorAll(node, "[role='textbox'],[contenteditable='true']");
-        //let editables = node.querySelectorAll("[role='textbox'],[contenteditable='true']");
 
         for (let editable of editables) {
             this.editableElements.add(editable);
-            // console.log("Added", editable, this.editableElements);
         }
     }
 
@@ -98,7 +95,6 @@ export class ChangeAllowedChecker {
         for (let editable of this.editableElements) {
             if (node.contains(editable) || editable == node) {
                 this.editableElements.delete(editable);
-                // console.log("Deleted", node, this.editableElements);
             }
         }
     }
