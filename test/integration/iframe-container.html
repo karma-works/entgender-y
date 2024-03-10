@@ -24,10 +24,21 @@
             height: 100%; /* Fill the parent's height */
         }
     </style>
+    <script>
+        function reloadObjectsDynamically() {
+            const wrapper = document.getElementById("embedded-wrapper");
+            let previousHtml = wrapper.innerHTML;
+            wrapper.innerHTML = '';
+            setTimeout(() => {
+                wrapper.innerHTML = previousHtml;
+            }, 100);
+        }
+    </script>
 </head>
 <body>
 <a href="index.html">Test von dynamischen laden (mittels javascript)</a><br>
-<div class="container">
+<a href="#" onclick="reloadObjectsDynamically()">Dynamisch iframe hinzufügen</a><br>
+<div class="container" id="embedded-wrapper">
     <div class="wrapper">
         <div class="label">Iframe</div>
         <iframe src="index.html"></iframe>
