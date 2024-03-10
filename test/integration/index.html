@@ -51,8 +51,10 @@ Hallo welt*innen<br/>
 
 <a href="index.html">Test von dynamischen laden (mittels javascript)</a><br>
 <a href="index.html?useShadow=true">Test von dynamischen laden (mittels javascript & shadow-dom)</a><br>
-<a href="static.html">Test von statischen html (beim Öffnen der Seite konvertiert)</a></br>
-<a href="iframe-container.html">Test mit iframe</a>
+<a href="static.html">Test von statischen html (beim Öffnen der Seite konvertiert)</a><br>
+<a href="iframe-container.html">Test mit iframe</a><br>
+
+<button onclick="generateThenCheck()">Löchen und neu generieren</button>
 
 <div id="error-count" class="error-count"></div>
 <div id="error-count-editable-changed" class="error-count"></div>
@@ -67,7 +69,8 @@ Hallo welt*innen<br/>
 <hr/>
 
 <p>Das folgende div ist editierbar, und sollte demnach nicht vom addon angefasst werden</p>
-<div id="editable_div" data-expectedHashCode="1375665554" class="Am Al editable LW-avf tS-tW" hidefocus="true" aria-label="Corps du message" editable="true"
+<div id="editable_div" data-expectedHashCode="1375665554" class="Am Al editable LW-avf tS-tW" hidefocus="true"
+     aria-label="Corps du message" editable="true"
      role="textbox" aria-multiline="true"
      style="direction: ltr; min-height: 210px; border: solid; border-width: 3px; "
      tabindex="1" itacorner="6,7:1,1,0,0" spellcheck="false" aria-owns=":v7" aria-controls=":v7" contenteditable="true">

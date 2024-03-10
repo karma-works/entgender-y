@@ -84,15 +84,20 @@ function hashCode(string: string) {
     return hash;
 }
 
-
-if (document.location.href.endsWith("static.html")) {
-    console.log("Static html test");
-} else if (new URLSearchParams(window.location.search).get("useShadow")) {
-    generateTableRowsUsingShadowDom();
-} else {
-    generateTableRows();
+function generateThenCheck() {
+    if (document.location.href.endsWith("static.html")) {
+        console.log("Static html test");
+    } else if (new URLSearchParams(window.location.search).get("useShadow")) {
+        generateTableRowsUsingShadowDom();
+    } else {
+        generateTableRows();
+    }
+    setTimeout(checkValue, 1000);
+    setTimeout(checkValue, 10000);
 }
-setTimeout(checkValue, 1000);
-setTimeout(checkValue, 10000);
+
+(window as any).generateThenCheck = generateThenCheck;
+
+generateThenCheck();
 
 console.log("Test-script done");

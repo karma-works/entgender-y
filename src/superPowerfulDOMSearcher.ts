@@ -81,6 +81,10 @@ export class ShadowDomList implements Iterable<ShadowRoot> {
         }
     }
 
+    toArray(): ShadowRoot[] {
+        return Array.from(this);
+    }
+
     private crawlAndObserve(root: Document | DocumentFragment) {
         // Initial crawl to find existing shadow roots.
         const allElements = root.querySelectorAll('*');
@@ -333,25 +337,30 @@ export class SuperPowerfulTreeWalker<T extends Node> {
     }
 }
 
-// TODO: unused code
-function superPowerfulQuerySelectorAll_using_SuperPowerfulTreeWalker(
-    el: Element | Document | ShadowRoot,
-    selector: string
-): Iterable<Element> {
-    function* generator() {
-        let walker = new SuperPowerfulTreeWalker<Element>(el, NodeFilter.SHOW_ELEMENT);
-        for (let el of walker) {
-            if (el.matches(selector)) {
-                yield el;
-            }
-        }
+/**
+ * Supports iframe, object, embed and shadowDom.
+ * Embeded items are not in display order
+ */
+export function superPowerfulTextContentOf(doc: Document | Element): string {
+    let bodyTextContent;
+    if (doc.nodeType == Node.DOCUMENT_NODE) {
+        bodyTextContent = (<Document>doc).body.textContent ? (<Document>doc).body.textContent : "";
+    } else {
+        bodyTextContent = doc.textContent || "";
+    }
+    let innerDocuments = Array.from(doc.querySelectorAll("iframe, object, embed")).map(function (element: Element) {
+        return innerElementContentDocument(element);
+    });
+
+    let embeddedContents = innerDocuments.map(doc => doc && superPowerfulTextContentOf(doc)).join(" -- ");
+
+    let shadowContents: string = ""
+    if (doc.nodeType == Node.DOCUMENT_NODE) {
+        let shadowNodes = ShadowDomList.of(doc as Document);
+        shadowContents = shadowNodes.toArray().map(shadowRoot => shadowRoot.textContent).join(" -- ");
     }
 
-    return {
-        [Symbol.iterator](): Iterator<Element> {
-            return generator();
-        }
-    };
+    return bodyTextContent + embeddedContents + shadowContents;
 }
 
 /**

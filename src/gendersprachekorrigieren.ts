@@ -12,7 +12,11 @@ import {SchreibAlternative} from "./schreibalternativen/alternative";
 import {ChangeHighlighter} from "./ChangeHighlighter";
 import {ChangeAllowedChecker} from "./changeAllowedChecker";
 import {ifDebugging, stackToBeGone} from "./logUtil";
-import {SuperPowerfulMutationObserver, SuperPowerfulTreeWalker} from "./superPowerfulDOMSearcher";
+import {
+    SuperPowerfulMutationObserver,
+    superPowerfulTextContentOf,
+    SuperPowerfulTreeWalker
+} from "./superPowerfulDOMSearcher";
 
 export function urlFilterListToRegex(list: string | undefined): RegExp {
     return RegExp(list ? list.replace(/(\r\n|\n|\r)/gm, "|") : "");
@@ -188,27 +192,8 @@ export class BeGone {
         return BeGoneSettingsHelper.isBlacklist(this.settings) && !BeGoneSettingsHelper.blacklistRegexp(this.settings).test(document.URL);
     }
 
-    /**
-     * Supports iframes.
-     * TODO: No ShadowRoot support. Mabye use SuperPowerfulMutationObserver to cache them all?
-     */
-    private textContentOf(doc: Document | Element): string {
-        let bodyTextContent;
-        if (doc.nodeType == Node.DOCUMENT_NODE) {
-            bodyTextContent = (<Document>doc).body.textContent ? (<Document>doc).body.textContent : "";
-        } else {
-            bodyTextContent = doc.textContent || "";
-        }
-        let iframeDocuments = Array.from(doc.getElementsByTagName("iframe")).map(function (iframe: HTMLIFrameElement) {
-            return iframe.contentDocument;
-        });
-
-        let iframeContents = iframeDocuments.map(doc => doc && this.textContentOf(doc)).join(" -- ")
-        return bodyTextContent + iframeContents;
-    }
-
     private probeDocument(doc: Document | Element) {
-        return this.probeDocumentContent(this.textContentOf(doc))
+        return this.probeDocumentContent(superPowerfulTextContentOf(doc))
     }
 
     private probeDocumentContent(bodyTextContent: string):
