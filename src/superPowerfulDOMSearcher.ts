@@ -17,12 +17,17 @@ const shadowRootOf: ((e: Element) => ShadowRoot | null) = (() => {
         }
     } catch (e) {
     }
-    // firefox version. openOrClosedShadowRoot will return either a shadowRoot, or 'none' if supported.
-    // undefined means the property doesn't exist at all.
-    if ((document.body as any).openOrClosedShadowRoot !== undefined) {
-        return function shadowRoot(element: Element): ShadowRoot | null {
-            return (element as any).openOrClosedShadowRoot;
+    try {
+        // firefox version. openOrClosedShadowRoot will return either a shadowRoot, or 'none' if supported.
+        // undefined means the property doesn't exist at all.
+        if ((window.document.body as any).openOrClosedShadowRoot !== undefined) {
+            return function shadowRoot(element: Element): ShadowRoot | null {
+                return (element as any).openOrClosedShadowRoot;
+            }
         }
+    } catch (e) {
+        // Can happen in tests, because window is undefined at time of import
+        console.warn("Exception", e);
     }
     // backup version, but doesn't work for closed shadowDom
     return function shadowRoot(element: Element): ShadowRoot | null {
