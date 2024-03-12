@@ -1,5 +1,10 @@
 import {ifDebugging} from "./logUtil";
 
+/**
+ * This package provides tool to traverse / observe all iframes, objects, embed and the shadowDom,
+ * which are otherwise not traversed by MutationObserver, querySelectorAll, createTreeWalker()...
+ */
+
 // Same as element.shadowRootOf, but works for closed shadowDom
 const shadowRootOf: ((e: Element) => ShadowRoot | null) = (() => {
     try {
@@ -176,10 +181,6 @@ export class ShadowDomList implements Iterable<ShadowRoot> {
 }
 
 
-/**
- * This package provides tool to traverse / observe all iframes, objects, embed and the shadowDom,
- * which are otherwise not traversed by MutationObserver, querySelectorAll, createTreeWalker()...
- */
 export class SuperPowerfulMutationObserver {
     private readonly callback: MutationCallback;
     private readonly observer: MutationObserver;

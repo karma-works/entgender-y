@@ -90,7 +90,7 @@ export class BeGone {
                 if (shouldNotBeChanged(node)) {
                     return NodeFilter.FILTER_REJECT;
                 }
-                    // Nur Nodes erfassen, deren Inhalt ungefähr zur späteren Verarbeitung passt
+                // Nur Nodes erfassen, deren Inhalt ungefähr zur späteren Verarbeitung passt
                 // fahrende|ierende|Mitarbeitende|Forschende
                 else if (/\b(und|oder|bzw)|[a-zA-ZäöüßÄÖÜ][\/*.&_·:(]-?[a-zA-ZäöüßÄÖÜ]|[a-zäöüß(_*:.][iI][nN]|nE\b|r[MS]\b|e[NR]\b|ierten?\b|enden?\b|flüch/.test(node.textContent)) {
                     return NodeFilter.FILTER_ACCEPT;
@@ -102,6 +102,8 @@ export class BeGone {
 
         const walker = new SuperPowerfulTreeWalker<CharacterData>(el, NodeFilter.SHOW_TEXT, acceptNode,
             (node) => {
+                // We use a different filter to find iframes, and other inner documents, because the other filter only returns ACCEPT if 'node.textContent' matches something,
+                // and 'node.textContent' doesn't contain iframes.
                 if (shouldNotBeChanged(node)) {
                     return NodeFilter.FILTER_REJECT;
                 }
@@ -377,10 +379,6 @@ export class BeGone {
 
             if (this.settings.partizip) {
                 this.applyToNodes(nodes, this.replacer.ersetzeGefluechteteDurchFluechtlinge);
-            }
-
-            if (true && this.replacer.ersetzeMaskulinum) { // TODO: config this.settings.maskulinum
-                this.applyToNodes(nodes, this.replacer.ersetzeMaskulinum);
             }
 
             this.applyToNodes(nodes, this.replacer.artikelUndKontraktionen);
