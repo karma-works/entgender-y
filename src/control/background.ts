@@ -113,46 +113,32 @@ function updateIcon() {
             iconPath = res.invertiert ? 'images/iconOffi.png' : 'images/iconOff.png';
         }
 
-        chrome.browserAction.setTitle({ title: title });
-        chrome.browserAction.setIcon({ path: iconPath });
+        chrome.browserAction.setTitle({title: title});
+        chrome.browserAction.setIcon({path: iconPath});
     });
 }
 
 function ButtonClickHandler() {
     chrome.storage.sync.get(function (res: Settings) {
-        if (res.filterliste == "Bei Bedarf") {
-            chrome.tabs.query({
-                currentWindow: true,
-                active: true
-            }, function (tabs) {
-                sendMessageToTabs(tabs);
-                if (res.invertiert !== true) {
+        if (res.filterliste === "Bei Bedarf") {
+            chrome.tabs.query({currentWindow: true, active: true},
+                function (tabs) {
+                    sendMessageToTabs(tabs);
+                    const iconPath = res.invertiert ? 'images/iconOni.png' : 'images/iconOn.png';
                     chrome.browserAction.setIcon({
-                        path: 'images/iconOn.png',
+                        path: iconPath,
                         tabId: tabs[0].id
                     });
-                } else if (res.invertiert === true) {
-                    chrome.browserAction.setIcon({
-                        path: 'images/iconOni.png',
-                        tabId: tabs[0].id
-                    });
-                }
-            });
-        } else if (res.aktiv === true) {
-            updateSetting({
-                aktiv: false
-            });
+                });
         } else {
-            updateSetting({
-                aktiv: true
-            });
-            settings.aktiv = true;
-            chrome.tabs.query({
-                currentWindow: true,
-                active: true
-            }, function (tabs) {
-                sendMessageToTabs(tabs);
-            });
+            // Toggle 'aktiv' setting
+            const newAktivStatus = !res.aktiv;
+            updateSetting({aktiv: newAktivStatus});
+
+            if (newAktivStatus) {
+                // send message to tabs only when switching to active
+                chrome.tabs.query({currentWindow: true, active: true}, sendMessageToTabs);
+            }
         }
     });
 }
