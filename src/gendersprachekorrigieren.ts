@@ -179,6 +179,10 @@ export class BeGone {
     }
 
     private currentPageNotExcludedByWhitelistOrBlackList() {
+        if (!BeGoneSettingsHelper.isWhitelist(this.settings) && !BeGoneSettingsHelper.isBlacklist(this.settings)) {
+            // no filtering
+            return true;
+        }
         if (BeGoneSettingsHelper.isWhitelist(this.settings) && BeGoneSettingsHelper.whitelistRegexp(this.settings).test(document.URL)) {
             // White listed
             return true;
