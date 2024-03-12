@@ -7,68 +7,38 @@ function updateSetting(setting: Partial<Settings>) {
     chrome.storage.sync.set(setting);
 }
 
-function updateSettings() {
-    chrome.storage.sync.get(function(res: Settings) {
-        function isAnyUndefined(...arg: any[]): boolean {
-            for (let s of arg) {
-                if (s === undefined || s === 'undefined') return true;
-            }
-            return false;
-        }
-        //Standardwerte bei der Initialisierung
-        if (isAnyUndefined(res.aktiv, res.invertiert, res.counter, res.doppelformen, res.partizip, res.skip_topic, res.filterliste, res.whitelist, res.blacklist, res.hervorheben_style)) {
-            if (res.aktiv === undefined) {
-                updateSetting({
-                    aktiv: true
-                });
-            }
-            if (res.counter === undefined) {
-                updateSetting({
-                    counter: true
-                });
-            }
-            if (res.invertiert === undefined) {
-                updateSetting({
-                    invertiert: false
-                });
-            }
-            if (res.doppelformen === undefined) {
-                updateSetting({
-                    doppelformen: true
-                });
-            }
-            if (res.partizip === undefined) {
-                updateSetting({
-                    partizip: false
-                });
-            }
-            if (res.skip_topic === undefined) {
-                updateSetting({
-                    skip_topic: false
-                });
-            }
-            if (res.filterliste === undefined) {
-                updateSetting({
-                    filterliste: "Blacklist"
-                });
-            }
-            if (res.whitelist === undefined || res.whitelist == "undefined") {
-                updateSetting({
-                    whitelist: ".gv.at\n.ac.at\nderstandard.at\ndiestandard.at\nhttps://ze.tt/"
-                });
-            }
-            if (res.blacklist === undefined || res.blacklist == "undefined") {
-                updateSetting({
-                    blacklist: "stackoverflow.com\ngithub.com\nhttps://developer\nhttps://de.wikipedia.org/wiki/Gendersternchen"
-                });
-            }
-            if (res.hervorheben_style === undefined || res.hervorheben_style == "undefined") {
-                updateSetting({
-                    hervorheben_style: "text-decoration: underline wavy blue;"
-                });
-            }
+const DefaultSettings: Required<Settings> = {
+    aktiv: true,
+    invertiert: false,
+    counter: true,
+    doppelformen: true,
+    partizip: false,
+    skip_topic: false,
+    filterliste: "Blacklist",
+    whitelist: ".gv.at\n.ac.at\nderstandard.at\ndiestandard.at\nhttps://ze.tt/",
+    blacklist: "stackoverflow.com\ngithub.com\nhttps://developer\nhttps://de.wikipedia.org/wiki/Gendersternchen",
+    hervorheben_style: "text-decoration: underline wavy blue;",
+    hervorheben: false,
+};
 
-            chrome.storage.sync.get(function(resagain:Settings) {
+
+function updateSettings() {
+    chrome.storage.sync.get(function (res: Settings) {
+        let settingsUpdate: Partial<Settings> = {};
+        let needsUpdate = false;
+
+        for (const key of Object.keys(DefaultSettings) as Array<keyof Settings>) {
+            if (res[key] === undefined || res[key] === 'undefined') {
+                // @ts-ignore
+                settingsUpdate[key] = DefaultSettings[key];
+                needsUpdate = true;
+            }
+        }
+
+        if (needsUpdate) {
+            updateSetting(settingsUpdate);
+
+            chrome.storage.sync.get(function (resagain: Settings) {
                 settings = resagain;
             });
         } else {
@@ -118,7 +88,7 @@ function sendMessage(tabId: number, message: Response) {
     chrome.tabs.sendMessage(tabId, message);
 }
 
-function sendMessageToTabs(tabs:chrome.tabs.Tab[]) {
+function sendMessageToTabs(tabs: chrome.tabs.Tab[]) {
     for (let tab of tabs) {
         if (tab.id == null) {
             continue;
@@ -132,7 +102,7 @@ function sendMessageToTabs(tabs:chrome.tabs.Tab[]) {
 }
 
 function updateIcon() {
-    chrome.storage.sync.get(function(res:Settings) {
+    chrome.storage.sync.get(function (res: Settings) {
         if (res.filterliste == "Bei Bedarf") {
             chrome.browserAction.setTitle({
                 title: 'Klick entgendert Binnen-Is auf dieser Seite'
@@ -177,12 +147,12 @@ function updateIcon() {
 }
 
 function ButtonClickHandler() {
-    chrome.storage.sync.get(function(res:Settings) {
+    chrome.storage.sync.get(function (res: Settings) {
         if (res.filterliste == "Bei Bedarf") {
             chrome.tabs.query({
                 currentWindow: true,
                 active: true
-            }, function(tabs) {
+            }, function (tabs) {
                 sendMessageToTabs(tabs);
                 if (res.invertiert !== true) {
                     chrome.browserAction.setIcon({
@@ -208,7 +178,7 @@ function ButtonClickHandler() {
             chrome.tabs.query({
                 currentWindow: true,
                 active: true
-            }, function(tabs) {
+            }, function (tabs) {
                 sendMessageToTabs(tabs);
             });
         }
