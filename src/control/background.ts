@@ -53,31 +53,27 @@ function handleMessage(request: Request, sender: MessageSender, sendResponse: (r
         sendResponse({
             response: JSON.stringify(settings)
         });
-    } else if (sender.tab && request.type == "count" && request.countBinnenIreplacements + request.countDoppelformreplacements + request.countPartizipreplacements > 0) {
-        const displayednumber = request.countBinnenIreplacements + request.countDoppelformreplacements + request.countPartizipreplacements;
-        chrome.browserAction.setBadgeText({
-            text: "" + displayednumber + "",
-            tabId: sender.tab.id
-        });
-        /* Folgende Anzeige bereitet Probleme im Overflow-Menü von Firefox*/
-        if (!settings.doppelformen && !settings.partizip) {
-            chrome.browserAction.setTitle({
-                title: "Filterung aktiv\n\nGefilterte Elemente auf dieser Seite\nBinnen-Is: " + request.countBinnenIreplacements,
+    } else if (sender.tab && request.type == "count") {
+        let totalCount = request.countBinnenIreplacements + request.countDoppelformreplacements + request.countPartizipreplacements;
+        if (totalCount > 0) {
+            chrome.browserAction.setBadgeText({
+                text: totalCount.toString(),
                 tabId: sender.tab.id
             });
-        } else if (settings.doppelformen && !settings.partizip) {
+
+            let titleDetails = ["Filterung aktiv", "Gefilterte Elemente auf dieser Seite"];
+
+            /* Folgende Anzeige bereitet Probleme im Overflow-Menü von Firefox*/
+            titleDetails.push(`Binnen-Is: ${request.countBinnenIreplacements}`);
+            if (settings.doppelformen) {
+                titleDetails.push(`Doppelformen: ${request.countDoppelformreplacements}`);
+            }
+            if (settings.partizip) {
+                titleDetails.push(`Partizipformen: ${request.countPartizipreplacements}`);
+            }
+
             chrome.browserAction.setTitle({
-                title: "Filterung aktiv\n\nGefilterte Elemente auf dieser Seite\nBinnen-Is: " + request.countBinnenIreplacements + "\nDoppelformen: " + request.countDoppelformreplacements,
-                tabId: sender.tab.id
-            });
-        } else if (!settings.doppelformen && settings.partizip) {
-            chrome.browserAction.setTitle({
-                title: "Filterung aktiv\n\nGefilterte Elemente auf dieser Seite\nBinnen-Is: " + request.countBinnenIreplacements + "\nPartizipformen: " + request.countPartizipreplacements,
-                tabId: sender.tab.id
-            });
-        } else if (settings.doppelformen && settings.partizip) {
-            chrome.browserAction.setTitle({
-                title: "Filterung aktiv\n\nGefilterte Elemente auf dieser Seite\nBinnen-Is: " + request.countBinnenIreplacements + "\nDoppelformen: " + request.countDoppelformreplacements + "\nPartizipformen: " + request.countPartizipreplacements,
+                title: titleDetails.join('\n'),
                 tabId: sender.tab.id
             });
         }
