@@ -99,46 +99,22 @@ function sendMessageToTabs(tabs: chrome.tabs.Tab[]) {
 
 function updateIcon() {
     chrome.storage.sync.get(function (res: Settings) {
-        if (res.filterliste == "Bei Bedarf") {
-            chrome.browserAction.setTitle({
-                title: 'Klick entgendert Binnen-Is auf dieser Seite'
-            });
-            if (res.invertiert !== true) {
-                chrome.browserAction.setIcon({
-                    path: 'images/iconOff.png'
-                });
-            } else if (res.invertiert === true) {
-                chrome.browserAction.setIcon({
-                    path: 'images/iconOffi.png'
-                });
-            }
-        } else if (res.aktiv === true) {
-            chrome.browserAction.setTitle({
-                title: 'Filterung aktiv'
-            });
-            if (res.invertiert !== true) {
-                chrome.browserAction.setIcon({
-                    path: 'images/iconOn.png'
-                });
-            } else if (res.invertiert === true) {
-                chrome.browserAction.setIcon({
-                    path: 'images/iconOni.png'
-                });
-            }
+        let title;
+        let iconPath;
+
+        if (res.filterliste === "Bei Bedarf") {
+            title = 'Klick entgendert Binnen-Is auf dieser Seite';
+            iconPath = res.invertiert ? 'images/iconOffi.png' : 'images/iconOff.png';
+        } else if (res.aktiv) {
+            title = 'Filterung aktiv';
+            iconPath = res.invertiert ? 'images/iconOni.png' : 'images/iconOn.png';
         } else {
-            chrome.browserAction.setTitle({
-                title: 'Entgenderung deaktiviert'
-            });
-            if (res.invertiert !== true) {
-                chrome.browserAction.setIcon({
-                    path: 'images/iconOff.png'
-                });
-            } else if (res.invertiert === true) {
-                chrome.browserAction.setIcon({
-                    path: 'images/iconOffi.png'
-                });
-            }
+            title = 'Entgenderung deaktiviert';
+            iconPath = res.invertiert ? 'images/iconOffi.png' : 'images/iconOff.png';
         }
+
+        chrome.browserAction.setTitle({ title: title });
+        chrome.browserAction.setIcon({ path: iconPath });
     });
 }
 
