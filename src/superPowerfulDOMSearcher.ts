@@ -341,7 +341,7 @@ function innerElementContentDocument(n: Element) {
 }
 
 /**
- * Suports iframe, object, embed
+ * Suports iframe, object, embed, and shadowDom
  */
 export class SuperPowerfulTreeWalker<T extends Node> {
     private readonly root: Node;
