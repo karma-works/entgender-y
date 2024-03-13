@@ -12,7 +12,13 @@ const shadowRootOf: ((e: Element) => ShadowRoot | null) = (() => {
         if (window?.chrome?.dom?.openOrClosedShadowRoot) {
             // Chrome version
             return function shadowRoot(element: Element): ShadowRoot | null {
-                return chrome.dom.openOrClosedShadowRoot(element as HTMLElement);
+                try {
+                    return chrome.dom.openOrClosedShadowRoot(element as HTMLElement);
+                } catch (e) {
+                    // Happens if 'element' is actually not an Element, but something like a SVGElement
+                    // console.error("Error in chrome openOrClosedShadowRoot", e, element);
+                    return element.shadowRoot;
+                }
             }
         }
     } catch (e) {
