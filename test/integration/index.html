@@ -41,7 +41,7 @@
             background-color: chartreuse;
         }
 
-        #error-count {
+        .error-count {
             font-size: 30px;
         }
     </style>
@@ -50,9 +50,14 @@
 Hallo welt*innen<br/>
 
 <a href="index.html">Test von dynamischen laden (mittels javascript)</a><br>
-<a href="static.html">Test von statischen html (beim öffnen der Seite konvertiert)</a>
+<a href="index.html?useShadow=true">Test von dynamischen laden (mittels javascript & shadow-dom)</a><br>
+<a href="static.html">Test von statischen html (beim Öffnen der Seite konvertiert)</a><br>
+<a href="iframe-container.html">Test mit iframe</a><br>
 
-<div id="error-count"></div>
+<button onclick="generateThenCheck()">Löchen und neu generieren</button>
+
+<div id="error-count" class="error-count"></div>
+<div id="error-count-editable-changed" class="error-count"></div>
 <br>
 <span class="correct">Richtig</span> <span class="wrong">Falsch, unverändert</span> <span class="wrong-partial-change">Falsch, wurde verändert</span>
 
@@ -63,10 +68,20 @@ Hallo welt*innen<br/>
 </table>
 <hr/>
 
+<div>
+    <svg width="600" height="100" xmlns="http://www.w3.org/2000/svg">
+        <text x="10" y="50" font-family="Verdana" font-size="20" fill="black">
+            Liebe Mitarbeiter*innen, Liebe:r Angestellte/-r, Arbeiter/-in
+        </text>
+    </svg>
+</div>
+
+
 <p>Das folgende div ist editierbar, und sollte demnach nicht vom addon angefasst werden</p>
-<div id=":64" class="Am Al editable LW-avf tS-tW" hidefocus="true" aria-label="Corps du message" g_editable="true"
+<div id="editable_div" data-expectedHashCode="1375665554" class="Am Al editable LW-avf tS-tW" hidefocus="true"
+     aria-label="Corps du message" editable="true"
      role="textbox" aria-multiline="true"
-     style="direction: ltr; min-height: 210px; border: solid; border-width: 3px; background: aliceblue;"
+     style="direction: ltr; min-height: 210px; border: solid; border-width: 3px; "
      tabindex="1" itacorner="6,7:1,1,0,0" spellcheck="false" aria-owns=":v7" aria-controls=":v7" contenteditable="true">
 
     <div>&nbsp;Unbezahlt mithelfende*r Familienangehörige/-r im familieneigenen Betrieb<br>&nbsp;Beamtin, Beamter,

@@ -1,8 +1,8 @@
-
 span.entgendy-change  {
     cursor: help;
     position: relative;
 }
+
 span.entgendy-change[style*=engendy-mode-nb]::before {
     content: "";
     position: absolute;

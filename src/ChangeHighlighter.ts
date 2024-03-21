@@ -1,10 +1,12 @@
 import * as Diff from "diff";
-import { ifDebugging } from "./logUtil";
+import {ifDebugging} from "./logUtil";
 
 // Create a text node with the given string.
 function createText(doc: Document, str: string): CharacterData {
     return doc.createTextNode(str);
 }
+
+const ELEMENTS_NOT_SUPPORTING_SPAN = ["TITLE", "OPTION"];
 
 export class ChangeHighlighter {
     // Create a span element that visually represents the change.
@@ -20,8 +22,9 @@ export class ChangeHighlighter {
 
     // Apply changes from newText to the specified node, highlighting differences.
     apply(node: CharacterData, newText: string, style: string = "") {
-        // Don't attempt to apply changes to the text of a title element, as the title doesn't support <span> elements.
-        if (node.parentNode?.nodeName === 'TITLE') {
+        let parentNode = node.parentNode as (Element | null);
+        if (!parentNode || parentNode.nodeName in ELEMENTS_NOT_SUPPORTING_SPAN || !(parentNode.namespaceURI === null || parentNode?.namespaceURI === "http://www.w3.org/1999/xhtml")) {
+            // This skips some html nodes, and all non-html (svg...)
             node.data = newText;
             return;
         }
@@ -54,7 +57,7 @@ export class ChangeHighlighter {
             }
         };
 
-        ifDebugging && ifDebugging.log("changes=" + newText, changes);
+        ifDebugging?.log("changes=" + newText, changes);
 
         // Process each change to construct new nodes reflecting the text updates.
         for (let changeId = 0; changeId < changes.length; changeId++) {

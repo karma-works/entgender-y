@@ -7,68 +7,38 @@ function updateSetting(setting: Partial<Settings>) {
     chrome.storage.sync.set(setting);
 }
 
-function updateSettings() {
-    chrome.storage.sync.get(function(res: Settings) {
-        function isAnyUndefined(...arg: any[]): boolean {
-            for (let s of arg) {
-                if (s === undefined || s === 'undefined') return true;
-            }
-            return false;
-        }
-        //Standardwerte bei der Initialisierung
-        if (isAnyUndefined(res.aktiv, res.invertiert, res.counter, res.doppelformen, res.partizip, res.skip_topic, res.filterliste, res.whitelist, res.blacklist, res.hervorheben_style)) {
-            if (res.aktiv === undefined) {
-                updateSetting({
-                    aktiv: true
-                });
-            }
-            if (res.counter === undefined) {
-                updateSetting({
-                    counter: true
-                });
-            }
-            if (res.invertiert === undefined) {
-                updateSetting({
-                    invertiert: false
-                });
-            }
-            if (res.doppelformen === undefined) {
-                updateSetting({
-                    doppelformen: true
-                });
-            }
-            if (res.partizip === undefined) {
-                updateSetting({
-                    partizip: false
-                });
-            }
-            if (res.skip_topic === undefined) {
-                updateSetting({
-                    skip_topic: false
-                });
-            }
-            if (res.filterliste === undefined) {
-                updateSetting({
-                    filterliste: "Blacklist"
-                });
-            }
-            if (res.whitelist === undefined || res.whitelist == "undefined") {
-                updateSetting({
-                    whitelist: ".gv.at\n.ac.at\nderstandard.at\ndiestandard.at\nhttps://ze.tt/"
-                });
-            }
-            if (res.blacklist === undefined || res.blacklist == "undefined") {
-                updateSetting({
-                    blacklist: "stackoverflow.com\ngithub.com\nhttps://developer\nhttps://de.wikipedia.org/wiki/Gendersternchen"
-                });
-            }
-            if (res.hervorheben_style === undefined || res.hervorheben_style == "undefined") {
-                updateSetting({
-                    hervorheben_style: "text-decoration: underline wavy blue;"
-                });
-            }
+const DefaultSettings: Required<Settings> = {
+    aktiv: true,
+    invertiert: false,
+    counter: true,
+    doppelformen: true,
+    partizip: false,
+    skip_topic: false,
+    filterliste: "Blacklist",
+    whitelist: ".gv.at\n.ac.at\nderstandard.at\ndiestandard.at\nhttps://ze.tt/",
+    blacklist: "stackoverflow.com\ngithub.com\nhttps://developer\nhttps://de.wikipedia.org/wiki/Gendersternchen",
+    hervorheben_style: "text-decoration: underline wavy blue;",
+    hervorheben: false,
+};
 
-            chrome.storage.sync.get(function(resagain:Settings) {
+
+function updateSettings() {
+    chrome.storage.sync.get(function (res: Settings) {
+        let settingsUpdate: Partial<Settings> = {};
+        let needsUpdate = false;
+
+        for (const key of Object.keys(DefaultSettings) as Array<keyof Settings>) {
+            if (res[key] === undefined || res[key] === 'undefined') {
+                // @ts-ignore
+                settingsUpdate[key] = DefaultSettings[key];
+                needsUpdate = true;
+            }
+        }
+
+        if (needsUpdate) {
+            updateSetting(settingsUpdate);
+
+            chrome.storage.sync.get(function (resagain: Settings) {
                 settings = resagain;
             });
         } else {
@@ -83,31 +53,27 @@ function handleMessage(request: Request, sender: MessageSender, sendResponse: (r
         sendResponse({
             response: JSON.stringify(settings)
         });
-    } else if (sender.tab && request.type == "count" && request.countBinnenIreplacements + request.countDoppelformreplacements + request.countPartizipreplacements > 0) {
-        const displayednumber = request.countBinnenIreplacements + request.countDoppelformreplacements + request.countPartizipreplacements;
-        chrome.browserAction.setBadgeText({
-            text: "" + displayednumber + "",
-            tabId: sender.tab.id
-        });
-        /* Folgende Anzeige bereitet Probleme im Overflow-Menü von Firefox*/
-        if (!settings.doppelformen && !settings.partizip) {
-            chrome.browserAction.setTitle({
-                title: "Filterung aktiv\n\nGefilterte Elemente auf dieser Seite\nBinnen-Is: " + request.countBinnenIreplacements,
+    } else if (sender.tab && request.type == "count") {
+        let totalCount = request.countBinnenIreplacements + request.countDoppelformreplacements + request.countPartizipreplacements;
+        if (totalCount > 0) {
+            chrome.browserAction.setBadgeText({
+                text: totalCount.toString(),
                 tabId: sender.tab.id
             });
-        } else if (settings.doppelformen && !settings.partizip) {
+
+            let titleDetails = ["Filterung aktiv", "Gefilterte Elemente auf dieser Seite"];
+
+            /* Folgende Anzeige bereitet Probleme im Overflow-Menü von Firefox*/
+            titleDetails.push(`Binnen-Is: ${request.countBinnenIreplacements}`);
+            if (settings.doppelformen) {
+                titleDetails.push(`Doppelformen: ${request.countDoppelformreplacements}`);
+            }
+            if (settings.partizip) {
+                titleDetails.push(`Partizipformen: ${request.countPartizipreplacements}`);
+            }
+
             chrome.browserAction.setTitle({
-                title: "Filterung aktiv\n\nGefilterte Elemente auf dieser Seite\nBinnen-Is: " + request.countBinnenIreplacements + "\nDoppelformen: " + request.countDoppelformreplacements,
-                tabId: sender.tab.id
-            });
-        } else if (!settings.doppelformen && settings.partizip) {
-            chrome.browserAction.setTitle({
-                title: "Filterung aktiv\n\nGefilterte Elemente auf dieser Seite\nBinnen-Is: " + request.countBinnenIreplacements + "\nPartizipformen: " + request.countPartizipreplacements,
-                tabId: sender.tab.id
-            });
-        } else if (settings.doppelformen && settings.partizip) {
-            chrome.browserAction.setTitle({
-                title: "Filterung aktiv\n\nGefilterte Elemente auf dieser Seite\nBinnen-Is: " + request.countBinnenIreplacements + "\nDoppelformen: " + request.countDoppelformreplacements + "\nPartizipformen: " + request.countPartizipreplacements,
+                title: titleDetails.join('\n'),
                 tabId: sender.tab.id
             });
         }
@@ -118,7 +84,7 @@ function sendMessage(tabId: number, message: Response) {
     chrome.tabs.sendMessage(tabId, message);
 }
 
-function sendMessageToTabs(tabs:chrome.tabs.Tab[]) {
+function sendMessageToTabs(tabs: chrome.tabs.Tab[]) {
     for (let tab of tabs) {
         if (tab.id == null) {
             continue;
@@ -132,85 +98,47 @@ function sendMessageToTabs(tabs:chrome.tabs.Tab[]) {
 }
 
 function updateIcon() {
-    chrome.storage.sync.get(function(res:Settings) {
-        if (res.filterliste == "Bei Bedarf") {
-            chrome.browserAction.setTitle({
-                title: 'Klick entgendert Binnen-Is auf dieser Seite'
-            });
-            if (res.invertiert !== true) {
-                chrome.browserAction.setIcon({
-                    path: 'images/iconOff.png'
-                });
-            } else if (res.invertiert === true) {
-                chrome.browserAction.setIcon({
-                    path: 'images/iconOffi.png'
-                });
-            }
-        } else if (res.aktiv === true) {
-            chrome.browserAction.setTitle({
-                title: 'Filterung aktiv'
-            });
-            if (res.invertiert !== true) {
-                chrome.browserAction.setIcon({
-                    path: 'images/iconOn.png'
-                });
-            } else if (res.invertiert === true) {
-                chrome.browserAction.setIcon({
-                    path: 'images/iconOni.png'
-                });
-            }
+    chrome.storage.sync.get(function (res: Settings) {
+        let title;
+        let iconPath;
+
+        if (res.filterliste === "Bei Bedarf") {
+            title = 'Klick entgendert Binnen-Is auf dieser Seite';
+            iconPath = res.invertiert ? 'images/iconOffi.png' : 'images/iconOff.png';
+        } else if (res.aktiv) {
+            title = 'Filterung aktiv';
+            iconPath = res.invertiert ? 'images/iconOni.png' : 'images/iconOn.png';
         } else {
-            chrome.browserAction.setTitle({
-                title: 'Entgenderung deaktiviert'
-            });
-            if (res.invertiert !== true) {
-                chrome.browserAction.setIcon({
-                    path: 'images/iconOff.png'
-                });
-            } else if (res.invertiert === true) {
-                chrome.browserAction.setIcon({
-                    path: 'images/iconOffi.png'
-                });
-            }
+            title = 'Entgenderung deaktiviert';
+            iconPath = res.invertiert ? 'images/iconOffi.png' : 'images/iconOff.png';
         }
+
+        chrome.browserAction.setTitle({title: title});
+        chrome.browserAction.setIcon({path: iconPath});
     });
 }
 
 function ButtonClickHandler() {
-    chrome.storage.sync.get(function(res:Settings) {
-        if (res.filterliste == "Bei Bedarf") {
-            chrome.tabs.query({
-                currentWindow: true,
-                active: true
-            }, function(tabs) {
-                sendMessageToTabs(tabs);
-                if (res.invertiert !== true) {
+    chrome.storage.sync.get(function (res: Settings) {
+        if (res.filterliste === "Bei Bedarf") {
+            chrome.tabs.query({currentWindow: true, active: true},
+                function (tabs) {
+                    sendMessageToTabs(tabs);
+                    const iconPath = res.invertiert ? 'images/iconOni.png' : 'images/iconOn.png';
                     chrome.browserAction.setIcon({
-                        path: 'images/iconOn.png',
+                        path: iconPath,
                         tabId: tabs[0].id
                     });
-                } else if (res.invertiert === true) {
-                    chrome.browserAction.setIcon({
-                        path: 'images/iconOni.png',
-                        tabId: tabs[0].id
-                    });
-                }
-            });
-        } else if (res.aktiv === true) {
-            updateSetting({
-                aktiv: false
-            });
+                });
         } else {
-            updateSetting({
-                aktiv: true
-            });
-            settings.aktiv = true;
-            chrome.tabs.query({
-                currentWindow: true,
-                active: true
-            }, function(tabs) {
-                sendMessageToTabs(tabs);
-            });
+            // Toggle 'aktiv' setting
+            const newAktivStatus = !res.aktiv;
+            updateSetting({aktiv: newAktivStatus});
+
+            if (newAktivStatus) {
+                // send message to tabs only when switching to active
+                chrome.tabs.query({currentWindow: true, active: true}, sendMessageToTabs);
+            }
         }
     });
 }

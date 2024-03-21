@@ -15,7 +15,7 @@ function saveOptions() {
     }
 
     chrome.storage.sync.get(function (res: Settings) {
-        if (res.filterliste == "Bei Bedarf" && querySelector<HTMLInputElement>("#ondemandstate").checked !== true) {
+        if (res.filterliste == "Bei Bedarf" && !querySelector<HTMLInputElement>("#ondemandstate").checked) {
             configureOndemandInActive();
         }
         if (querySelector<HTMLInputElement>("#ondemandstate").checked) {
@@ -49,7 +49,7 @@ function configureOndemandInActive() {
     querySelector<HTMLInputElement>("#aktiv").checked = true;
     querySelector("#aktiv").removeAttribute("disabled");
     querySelector("#skipvis").style.visibility = "visible";
-    querySelector("aktiv-description").textContent = "Filterung aktiv";
+    querySelector("#aktiv-description").textContent = "Filterung aktiv";
     querySelector("#aktiv-description").style.color = 'inherit';
 }
 
@@ -74,15 +74,17 @@ function restoreOptions() {
         querySelector<HTMLTextAreaElement>("#whitelist").value = res.whitelist;
         querySelector<HTMLTextAreaElement>("#blacklist").value = res.blacklist;
 
-        if (res.filterliste == "Whitelist") {
-            querySelector<HTMLInputElement>("#whiteliststate").checked = true;
-        } else if (res.filterliste == "Blacklist") {
-            querySelector<HTMLInputElement>("#blackliststate").checked = true;
-        } else if (res.filterliste == "Bei Bedarf") {
-            querySelector<HTMLInputElement>("#ondemandstate").checked = true;
+        const filterListMapping: { [key in FilterType]: string } = {
+            "Whitelist": "#whiteliststate",
+            "Blacklist": "#blackliststate",
+            "Bei Bedarf": "#ondemandstate",
+        };
+
+        const filterSelector = filterListMapping[res.filterliste] || "#none";
+        querySelector<HTMLInputElement>(filterSelector).checked = true;
+
+        if (res.filterliste === "Bei Bedarf") {
             configureOndemandActive();
-        } else {
-            querySelector<HTMLInputElement>("#none").checked = true;
         }
 
         onHighlightChange();
@@ -129,7 +131,7 @@ const verzoegertesSpeichern = function () {
         };
         setTimeout(delay, time);
     };
-    return function (eventtrigger?: any) {
+    return function () {
         ++callcount;
         delayAction(action, 1000);
     };

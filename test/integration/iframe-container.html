@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .container {
+            height: 100vh; /* Make the container fill the entire viewport height */
+            display: flex; /* Use flexbox to create a row */
+            flex-direction: column; /* Stack children vertically */
+        }
+
+        .wrapper {
+            flex: 1; /* Distribute available space equally */
+            display: flex; /* Align the label and the content (iframe/object/embed) horizontally */
+        }
+
+        .label {
+            writing-mode: vertical-lr; /* Rotate the label */
+            transform: rotate(180deg); /* Fix the orientation to be readable from bottom to top */
+            margin: auto 0; /* Center vertically */
+        }
+
+        iframe, object, embed {
+            flex-grow: 1; /* Take the remaining horizontal space */
+            height: 100%; /* Fill the parent's height */
+        }
+    </style>
+    <script>
+        function reloadObjectsDynamically() {
+            const wrapper = document.getElementById("embedded-wrapper");
+            let previousHtml = wrapper.innerHTML;
+            wrapper.innerHTML = '';
+            setTimeout(() => {
+                wrapper.innerHTML = previousHtml;
+            }, 100);
+        }
+    </script>
+</head>
+<body>
+<a href="index.html">Test von dynamischen laden (mittels javascript)</a><br>
+<a href="#" onclick="reloadObjectsDynamically()">Dynamisch iframe hinzufügen</a><br>
+<div class="container" id="embedded-wrapper">
+    <div class="wrapper">
+        <div class="label">Iframe</div>
+        <iframe src="index.html"></iframe>
+    </div>
+
+    <div class="wrapper">
+        <div class="label">Object</div>
+        <object data="index.html" type="text/html"></object>
+    </div>
+
+    <div class="wrapper">
+        <div class="label">Embed</div>
+        <embed type="text/html" src="index.html">
+    </div>
+</div>
+</body>
+</html>
